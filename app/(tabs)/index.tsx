@@ -5,7 +5,11 @@ const index = () => {
   return (
     <View>
       <h1 style={Styles.h1}>AlquiCar</h1>
+      <p style={Styles.p}>
+      Lorem impush
+      </p>
     </View>
+    
   )
 }
 
@@ -17,6 +21,13 @@ const Styles=StyleSheet.create({
     color:"white",
     fontSize:46,
     fontWeight:"bold",
+  },
+  p:{
+    display:"flex",
+    flex:2,
+    justifyContent:"center",
+    color:"white",
+    fontSize:16,
   }
 });
 

@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
-
+import FontAwesome6  from '@expo/vector-icons/FontAwesome6';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -10,6 +10,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  
 
   return (
     <Tabs
@@ -38,6 +40,14 @@ export default function TabLayout() {
         options={{
           title: 'Explore',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+      
+      <Tabs.Screen
+        name="another"
+        options={{
+          title: 'HelloWorld',
+          tabBarIcon: ({ color }) => <FontAwesome6 name="car-on" size={24} color="white" />,
         }}
       />
     </Tabs>

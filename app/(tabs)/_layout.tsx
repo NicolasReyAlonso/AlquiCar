@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
-import FontAwesome6  from '@expo/vector-icons/FontAwesome6';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -18,6 +18,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: true,
+        tabBarInactiveTintColor: 'black',
 
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
@@ -25,12 +26,13 @@ export default function TabLayout() {
           ios: {
             // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
-	    top: 0
+            backgroundColor: '#4472C4',
+	          top: 0
           },
           default: {
 		position: 'absolute',
 		top: 0,
-		backgroundColor: 'blue'
+		backgroundColor: '#4472C4'
 	  },
         }),
       }}>
@@ -50,10 +52,10 @@ export default function TabLayout() {
       />
       
       <Tabs.Screen
-        name="another"
+        name="alquilaCoche"
         options={{
-          title: 'HelloWorld',
-          tabBarIcon: ({ color }) => <FontAwesome6 name="car-on" size={24} color="white" />,
+          title: 'Alquila un vehiculo',
+          tabBarIcon: ({ color }) => <FontAwesome5 name="car" size={24} color={color} />,
         }}
       />
     </Tabs>

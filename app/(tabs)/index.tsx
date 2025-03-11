@@ -1,13 +1,14 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
+import { ThemedText } from '@/components/ThemedText';
 
 const index = () => {
   return (
     <View>
-      <h1 style={Styles.h1}>AlquiCar</h1>
-      <p style={Styles.p}>
+      <ThemedText style={Styles.h1}>AlquiCar</ ThemedText>
+      <ThemedText style={Styles.p}>
       Lorem impush
-      </p>
+      </ThemedText>
     </View>
     
   )

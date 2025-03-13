@@ -24,13 +24,14 @@ const Styles=StyleSheet.create({
   },
   p:{
     display:"flex",
+    padding: 15,
     flex:2,
     justifyContent:"center",
     color:"white",
     fontSize:16,
   },
   pageBody:{
-    paddingTop: 10
+    paddingTop: 30
   }
 });
 

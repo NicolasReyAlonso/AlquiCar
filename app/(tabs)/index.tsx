@@ -1,15 +1,15 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import React from 'react'
 import { ThemedText } from '@/components/ThemedText';
 
 const index = () => {
   return (
-    <View>
+    <SafeAreaView>
       <ThemedText style={Styles.h1}>AlquiCar</ ThemedText>
       <ThemedText style={Styles.p}>
       Lorem impush
       </ThemedText>
-    </View>
+    </SafeAreaView>
     
   )
 }

@@ -13,7 +13,6 @@ const index = () => {
     
   )
 }
-
 const Styles=StyleSheet.create({
   h1:{
     display:"flex",
@@ -29,6 +28,9 @@ const Styles=StyleSheet.create({
     justifyContent:"center",
     color:"white",
     fontSize:16,
+  },
+  pageBody:{
+    paddingTop: 10
   }
 });
 

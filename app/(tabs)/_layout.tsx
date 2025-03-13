@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -29,9 +30,14 @@ export default function TabLayout() {
             backgroundColor: '#4472C4',
 	          top: 100
           },
+          android:{
+            position: 'absolute',
+		        top: 100,
+		        backgroundColor: '#4472C4'
+          },
           default: {
 		position: 'absolute',
-		top: 100,
+		top: 0,
 		backgroundColor: '#4472C4'
 	  },
         }),
@@ -40,6 +46,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
+          tabBarIcon: ({ color }) =><FontAwesome name="home" size={24} color={color} />,
         }}
       />
       <Tabs.Screen

@@ -28,11 +28,11 @@ export default function TabLayout() {
             // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
             backgroundColor: '#4472C4',
-	          top: 100
+	          top: 50
           },
           android:{
             position: 'absolute',
-		        top: 100,
+		        top: 50,
 		        backgroundColor: '#4472C4'
           },
           default: {

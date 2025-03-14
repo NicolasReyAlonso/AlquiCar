@@ -8,19 +8,19 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { ThemedText } from '@/components/ThemedText';
+import { View } from 'react-native-reanimated/lib/typescript/Animated';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  
-
-  return (
+  return (  
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: true,
         tabBarInactiveTintColor: 'black',
-
+        
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
@@ -28,17 +28,20 @@ export default function TabLayout() {
             // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
             backgroundColor: '#4472C4',
-	          top: 50
+	          top: 50,
+            title: "AlquiCar"
           },
           android:{
             position: 'absolute',
 		        top: 50,
-		        backgroundColor: '#4472C4'
+		        backgroundColor: '#4472C4',
+            title: "AlquiCar"
           },
           default: {
 		position: 'absolute',
 		top: 0,
-		backgroundColor: '#4472C4'
+		backgroundColor: '#4472C4',
+    title: "AlquiCar"
 	  },
         }),
       }}>

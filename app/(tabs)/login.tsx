@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window'); // Obtener el ancho de la pantalla
+const { width } = Dimensions.get('window'); 
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -9,12 +9,10 @@ export default function LoginScreen() {
 
   const handleLogin = () => {
     console.log(`Email: ${email}, Contraseña: ${password}`);
-    // Aquí puedes agregar la lógica para manejar el inicio de sesión
   };
 
   const handleRegister = () => {
     console.log('Registrarse');
-    // Aquí puedes agregar la lógica para manejar el registro
   };
 
   return (

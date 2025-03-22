@@ -61,6 +61,10 @@ export default function Layout({ children }) {
             <FontAwesome5 name="car" size={24} color={color} ></FontAwesome5>
             <Text style={styles.menuItem}>Explora</Text>
           </Link>
+          <Link style={styles.menuItem} href="login">
+            <FontAwesome name="sign-in" size={24} color={color} />
+            <Text style={styles.menuItem}>Iniciar Sesión</Text>
+          </Link>
           <Text style={styles.menuItem}>Configuración</Text>
         </View>
       )}

@@ -57,9 +57,9 @@ export default function Layout({ children }) {
             <FontAwesome5 name="car" size={24} color={color} ></FontAwesome5>
             <Text style={styles.menuItem}>Explora</Text>
           </Link>
-          <Link style={styles.menuItem} href="explore">
-            <FontAwesome5 name="car" size={24} color={color} ></FontAwesome5>
-            <Text style={styles.menuItem}>Explora</Text>
+          <Link style={styles.menuItem} href="misReservas">
+            <FontAwesome5 name="shopping-cart" size={24} color={color} ></FontAwesome5>
+            <Text style={styles.menuItem}>Mis Reservas</Text>
           </Link>
           <Link style={styles.menuItem} href="login">
             <FontAwesome name="sign-in" size={24} color={color} />

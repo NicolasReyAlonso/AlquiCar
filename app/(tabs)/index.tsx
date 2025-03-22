@@ -3,10 +3,13 @@ import { View, Text, SafeAreaView, Image, TextInput, ScrollView, TouchableOpacit
 import React, { useState } from 'react';
 import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useRouter } from 'expo-router'; 
 
 const { width, height } = Dimensions.get('window');
 
 const index = () => {
+  const router = useRouter(); // para q vaya a otra página
+
   const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
   const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
@@ -115,7 +118,10 @@ const index = () => {
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Poner en alquiler tu coche</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={() => router.push('/(tabs)/ofertas')} // Navegación al presionar el botón
+            >
               <Text style={styles.buttonText}>Ofertas cerca de ti</Text>
             </TouchableOpacity>
           </View>
@@ -125,8 +131,8 @@ const index = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
+  // Todos los estilos permanecen igual
   safeArea: { flex: 1 },
   scrollViewContent: { flexGrow: 1 },
   viewContainer: { flex: 1 },

@@ -1,68 +1,87 @@
-import { View, Text, SafeAreaView, Image, TextInput, ScrollView, TouchableOpacity, useColorScheme } from 'react-native';
-import React from 'react';
-import { addWhitelistedNativeProps } from 'react-native-reanimated/lib/typescript/ConfigHelper';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, Dimensions } from 'react-native';
 
-const colorScheme = useColorScheme();
-const color = colorScheme==='dark' ? 'white' : "black";
-const Register = () => {
+const{ width } = Dimensions.get('window');
+
+export default function RegisterScreen() {
+  const [name, setName] = useState('');
+  const [birthYear, setBirthYear] = useState('');
+  const [province, setProvince] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleRegister = () => {
+    if (!name || !birthYear || !province || !email || !password || !confirmPassword) {
+      alert('Faltan campos por rellenar');
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+    console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Provincia: ${province}, Email: ${email}, Contraseña: ${password}`);
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ flex: 1, backgroundColor:'rgba(225, 225, 225, 0.9)'}}>
-
-          <View style={{paddingHorizontal: 20, marginLeft: 200, marginRight: 200, marginBottom: 50, marginTop: 50}}>
-            <Text style={{ color: 'black', fontSize: 32, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 }}>
-              Crear una cuenta
-            </Text>
-
-            <View style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: 20, borderRadius: 10, borderWidth: 2, borderColor: '#4472C4' }}>
-              <TextInput
-                placeholder="Nombre"
-                placeholderTextColor="gray"
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="Año de nacimiento"
-                placeholderTextColor="gray"
-                keyboardType="numeric"
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="Provincia"
-                placeholderTextColor="gray"
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="Email"
-                placeholderTextColor="gray"
-                keyboardType="email-address"
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="Contraseña"
-                placeholderTextColor="gray"
-                secureTextEntry
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="Repetir contraseña"
-                placeholderTextColor="gray"
-                secureTextEntry
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 20, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TouchableOpacity
-                style={{ backgroundColor: '#4472C4', padding: 15, borderRadius: 5, alignItems: 'center' }}
-              >
-                <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Registrarse</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        <Text style={styles.headerText}>Crear cuenta</Text>
+        <TextInput style={styles.input} placeholder="Nombre" value={name} onChangeText={setName} />
+        <TextInput style={styles.input} placeholder="Año de nacimiento" value={birthYear} onChangeText={setBirthYear} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="Provincia" value={province} onChangeText={setProvince} />
+        <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
+        <TextInput style={styles.input} placeholder="Contraseña" value={password} onChangeText={setPassword} secureTextEntry />
+        <TextInput style={styles.input} placeholder="Repetir contraseña" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Registrarse</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
-};
+}
 
-
-export default Register;
+const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 20,
+  },
+  container: {
+    width: width < 500 ? 300 : 600,
+    backgroundColor: 'white', 
+    padding: 20, 
+    borderRadius: 10, 
+    borderWidth: 2, 
+    borderColor: '#4472C4',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#4472C4',
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#4472C4',
+    backgroundColor: 'white',
+  },
+  button: {
+    width: '100%',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    backgroundColor: '#4472C4',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});

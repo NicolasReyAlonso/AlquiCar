@@ -1,63 +1,94 @@
-import { View, Text, SafeAreaView, Image, TextInput, ScrollView, TouchableOpacity, useColorScheme } from 'react-native';
-import React from 'react';
-import { addWhitelistedNativeProps } from 'react-native-reanimated/lib/typescript/ConfigHelper';
-import { FontAwesome, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, Dimensions } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const colorScheme = useColorScheme();
-const color = colorScheme==='dark' ? 'white' : "black";
-const DatosPersonales = () => {
+const { width } = Dimensions.get('window');
+
+export default function DatosPersonales() {
+  const [name, setName] = useState('Pepe');
+  const [birthYear, setBirthYear] = useState('1989');
+  const [province, setProvince] = useState('Las Palmas');
+  const [email, setEmail] = useState('ejemplo@gmail.com');
+  const [dni, setDni] = useState('12345678A');
+
+  const handleSave = () => {
+    if (!name || !birthYear || !province || !email || !dni) {
+      alert('Faltan campos por rellenar');
+      return;
+    }
+    console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Provincia: ${province}, Email: ${email}, DNI: ${dni}`);
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ flex: 1, backgroundColor:'rgba(225, 225, 225, 0.9)'}}>
-
-          <View style={{paddingHorizontal: 20, marginLeft: 200, marginRight: 200, marginBottom: 50, marginTop: 50}}>
-            <View style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: 20, borderRadius: 10, borderWidth: 2, borderColor: '#4472C4' }}>
-                <View style={{ flexDirection: 'row',alignItems: 'center', marginBottom: 10}}>
-                    <Ionicons name="person-circle-outline" size={30} color="black" style={{ marginRight: 10 }}/>
-                    <Text style={{ color: 'black', fontSize: 24, fontWeight: 'bold' }}>Username</Text>
-                </View>
-
-              <TextInput
-                placeholder="Nombre"
-                placeholderTextColor='#4472C4'
-                defaultValue='Pepe'
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="Año de nacimiento"
-                placeholderTextColor="grey"
-                defaultValue='1989'
-                keyboardType="numeric"
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="Provincia"
-                placeholderTextColor="grey"
-                defaultValue='Las Palmas'
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="Email"
-                placeholderTextColor="grey"
-                keyboardType="email-address"
-                defaultValue='ejemplo@gmail.com'
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-              <TextInput
-                placeholder="DNI"
-                placeholderTextColor="grey"
-                defaultValue='12345678A'
-                style={{ backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, borderWidth: 1, borderColor: 'black' }}
-              />
-            </View>
-          </View>
+    <ScrollView contentContainerStyle={styles.outerContainer}>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Ionicons name="person-circle-outline" size={30} color="#4472C4" style={styles.icon} />
+          <Text style={styles.headerText}>Datos Personales</Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        <TextInput style={styles.input} placeholder="Nombre" value={name} onChangeText={setName} />
+        <TextInput style={styles.input} placeholder="Año de nacimiento" value={birthYear} onChangeText={setBirthYear} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="Provincia" value={province} onChangeText={setProvince} />
+        <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
+        <TextInput style={styles.input} placeholder="DNI" value={dni} onChangeText={setDni} />
+        <TouchableOpacity style={styles.button} onPress={handleSave}>
+          <Text style={styles.buttonText}>Guardar Cambios</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
-};
+}
 
-
-export default DatosPersonales;
+const styles = StyleSheet.create({
+  outerContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingVertical: 50,
+  },
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#4472C4',
+    width: width < 500 ? 300 : 600,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#4472C4',
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#CCC',
+    backgroundColor: 'white',
+  },
+  button: {
+    width: '100%',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    backgroundColor: '#4472C4',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});

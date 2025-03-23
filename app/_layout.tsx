@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, useColorScheme, TouchableOpacity, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, TextInput, Button, StyleSheet, useColorScheme, TouchableOpacity, Text, TouchableWithoutFeedback, Alert, Platform} from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Link } from 'expo-router';
 import { FontAwesome, FontAwesome5, Ionicons } from '@expo/vector-icons';
@@ -18,7 +18,17 @@ export default function Layout({ children }) {
   });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const handleSearch = (query : String) => {
+    if (Platform.OS === "web"){
+      window.alert("Búsqueda de " + query);
+    }
+    Alert.alert(
+      "resultado de la búsqueda",
+      "Búsqueda de " + query
+    );
+    setSearchQuery('');
+  };
+  
   return (
     <SafeAreaProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -32,6 +42,7 @@ export default function Layout({ children }) {
               placeholder="Buscar..."
               value={searchQuery}
               onChangeText={setSearchQuery}
+              onSubmitEditing = {(event) => handleSearch(event.nativeEvent.text)}
             />
             <View style={styles.headerRight}>
               <Link href="prueba">
@@ -48,27 +59,27 @@ export default function Layout({ children }) {
           <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
             <Text style={styles.closeButton}>✖ Cerrar</Text>
           </TouchableOpacity>
-          <Link style={styles.menuItem} href="/">
+          <Link style={styles.menuItem} href="/" onPress={() => setIsMenuOpen(false)}>
             <FontAwesome name="home" size={24} color={color} />
             <Text style={styles.menuItem}>HomePage</Text>
           </Link>
-          <Link style={styles.menuItem} href="alquilaCoche">
+          <Link style={styles.menuItem} href="alquilaCoche" onPress={() => setIsMenuOpen(false)}>
             <FontAwesome5 name="car" size={24} color={color} ></FontAwesome5>
             <Text style={styles.menuItem}>Alquila un vehiculo</Text>
           </Link>
-          <Link style={styles.menuItem} href="explore">
+          <Link style={styles.menuItem} href="explore" onPress={() => setIsMenuOpen(false)}>
             <FontAwesome5 name="car" size={24} color={color} ></FontAwesome5>
             <Text style={styles.menuItem}>Explora</Text>
           </Link>
-          <Link style={styles.menuItem} href="misReservas">
+          <Link style={styles.menuItem} href="misReservas" onPress={() => setIsMenuOpen(false)}>
             <FontAwesome5 name="shopping-cart" size={24} color={color} ></FontAwesome5>
             <Text style={styles.menuItem}>Mis Reservas</Text>
           </Link>
-          <Link style={styles.menuItem} href="misCochesPublicados">
+          <Link style={styles.menuItem} href="misCochesPublicados" onPress={() => setIsMenuOpen(false)}>
             <FontAwesome5 name="car" size={24} color={color} ></FontAwesome5>
             <Text style={styles.menuItem}>Publicaciones</Text>
           </Link>
-          <Link style={styles.menuItem} href="login">
+          <Link style={styles.menuItem} href="login" onPress={() => setIsMenuOpen(false)}>
             <FontAwesome name="sign-in" size={24} color={color} />
             <Text style={styles.menuItem}>Iniciar Sesión</Text>
           </Link>
@@ -77,8 +88,8 @@ export default function Layout({ children }) {
         )}
 
         {/* Contenido principal */}
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack  screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)"/>
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
@@ -129,3 +140,4 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
+

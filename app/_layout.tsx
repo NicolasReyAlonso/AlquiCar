@@ -45,7 +45,7 @@ export default function Layout({ children }) {
               onSubmitEditing = {(event) => handleSearch(event.nativeEvent.text)}
             />
             <View style={styles.headerRight}>
-              <Link href="prueba">
+              <Link href="login">
                 <Ionicons name="person-circle-outline" size={30} color="white" />
               </Link>
               <Button title="Menú" onPress={() => setIsMenuOpen(!isMenuOpen)} />

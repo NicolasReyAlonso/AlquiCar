@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import { View, TextInput, Button, StyleSheet, useColorScheme, TouchableOpacity, Text, TouchableWithoutFeedback, Alert, Platform} from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Link } from 'expo-router';
@@ -9,7 +9,12 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-export default function Layout({ children }) {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+
+export default function Layout({ children }: LayoutProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const colorScheme = useColorScheme();
   const color = colorScheme === 'dark' ? 'white' : 'black';

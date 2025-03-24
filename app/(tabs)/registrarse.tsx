@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, Dimensions, ScrollView } from 'react-native';
 
 const{ width } = Dimensions.get('window');
 
@@ -24,7 +24,7 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View style={styles.outerContainer}>
+    <ScrollView contentContainerStyle={styles.outerContainer}>
       <View style={styles.container}>
         <Text style={styles.headerText}>Crear cuenta</Text>
         <TextInput style={styles.input} placeholder="Nombre" value={name} onChangeText={setName} />
@@ -37,17 +37,17 @@ export default function RegisterScreen() {
           <Text style={styles.buttonText}>Registrarse</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   outerContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 20,
+    backgroundColor: '#F5F5F5',
+    paddingVertical: 50,
   },
   container: {
     width: width < 500 ? 300 : 600,

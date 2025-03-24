@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Switch, Button, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+
+const { width, height } = Dimensions.get('window');
 
 export default function ConfirmacionReserva() {
   const [seguro, setSeguro] = useState(false);
@@ -26,7 +28,7 @@ export default function ConfirmacionReserva() {
   const precioTotal = precioCoche + precioSeguro;
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Resumen de la reserva</Text>
       <View style={styles.carInfo}>
       <Image source={{ uri: reserva.imagen }} style={styles.carImage} />
@@ -59,7 +61,7 @@ export default function ConfirmacionReserva() {
         <Text style={styles.confirmButtonText}>Confirmar Reserva</Text>
       </TouchableOpacity>
       <Text style={styles.cancelText}>Fecha de cancelación máxima: {reserva.fechaCancelacionMax}</Text>
-    </View>
+    </ScrollView>
   );
 }
 

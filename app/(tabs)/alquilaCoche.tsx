@@ -4,41 +4,59 @@ import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 
+const carModels = {
+  Seat: ['Ibiza', 'León', 'Ateca'],
+  Opel: ['Corsa', 'Astra', 'Insignia'],
+  Ford: ['Fiesta', 'Focus', 'Mustang'],
+};
+
 export default function AlquilarCoche() {
-  const [brand, setBrand] = useState('Seat');
-  const [model, setModel] = useState('Ibiza');
+  const [brand, setBrand] = useState<keyof typeof carModels>('Seat');
+  const [model, setModel] = useState(carModels['Seat'][0]);
   const [year, setYear] = useState('2010');
   const [mileage, setMileage] = useState('100-150,000 km');
   const [city, setCity] = useState('');
   const [price, setPrice] = useState('');
-  const [image, setImage] = useState('');
 
   const handleSubmit = () => {
-    if (!brand || !model || !year || !mileage || !city || !price || !image) {
+    if (!brand || !model || !year || !mileage || !city || !price) {
       alert('Faltan campos por rellenar');
       return;
     }
-    console.log(`Marca: ${brand}, Model: ${model}, Año: ${year}, Kilometraje: ${mileage}, Ciudad: ${city}, Precio: ${price}, Imagen: ${image},`);
+    console.log(`Marca: ${brand}, Modelo: ${model}, Año: ${year}, Kilometraje: ${mileage}, Ciudad: ${city}, Precio: ${price}`);
   };
 
-  //TO DO: vale se puede poner el boton de adjuntar sin gestionar lo de la imagen por ahora, y otra cosa que me acabo de dar cuenta es que no deberia permitir combinaciones seat corsa por ejemplo, sino que cuando por ejemplo se ponga seat solo se puedan poner los modelos que vayan con esa marca no?
-  //TO DO: terminar lo de la validación
   return (
     <ScrollView contentContainerStyle={styles.formContainer}>
       <ThemedView style={styles.form}>
-        <ThemedText style={styles.title} type="title">Poner en alquiler tu coche</ThemedText>
+        <ThemedText style={styles.title} type="title">Alquilar un coche</ThemedText>
         <Text>Marca de coche a alquilar</Text>
-        <Picker selectedValue={brand} onValueChange={setBrand} style={styles.input}>
-          <Picker.Item label="Seat" value="Seat" />
+        <Picker
+          selectedValue={brand}
+          onValueChange={(itemValue) => {
+            setBrand(itemValue as keyof typeof carModels);
+            setModel(carModels[itemValue as keyof typeof carModels][0]);
+          }}
+          style={styles.input}
+        >
+          {Object.keys(carModels).map((brand) => (
+            <Picker.Item key={brand} label={brand} value={brand} />
+          ))}
         </Picker>
+        <Text>Modelo del coche</Text>
         <Picker selectedValue={model} onValueChange={setModel} style={styles.input}>
-          <Picker.Item label="Ibiza" value="Ibiza" />
+          {carModels[brand].map((model) => (
+            <Picker.Item key={model} label={model} value={model} />
+          ))}
         </Picker>
         <Text>Año del coche</Text>
         <Picker selectedValue={year} onValueChange={setYear} style={styles.input}>
-          <Picker.Item label="2010" value="2010" />
-          <Picker.Item label="2015" value="2015" />
-          <Picker.Item label="2020" value="2020" />
+          <Picker.Item label="Antes del 2001" value="Antes del 2001" />
+          <Picker.Item label="2001-2005" value="2001-2005" />
+          <Picker.Item label="2006-2010" value="2006-2010" />
+          <Picker.Item label="2011-2015" value="2011-2015" />
+          <Picker.Item label="2016-2020" value="2016-2020" />
+          <Picker.Item label="2021-2025" value="2021-2025" />
         </Picker>
         <Text>Kilometraje del coche</Text>
         <Picker selectedValue={mileage} onValueChange={setMileage} style={styles.input}>
@@ -49,9 +67,11 @@ export default function AlquilarCoche() {
         </Picker>
         <TextInput style={styles.input} placeholder="Introduce tu ciudad" value={city} onChangeText={setCity} />
         <TextInput style={styles.input} placeholder="Precio por día" value={price} onChangeText={setPrice} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder="Adjuntar imagen" value={image} onChangeText={setImage} />
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Publicar</Text>
+        <TouchableOpacity style={styles.buttonAd}>
+          <Text style={styles.buttonTextAd}>Adjuntar imagen</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonPub} onPress={handleSubmit}>
+          <Text style={styles.buttonTextPub}>Publicar</Text>
         </TouchableOpacity>
       </ThemedView>
     </ScrollView>
@@ -65,15 +85,15 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: 'white',
   },
+  title: {
+    color: 'black',
+    marginBottom: 10,
+  },
   form: {
     width: '90%',
     backgroundColor: '#E5E5E5',
     padding: 20,
     borderRadius: 10,
-  },
-  title: {
-     color: 'black',
-     marginBottom: 20, 
   },
   input: {
     backgroundColor: 'white',
@@ -83,15 +103,26 @@ const styles = StyleSheet.create({
     borderColor: '#CCC',
     marginBottom: 10,
   },
-  button: {
+  buttonPub: {
     backgroundColor: '#4472C4',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 10,
   },
-  buttonText: {
+  buttonTextPub: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonAd: {
+    backgroundColor: 'grey',
+    padding: 5,
+    borderRadius: 5,
+    width: 150,
+  },
+  buttonTextAd: {
+    color: 'black',
+    fontSize: 14,
   },
 });

@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Dimensions } from 'react-native';
-
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 const { width } = Dimensions.get('window'); 
 
+type RootStackParamList = {
+  Home: 'index';  // Cambia esto al nombre de la pantalla a la que quieres ir
+  Register: undefined;
+};
+
 export default function LoginScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const userName="Nelso@ulpgc.es";
+  const userPass="Soy_Nelson1";
   const handleLogin = () => {
-    console.log(`Email: ${email}, Contraseña: ${password}`);
+    if (email === userName && password === userPass){
+      navigation.navigate("index");
+    }
+    
   };
 
   const handleRegister = () => {

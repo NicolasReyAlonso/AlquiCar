@@ -6,8 +6,7 @@ export type Theme = {
       secondary: string;
       background: string;
       text: string;
-      white: string;
-      black: string;
+      titles: string;
     };
     fonts: {
       regular: string;
@@ -22,14 +21,14 @@ export type Theme = {
   const colorScheme = useColorScheme();
   const TextColor = colorScheme === 'dark' ? 'white' : 'black';
   const BackgroundColor = colorScheme === 'dark' ? 'black' : 'white';
+  const TabColor = '#4472C4'
   const theme: Theme = {
     colors: {
       primary: "#3498db",
       secondary: "#2ecc71",
-      background: "#ecf0f1",
+      background: BackgroundColor,
       text: TextColor,
-      white: "#ffffff",
-      black: "#000000",
+      titles: "#4472C4"
     },
     fonts: {
       regular: "System",

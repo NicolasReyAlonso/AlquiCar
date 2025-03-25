@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 50, // Para que no tape el header
     width: 250,
-    backgroundColor: '#333',
+    backgroundColor: '#4472C4',
     padding: 20,
     zIndex: 1000,
   },
@@ -145,4 +145,3 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
-

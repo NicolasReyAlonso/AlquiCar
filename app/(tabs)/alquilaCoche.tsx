@@ -29,8 +29,8 @@ export default function AlquilarCoche() {
   return (
     <ScrollView contentContainerStyle={styles.formContainer}>
       <ThemedView style={styles.form}>
-        <ThemedText style={styles.title} type="title">Alquilar un coche</ThemedText>
-        <Text>Marca de coche a alquilar</Text>
+        <ThemedText style={styles.title} type="title">Publicar tu coche</ThemedText>
+        <Text>Marca del coche</Text>
         <Picker
           selectedValue={brand}
           onValueChange={(itemValue) => {

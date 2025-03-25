@@ -1,6 +1,7 @@
 import React from "react";
 import { View, ScrollView, Dimensions, StyleSheet } from "react-native";
 import MyPublishedVehicles from "@/components/templates/MyPublishedVehicles";
+import theme from "@/components/Theme";
 
 const { width, height } = Dimensions.get('window');
 
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap", 
     justifyContent: "space-between", 
     padding: 20,
-    backgroundColor: "white", 
+    backgroundColor: theme.colors.background, 
   },
   cardWrapper: {
     width: width < 500 ? "100%" : "48%", 

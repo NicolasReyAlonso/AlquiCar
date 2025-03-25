@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
+import theme from "@/components/Theme";
 
 interface MyPublishedVehiclesProps {
   brand: string;
@@ -57,7 +58,7 @@ const getStyles = (width: number, isDesktop: boolean) =>
       padding: 10,
     },
     cardDesktop: {
-      backgroundColor: "#d3d3d3",
+      backgroundColor: theme.colors.secondary,
       borderRadius: 10,
       padding: 15,
       width: width * 0.36,
@@ -65,7 +66,7 @@ const getStyles = (width: number, isDesktop: boolean) =>
       marginVertical: 10,
     },
     cardMobile: {
-      backgroundColor: "#d3d3d3",
+      backgroundColor: theme.colors.secondary,
       borderRadius: 10,
       padding: 15,
       width: 280,
@@ -76,13 +77,11 @@ const getStyles = (width: number, isDesktop: boolean) =>
     imageDesktop: {
       width: "100%",
       height: width * 0.17,
-      backgroundColor: "#777",
       borderRadius: 5,
     },
     imageMobile: {
       width: "100%",
       height: 120,
-      backgroundColor: "#777",
       borderRadius: 5,
     },
     detailsContainerDesktop: {
@@ -106,28 +105,38 @@ const getStyles = (width: number, isDesktop: boolean) =>
     brandDesktop: {
       fontSize: width * 0.017,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
+      color: theme.lightTemplate.textColor,
     },
     brandMobile: {
       fontSize: 16,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
+      color: theme.lightTemplate.textColor,
     },
     priceDesktop: {
       fontSize: width * 0.017,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
+      color: theme.lightTemplate.textColor,
     },
     priceMobile: {
       fontSize: 16,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
+      color: theme.lightTemplate.textColor,
     },
     cityDesktop: {
       fontSize: width * 0.014,
-      color: "#555",
       marginVertical: 5,
+      fontFamily: theme.fonts.regular,
+      color: theme.lightTemplate.textColor,
     },
     cityMobile: {
       fontSize: 12,
-      color: "#555",
       marginVertical: 5,
+      fontFamily: theme.fonts.regular,
+      color: theme.lightTemplate.textColor,
     },
     buttonDesktop: {
       backgroundColor: "#3b6ef5",
@@ -151,11 +160,13 @@ const getStyles = (width: number, isDesktop: boolean) =>
       color: "white",
       fontWeight: "bold",
       fontSize: width * 0.015,
+      fontFamily: theme.fonts.bold,
     },
     buttonTextMobile: {
       color: "white",
       fontWeight: "bold",
       fontSize: 14,
+      fontFamily: theme.fonts.bold,
     },
   });
 

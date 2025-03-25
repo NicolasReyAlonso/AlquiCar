@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Dimensions } from 'react-native';
+import theme from "@/components/Theme";
 
 const { width } = Dimensions.get('window'); 
 
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
     padding: 20,
   },
   formContainer: {
@@ -63,14 +64,16 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#4472C4',
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.secondary,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#4472C4',
+    color: theme.colors.titles,
+    fontFamily: theme.fonts.bold,
+
   },
   input: {
     width: '100%',
@@ -80,9 +83,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#4472C4',
     backgroundColor: 'white',
+    fontFamily: theme.fonts.regular,
+    color: theme.lightTemplate.textColor,
   },
   buttonContainer: {
     marginTop: 10,
+    fontFamily: theme.fonts.bold,
   },
   separator: {
     textAlign: 'center',

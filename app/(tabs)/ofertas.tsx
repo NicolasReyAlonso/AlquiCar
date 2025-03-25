@@ -1,6 +1,8 @@
 import React from "react";
 import { View, ScrollView } from "react-native";
 import VehicleCard from "@/components/templates/VehicleCard";
+import theme from "@/components/Theme";
+
 
 const ofertas = () => {
   // Datos para las tarjetas con URLs reales de Google
@@ -55,7 +57,7 @@ const ofertas = () => {
   ];
 
   return (
-    <ScrollView contentContainerStyle={{ alignItems: "center", padding: 20 }}>
+    <ScrollView contentContainerStyle={{ alignItems: "center", padding: 20, backgroundColor: theme.colors.background}}>
       {/* Renderizado dinámico de las tarjetas */}
       {vehicleData.map((vehicle, index) => (
         <VehicleCard

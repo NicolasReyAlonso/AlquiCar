@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
+import theme from "@/components/Theme";
 
 interface VehicleCardProps {
   brand: string;
@@ -51,7 +52,7 @@ const getStyles = (width: number) =>
   StyleSheet.create({
     cardMobile: {
       flexDirection: "row",
-      backgroundColor: "#d3d3d3",
+      backgroundColor: theme.colors.secondary,
       padding: 15,
       borderRadius: 8,
       justifyContent: "space-between",
@@ -62,7 +63,7 @@ const getStyles = (width: number) =>
     },
     cardDesktop: {
       flexDirection: "row",
-      backgroundColor: "#d3d3d3",
+      backgroundColor: theme.colors.secondary,
       padding: width * 0.04,
       borderRadius: 8,
       justifyContent: "space-between",
@@ -78,18 +79,24 @@ const getStyles = (width: number) =>
     brandMobile: {
       fontSize: 16,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
+      color: theme.lightTemplate.textColor,
     },
     brandDesktop: {
       fontSize: width * 0.025,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
+      color: theme.lightTemplate.textColor,
     },
     detailsMobile: {
       fontSize: 12,
-      color: "#333",
+      fontFamily: theme.fonts.regular,
+      color: theme.lightTemplate.textColor,
     },
     detailsDesktop: {
       fontSize: width * 0.018,
-      color: "#333",
+      fontFamily: theme.fonts.regular,
+      color: theme.lightTemplate.textColor,
     },
     spacing: {
       height: width * 0.02,
@@ -111,11 +118,15 @@ const getStyles = (width: number) =>
       fontSize: 16,
       fontWeight: "bold",
       marginVertical: 5,
+      fontFamily: theme.fonts.bold,
+      color: theme.lightTemplate.textColor,
     },
     priceDesktop: {
       fontSize: width * 0.022,
       fontWeight: "bold",
       marginVertical: 5,
+      fontFamily: theme.fonts.bold,
+      color: theme.lightTemplate.textColor,
     },
     button: {
       backgroundColor: "#3b6ed5",
@@ -127,11 +138,13 @@ const getStyles = (width: number) =>
       color: "white",
       fontSize: 14,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
     },
     buttonTextDesktop: {
       color: "white",
       fontSize: width * 0.02,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
     },
   });
 

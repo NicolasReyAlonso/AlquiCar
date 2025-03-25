@@ -8,6 +8,9 @@ export type Theme = {
       text: string;
       titles: string;
     };
+    lightTemplate: {
+      textColor: string;
+    }
     fonts: {
       regular: string;
       bold: string;
@@ -21,14 +24,18 @@ export type Theme = {
   const colorScheme = useColorScheme();
   const TextColor = colorScheme === 'dark' ? 'white' : 'black';
   const BackgroundColor = colorScheme === 'dark' ? 'black' : 'white';
+  const backgroundSecomdary = colorScheme === 'dark' ? '#bbbbbb' : 'white'; 
   const TabColor = '#4472C4'
   const theme: Theme = {
     colors: {
       primary: "#3498db",
-      secondary: "#2ecc71",
+      secondary: backgroundSecomdary,
       background: BackgroundColor,
       text: TextColor,
-      titles: "#4472C4"
+      titles: "#1626ff"
+    },
+    lightTemplate: {
+      textColor: "#141414",
     },
     fonts: {
       regular: "System",

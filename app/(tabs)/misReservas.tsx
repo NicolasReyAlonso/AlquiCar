@@ -1,6 +1,7 @@
 import React from "react";
 import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
 import MyReservationCard from "@/components/templates/MyReservationCard";
+import theme from "@/components/Theme";
 
 const { width, height } = Dimensions.get('window');
 
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap", // que pasen a la siguiente fila si no caben
     justifyContent: "space-between", 
     paddingHorizontal: 10,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
   },
   cardWrapper: {
     width: width < 500 ? "100%" : "48%", 

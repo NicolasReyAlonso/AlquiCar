@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import theme from "@/components/Theme";
 
 const { width } = Dimensions.get('window'); 
 
+type RootStackParamList = {
+  Home: 'index';  // Cambia esto al nombre de la pantalla a la que quieres ir
+  Register: undefined;
+};
+
 export default function LoginScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const userName="Nelso@ulpgc.es";
+  const userPass="Soy_Nelson1";
   const handleLogin = () => {
-    console.log(`Email: ${email}, Contraseña: ${password}`);
+    if (email === userName && password === userPass){
+      navigation.navigate("index");
+    }
+    
   };
 
   const handleRegister = () => {
@@ -54,7 +68,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
     padding: 20,
   },
   formContainer: {
@@ -63,14 +77,16 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#4472C4',
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.secondary,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#4472C4',
+    color: theme.colors.titles,
+    fontFamily: theme.fonts.bold,
+
   },
   input: {
     width: '100%',
@@ -80,9 +96,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#4472C4',
     backgroundColor: 'white',
+    fontFamily: theme.fonts.regular,
+    color: theme.lightTemplate.textColor,
   },
   buttonContainer: {
     marginTop: 10,
+    fontFamily: theme.fonts.bold,
   },
   separator: {
     textAlign: 'center',

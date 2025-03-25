@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router'; 
+import theme from "@/components/Theme";
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -162,9 +164,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
     marginRight: 20,
+    fontFamily: theme.fonts.bold,
   },
   grayBox: {
-    backgroundColor: 'rgba(200, 200, 200, 0.8)',
+    backgroundColor: theme.colors.secondary,
     padding: width < 500 ? 20 : 30, 
     borderRadius: 10,
     width: width < 500 ? 300 : 400, 
@@ -178,12 +181,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
     flex: 1,
+    fontFamily: theme.fonts.regular,
+    color: theme.lightTemplate.textColor
   },
   inputFlex: {
     flex: 1,
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
+    fontFamily: theme.fonts.regular,
+    color: theme.lightTemplate.textColor
   },
   inputWithIcon: {
     flexDirection: 'row',
@@ -192,7 +199,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 5,
-    flex: 1, 
+    flex: 1,
+    fontFamily: theme.fonts.regular,
+    color: theme.lightTemplate.textColor
   },
   smallInput: {
     width: width < 500 ? '20%' : 80, 
@@ -212,6 +221,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: width < 500 ? 14 : 16, 
     fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   footerButtons: {
     marginTop: width < 500 ? 150 : 300, 
@@ -231,6 +241,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: width < 500 ? 14 : 16,
     textAlign: 'center',
+    fontFamily: theme.fonts.bold,
   },
 });
 

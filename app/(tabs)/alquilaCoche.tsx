@@ -13,17 +13,26 @@ const carModels = {
 export default function AlquilarCoche() {
   const [brand, setBrand] = useState<keyof typeof carModels>('Seat');
   const [model, setModel] = useState(carModels['Seat'][0]);
-  const [year, setYear] = useState('2010');
-  const [mileage, setMileage] = useState('100-150,000 km');
+  const [year, setYear] = useState('');
   const [city, setCity] = useState('');
   const [price, setPrice] = useState('');
 
   const handleSubmit = () => {
-    if (!brand || !model || !year || !mileage || !city || !price) {
+    if (!brand || !model || !year || !city || !price) {
       alert('Faltan campos por rellenar');
       return;
     }
-    console.log(`Marca: ${brand}, Modelo: ${model}, Año: ${year}, Kilometraje: ${mileage}, Ciudad: ${city}, Precio: ${price}`);
+    const numericYear = Number(year);
+    if (isNaN(numericYear) || numericYear < 1900 || numericYear >= 2026) {
+    alert('El precio debe ser un año válido');
+    return;
+    }
+    const numericPrice = Number(price);
+    if (isNaN(numericPrice) || numericPrice <= 0) {
+    alert('El precio debe ser un número válido mayor que 0');
+    return;
+    }
+    console.log(`Marca: ${brand}, Modelo: ${model}, Año: ${year}, Ciudad: ${city}, Precio: ${price}`);
   };
 
   return (
@@ -49,23 +58,8 @@ export default function AlquilarCoche() {
             <Picker.Item key={model} label={model} value={model} />
           ))}
         </Picker>
-        <Text>Año del coche</Text>
-        <Picker selectedValue={year} onValueChange={setYear} style={styles.input}>
-          <Picker.Item label="Antes del 2001" value="Antes del 2001" />
-          <Picker.Item label="2001-2005" value="2001-2005" />
-          <Picker.Item label="2006-2010" value="2006-2010" />
-          <Picker.Item label="2011-2015" value="2011-2015" />
-          <Picker.Item label="2016-2020" value="2016-2020" />
-          <Picker.Item label="2021-2025" value="2021-2025" />
-        </Picker>
-        <Text>Kilometraje del coche</Text>
-        <Picker selectedValue={mileage} onValueChange={setMileage} style={styles.input}>
-          <Picker.Item label="Menos de 100,000 km" value="Menos de 100,000 km" />
-          <Picker.Item label="100-150,000 km" value="100-150,000 km" />
-          <Picker.Item label="150-200,000 km" value="150-200,000 km" />
-          <Picker.Item label="Más de 200,000 km" value="Más de 200,000 km" />
-        </Picker>
-        <TextInput style={styles.input} placeholder="Introduce tu ciudad" value={city} onChangeText={setCity} />
+        <TextInput style={styles.input} placeholder="Año del coche" value={year} onChangeText={setYear} />
+        <TextInput style={styles.input} placeholder="Tu ciudad" value={city} onChangeText={setCity} />
         <TextInput style={styles.input} placeholder="Precio por día" value={price} onChangeText={setPrice} keyboardType="numeric" />
         <TouchableOpacity style={styles.buttonAd}>
           <Text style={styles.buttonTextAd}>Adjuntar imagen</Text>

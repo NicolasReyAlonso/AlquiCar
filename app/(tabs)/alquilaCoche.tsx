@@ -24,7 +24,7 @@ export default function AlquilarCoche() {
     }
     const numericYear = Number(year);
     if (isNaN(numericYear) || numericYear < 1900 || numericYear >= 2026) {
-    alert('El precio debe ser un año válido');
+    alert('Debe ser un año válido');
     return;
     }
     const numericPrice = Number(price);

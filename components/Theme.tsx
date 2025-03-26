@@ -24,7 +24,7 @@ export type Theme = {
   const colorScheme = useColorScheme();
   const TextColor = colorScheme === 'dark' ? 'white' : 'black';
   const BackgroundColor = colorScheme === 'dark' ? 'black' : 'white';
-  const backgroundSecomdary = colorScheme === 'dark' ? '#bbbbbb' : 'white'; 
+  const backgroundSecomdary = colorScheme === 'dark' ? '#bbbbbb' : '#dadada'; 
   const TabColor = '#4472C4'
   const theme: Theme = {
     colors: {

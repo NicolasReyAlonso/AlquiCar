@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, Dimensions, ScrollView } from 'react-native';
+import theme from "@/components/Theme";
 
 const{ width } = Dimensions.get('window');
 
@@ -46,12 +47,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
     paddingVertical: 50,
   },
   container: {
     width: width < 500 ? 300 : 600,
-    backgroundColor: 'white', 
+    backgroundColor: theme.colors.secondary, 
     padding: 20, 
     borderRadius: 10, 
     borderWidth: 2, 
@@ -61,7 +62,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#4472C4',
+    color: theme.colors.titles,
+    fontFamily: theme.fonts.bold,
   },
   input: {
     width: '100%',
@@ -71,6 +73,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#4472C4',
     backgroundColor: 'white',
+    color: theme.lightTemplate.textColor,
+    fontFamily: theme.fonts.regular,
   },
   button: {
     width: '100%',
@@ -83,5 +87,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
 });

@@ -27,6 +27,7 @@ export default function LoginScreen() {
 
   const handleRegister = () => {
     console.log('Registrarse');
+    navigation.navigate("registrarse");
   };
 
   return (

@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert 
 import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import theme from "@/components/Theme";
 
 const carModels = {
   Seat: ['Ibiza', 'León', 'Ateca'],
@@ -77,15 +78,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 20,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
   },
   title: {
-    color: 'black',
+    color: theme.colors.titles,
+    fontFamily: theme.fonts.bold,
     marginBottom: 10,
   },
   form: {
     width: '90%',
-    backgroundColor: '#E5E5E5',
+    backgroundColor: theme.colors.secondary,
     padding: 20,
     borderRadius: 10,
   },
@@ -96,6 +98,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCC',
     marginBottom: 10,
+    fontFamily: theme.fonts.regular,
+    color: theme.lightTemplate.textColor,
   },
   buttonPub: {
     backgroundColor: '#4472C4',
@@ -108,6 +112,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   buttonAd: {
     backgroundColor: 'grey',

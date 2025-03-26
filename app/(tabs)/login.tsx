@@ -16,10 +16,10 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const userName="Nelso@ulpgc.es";
+  const userName="Nelson@ulpgc.es";
   const userPass="Soy_Nelson1";
   const handleLogin = () => {
-    if (email === userName && password === userPass){
+    if (email.toLowerCase() === userName.toLowerCase() && password === userPass){
       navigation.navigate("datosPersonales");
     } 
     

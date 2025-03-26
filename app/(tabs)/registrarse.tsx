@@ -21,6 +21,11 @@ export default function RegisterScreen() {
       alert('Las contraseñas no coinciden');
       return;
     }
+    const numericBirthYear = Number(birthYear);
+    if (isNaN(numericBirthYear) || numericBirthYear < 1925 || numericBirthYear >= 2007) {
+    alert('Debe ser un año válido');
+    return;
+    }
     console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Provincia: ${province}, Email: ${email}, Contraseña: ${password}`);
   };
 

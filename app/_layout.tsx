@@ -68,14 +68,6 @@ export default function Layout({ children }: LayoutProps) {
             <FontAwesome name="home" size={24} color={color} />
             <Text style={styles.menuItem}>HomePage</Text>
           </Link>
-          <Link style={styles.menuItem} href="alquilaCoche" onPress={() => setIsMenuOpen(false)}>
-            <FontAwesome5 name="car" size={24} color={color} ></FontAwesome5>
-            <Text style={styles.menuItem}>Alquila un vehiculo</Text>
-          </Link>
-          <Link style={styles.menuItem} href="explore" onPress={() => setIsMenuOpen(false)}>
-            <FontAwesome5 name="car" size={24} color={color} ></FontAwesome5>
-            <Text style={styles.menuItem}>Explora</Text>
-          </Link>
           <Link style={styles.menuItem} href="misReservas" onPress={() => setIsMenuOpen(false)}>
             <FontAwesome5 name="shopping-cart" size={24} color={color} ></FontAwesome5>
             <Text style={styles.menuItem}>Mis Reservas</Text>

@@ -7,7 +7,7 @@ import theme from "@/components/Theme";
 const { width } = Dimensions.get('window'); 
 
 type RootStackParamList = {
-  Home: 'index';  // Cambia esto al nombre de la pantalla a la que quieres ir
+  Home: 'account';  // Cambia esto al nombre de la pantalla a la que quieres ir
   Register: undefined;
 };
 
@@ -20,7 +20,7 @@ export default function LoginScreen() {
   const userPass="Soy_Nelson1";
   const handleLogin = () => {
     if (email === userName && password === userPass){
-      navigation.navigate("datosPersonales");
+      navigation.navigate("account");
     } 
     
     if (email != userName){

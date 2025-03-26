@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import theme from "@/components/Theme";
 
 const { width } = Dimensions.get('window');
 
@@ -44,13 +45,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
     paddingVertical: 50,
   },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: theme.colors.secondary,
     padding: 20,
     borderRadius: 10,
     borderWidth: 2,
@@ -64,11 +65,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+    color: theme.colors.titles,
   },
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#4472C4',
+    color: theme.colors.titles,
+    fontFamily: theme.fonts.bold,
   },
   input: {
     width: '100%',
@@ -78,6 +81,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCC',
     backgroundColor: 'white',
+    fontFamily: theme.fonts.regular,
+    color: theme.lightTemplate.textColor,
   },
   button: {
     width: '100%',
@@ -90,5 +95,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
 });

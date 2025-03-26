@@ -21,9 +21,10 @@ export default function LoginScreen() {
   const handleLogin = () => {
     if (email.toLowerCase() === userName.toLowerCase() && password === userPass){
       navigation.navigate("account");
+      localStorage.setItem("isLoggedIn", "true");
     } 
     
-    if (email != userName){
+    if (email.toLowerCase() != userName.toLowerCase()){
       window.alert("Email incorrecto");
     }
     Alert.alert(

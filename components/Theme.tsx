@@ -1,4 +1,4 @@
-import { useColorScheme } from "react-native";
+import { Appearance } from 'react-native';
 
 export type Theme = {
     colors: {
@@ -21,7 +21,7 @@ export type Theme = {
       large: number;
     };
   };
-  const colorScheme = useColorScheme();
+  const colorScheme = Appearance.getColorScheme();
   const TextColor = colorScheme === 'dark' ? 'white' : 'black';
   const BackgroundColor = colorScheme === 'dark' ? 'black' : 'white';
   const backgroundSecomdary = colorScheme === 'dark' ? '#bbbbbb' : '#dadada'; 

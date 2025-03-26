@@ -20,7 +20,7 @@ export default function LoginScreen() {
   const userPass="Soy_Nelson1";
   const handleLogin = () => {
     if (email === userName && password === userPass){
-      navigation.navigate("index");
+      navigation.navigate("datosPersonales");
     }
     
   };

@@ -3,6 +3,7 @@ import { View, TextInput, Button, StyleSheet, Text, Dimensions, Alert } from 're
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
+import AsyncStorage from '@react-native-async-storage/async-storage';  // Importa AsyncStorage
 
 const { width } = Dimensions.get('window'); 
 
@@ -18,28 +19,20 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const userName="Nelson@ulpgc.es";
   const userPass="Soy_Nelson1";
-  const handleLogin = () => {
-    if (email.toLowerCase() === userName.toLowerCase() && password === userPass){
+  const handleLogin = async () => {
+    if (email.toLowerCase() === userName.toLowerCase() && password === userPass) {
+      await AsyncStorage.setItem("isLoggedIn", "true");  // Usar AsyncStorage
       navigation.navigate("account");
-      localStorage.setItem("isLoggedIn", "true");
     } 
     
-    if (email.toLowerCase() != userName.toLowerCase()){
-      window.alert("Email incorrecto");
+    if (email.toLowerCase() !== userName.toLowerCase()) {
+      Alert.alert("Email incorrecto");
     }
-    Alert.alert(
-      "Email incorrecto"
-    );
 
-    if (password != userPass) {
-      window.alert("Contraseña incorrecta");
+    if (password !== userPass) {
+      Alert.alert("Contraseña incorrecta");
     }
-    Alert.alert(
-      "Contraseña incorrecta"
-    );
-    
   };
-
 
   const handleRegister = () => {
     navigation.navigate("registrarse");
@@ -102,7 +95,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: theme.colors.titles,
     fontFamily: theme.fonts.bold,
-
   },
   input: {
     width: '100%',

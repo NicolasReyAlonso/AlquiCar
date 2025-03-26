@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Button, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AccountPage() {
   const nombre = "Nelson";
@@ -16,7 +17,10 @@ export default function AccountPage() {
   const handlePublicaciones = () => {
     navigation.navigate("misCochesPublicados");
   };
-
+  const handleCerrarSesion = async () =>{
+    await AsyncStorage.setItem("isLoggedIn", "false");
+    navigation.navigate("index");
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Detalles de la Cuenta</Text>
@@ -32,6 +36,9 @@ export default function AccountPage() {
         </View>
         <View style={styles.button}>
           <Button title="Mis Publicaciones" onPress={handlePublicaciones} />
+        </View>
+        <View style={styles.button}>
+          <Button title="Cerrar Sesión" onPress={handleCerrarSesion} />
         </View>
       </View>
     </View>

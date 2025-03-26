@@ -99,11 +99,6 @@ export default function Layout({ children }: LayoutProps) {
               <FontAwesome5 name="car" size={24} color={color}></FontAwesome5>
               <Text style={styles.menuItem}>Publicaciones</Text>
             </Link>
-            <Link style={styles.menuItem} href="login" onPress={() => setIsMenuOpen(false)}>
-              <FontAwesome name="sign-in" size={24} color={color} />
-              <Text style={styles.menuItem}>Iniciar Sesión</Text>
-            </Link>
-            <Text style={styles.menuItem}>Configuración</Text>
           </View>
         )}
 

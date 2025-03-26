@@ -25,7 +25,6 @@ export default function AccountPage() {
     <View style={styles.container}>
       <Text style={styles.title}>Detalles de la Cuenta</Text>
       <Image source={require('@/assets/images/avatar.png')} style={styles.avatar} />
-+
       <View style={styles.infoContainer}>
         <Text style={styles.info}>Nombre: {nombre}</Text>
         <Text style={styles.info}>Email: {email}</Text>

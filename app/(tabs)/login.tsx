@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Dimensions } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
@@ -21,12 +21,26 @@ export default function LoginScreen() {
   const handleLogin = () => {
     if (email === userName && password === userPass){
       navigation.navigate("datosPersonales");
+    } 
+    
+    if (email != userName){
+      window.alert("Email incorrecto");
     }
+    Alert.alert(
+      "Email incorrecto"
+    );
+
+    if (password != userPass) {
+      window.alert("Contraseña incorrecta");
+    }
+    Alert.alert(
+      "Contraseña incorrecta"
+    );
     
   };
 
+
   const handleRegister = () => {
-    console.log('Registrarse');
     navigation.navigate("registrarse");
   };
 

@@ -117,7 +117,10 @@ const index = () => {
           </View>
 
           <View style={styles.footerButtons}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity 
+              style={styles.button}
+              onPress={() => router.push('/(tabs)/alquilaCoche')}
+              >
               <Text style={styles.buttonText}>Poner en alquiler tu coche</Text>
             </TouchableOpacity>
             <TouchableOpacity 

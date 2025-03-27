@@ -76,6 +76,7 @@ const index = () => {
                     onDismiss={closePickupDatePicker}
                     date={pickupDate || undefined}
                     onConfirm={onPickupDateConfirm}
+                    validRange={{ startDate: new Date() }}
                   />
                 </View>
                 <TextInput
@@ -102,6 +103,7 @@ const index = () => {
                     onDismiss={closeReturnDatePicker}
                     date={returnDate || undefined}
                     onConfirm={onReturnDateConfirm}
+                    validRange={{ startDate: new Date() }}
                   />
                 </View>
                 <TextInput

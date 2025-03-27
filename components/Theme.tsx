@@ -6,6 +6,7 @@ export type Theme = {
       secondary: string;
       background: string;
       text: string;
+      tabColor: string;
       titles: string;
     };
     lightTemplate: {
@@ -23,7 +24,7 @@ export type Theme = {
   };
   const colorScheme = Appearance.getColorScheme();
   const TextColor = colorScheme === 'dark' ? 'white' : 'black';
-  const BackgroundColor = colorScheme === 'dark' ? 'black' : 'white';
+  const BackgroundColor = colorScheme === 'dark' ? '#171717' : 'white';
   const backgroundSecomdary = colorScheme === 'dark' ? '#bbbbbb' : '#dadada'; 
   const TabColor = '#4472C4'
   const theme: Theme = {
@@ -32,14 +33,15 @@ export type Theme = {
       secondary: backgroundSecomdary,
       background: BackgroundColor,
       text: TextColor,
-      titles: "#1626ff"
+      tabColor: TabColor,
+      titles: "#4472C4"
     },
     lightTemplate: {
       textColor: "#141414",
     },
     fonts: {
-      regular: "System",
-      bold: "System-Bold",
+      regular: "sans-serif",
+      bold: "sans-serif",
     },
     spacing: {
       small: 8,

@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, Image } from 'react-native';
+import { View, Text, StyleSheet, Button, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFonts } from 'expo-font';
 
 export default function AccountPage() {
   const nombre = "Nelson";
@@ -30,15 +31,15 @@ export default function AccountPage() {
         <Text style={styles.info}>Email: {email}</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <View style={styles.button}>
-          <Button title="Mis Reservas" onPress={handleReservas} />
-        </View>
-        <View style={styles.button}>
-          <Button title="Mis Publicaciones" onPress={handlePublicaciones} />
-        </View>
-        <View style={styles.button}>
-          <Button title="Cerrar Sesión" onPress={handleCerrarSesion} />
-        </View>
+        <TouchableOpacity style={styles.button} onPress={handleReservas}>
+          <Text style={styles.buttonText}>Mis Reservas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handlePublicaciones}>
+          <Text style={styles.buttonText}>Mis Publicaciones</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleCerrarSesion}>
+          <Text style={styles.buttonText}>Cerrar Sesión</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -50,10 +51,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.background, 
-    padding: 20,
+    
   },
   title: {
-    fontSize: 26,
+    fontSize: 48,
     fontWeight: 'bold',
     marginBottom: 20,
     color: theme.colors.titles, 
@@ -73,18 +74,27 @@ const styles = StyleSheet.create({
   },
   info: {
     fontSize: 18,
-    color: theme.lightTemplate.textColor, 
+    color: theme.colors.text, 
     marginBottom: 5,
     fontFamily: theme.fonts.regular,
   },
   buttonContainer: {
     width: '100%',
     alignItems: 'center',
+    gap: 10,
   },
   button: {
     width: '80%',
+    backgroundColor:theme.colors.tabColor,
     marginVertical: 10,
     borderRadius: 8, 
     overflow: 'hidden', 
+    justifyContent: 'center',
   },
+  buttonText: {
+    color: theme.colors.text,
+    fontSize: 24,
+    padding: 10,
+    alignSelf: 'center'
+  }
 });

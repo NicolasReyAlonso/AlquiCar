@@ -3,6 +3,7 @@ import { View, Text, Switch, TouchableOpacity, Image, ScrollView, StyleSheet, Te
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import theme from "@/components/Theme";
 
 export default function ConfirmacionReserva() {
   const router = useRouter();
@@ -84,9 +85,9 @@ export default function ConfirmacionReserva() {
         />
         <View>
           <Text style={styles.title}>{reserva.marca}</Text>
-          <Text>{reserva.tipo} - {reserva.plazas} plazas</Text>
-          <Text>{reserva.transmision}</Text>
-          <Text>Ciudad: {reserva.ciudad}</Text>
+          <Text style={styles.text}>{reserva.tipo} - {reserva.plazas} plazas</Text>
+          <Text style={styles.text}>{reserva.transmision}</Text>
+          <Text style={styles.text}>Ciudad: {reserva.ciudad}</Text>
         </View>
       </View>
 
@@ -139,18 +140,18 @@ export default function ConfirmacionReserva() {
       </View>
 
       <Text style={styles.subtitle}>Duración</Text>
-      <Text>{dias} días</Text>
+      <Text style={styles.text}>{dias} días</Text>
 
       <Text style={styles.subtitle}>Precio del seguro</Text>
-      <Text>Precio: {reserva.precioSeguroBase}€</Text>
+      <Text style={styles.text}>Precio: {reserva.precioSeguroBase}€</Text>
       <Switch value={seguro} onValueChange={setSeguro} />
-      <Text>Añadir seguro</Text>
+      <Text style={styles.text}>Añadir seguro</Text>
 
       <Text style={styles.subtitle}>Precio total</Text>
-      <Text>Precio coche: {reserva.precioPorDia}€/día × {dias} días = {precioCoche}€</Text>
-      <Text>+</Text>
-      <Text>Precio seguro: {precioSeguro}€</Text>
-      <Text>——————</Text>
+      <Text style={styles.text}>Precio coche: {reserva.precioPorDia}€/día × {dias} días = {precioCoche}€</Text>
+      <Text style={styles.text}>+</Text>
+      <Text style={styles.text}>Precio seguro: {precioSeguro}€</Text>
+      <Text style={styles.text}>——————</Text>
       <Text style={styles.total}>Total: {precioTotal}€</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => alert('Reserva confirmada')}>
@@ -165,12 +166,14 @@ export default function ConfirmacionReserva() {
 const styles = StyleSheet.create({
   container: {
     padding: 30,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
   },
   header: {
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   row: {
     flexDirection: 'row',
@@ -184,17 +187,25 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
+  },
+  text: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   subtitle: {
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 10,
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+  
   },
   dateInput: {
     fontSize: 18,
@@ -204,10 +215,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     marginRight: 10,
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   total: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   button: {
     backgroundColor: '#4472C4',
@@ -215,11 +230,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 20,
+    
   },
   buttonText: {
-    color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+    color: "white",
+    fontFamily: theme.fonts.bold,
   },
   cancelText: {
     fontSize: 20,

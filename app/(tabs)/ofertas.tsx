@@ -2,9 +2,13 @@ import React from "react";
 import { View, ScrollView } from "react-native";
 import VehicleCard from "@/components/templates/VehicleCard";
 import theme from "@/components/Theme";
+import { useRouter } from "expo-router";
 
 
 const ofertas = () => {
+
+  const router = useRouter();
+
   // Datos para las tarjetas con URLs reales de Google
   const vehicleData = [
     {
@@ -69,7 +73,7 @@ const ofertas = () => {
           mileage={vehicle.mileage}
           pickupLocation={vehicle.pickupLocation}
           price={vehicle.price}
-          onReserve={() => alert(`Reserva realizada para ${vehicle.brand}`)}
+          onReserve={() => router.push({ pathname: "/reservarCoche" , params: vehicle })}
         />
       ))}
     </ScrollView>

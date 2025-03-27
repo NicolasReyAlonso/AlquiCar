@@ -24,7 +24,7 @@ export type Theme = {
   };
   const colorScheme = Appearance.getColorScheme();
   const TextColor = colorScheme === 'dark' ? 'white' : 'black';
-  const BackgroundColor = colorScheme === 'dark' ? '#171717' : 'white';
+  const BackgroundColor = colorScheme === 'dark' ? '#1f1f1f' : 'white';
   const backgroundSecomdary = colorScheme === 'dark' ? '#bbbbbb' : '#dadada'; 
   const TabColor = '#4472C4'
   const theme: Theme = {
@@ -40,7 +40,7 @@ export type Theme = {
       textColor: "#141414",
     },
     fonts: {
-      regular: "sans-serif",
+      regular: "sans-serif'",
       bold: "sans-serif",
     },
     spacing: {

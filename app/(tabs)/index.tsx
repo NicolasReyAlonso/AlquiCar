@@ -156,8 +156,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   textContainer: {
+    display:'flex',
     marginTop: width < 500 ? 100 : 200, 
-    flexDirection: width < 500 ? 'column' : 'row', 
+    flexDirection: width < 1000 ? 'column' : 'row', 
     alignItems: width < 500 ? 'center' : 'flex-start',
     paddingHorizontal: width < 500 ? 15 : 40, 
     justifyContent: 'space-between',
@@ -168,8 +169,10 @@ const styles = StyleSheet.create({
     fontSize: width < 500 ? 30 : 70, 
     fontWeight: 'bold',
     flex: 1,
-    marginRight: 20,
+    alignSelf: 'center',
+    justifyContent: 'center',
     fontFamily: theme.fonts.bold,
+    flexWrap: 'wrap'
   },
   grayBox: {
     backgroundColor: theme.colors.secondary,
@@ -177,15 +180,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: width < 500 ? 300 : 400, 
     height: width < 500 ? 257 : 300, 
-    marginLeft: width < 500 ? 0 : -100, 
-    marginTop: width < 500 ? 0 : -70,
+    
   },
   input: {
     backgroundColor: 'white',
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
-    flex: 1,
+    display:'flex',
     fontFamily: theme.fonts.regular,
     color: theme.lightTemplate.textColor
   },
@@ -212,7 +214,6 @@ const styles = StyleSheet.create({
     width: width < 500 ? '20%' : 80, 
     backgroundColor: 'white',
     padding: 10,
-    marginLeft: 10,
     borderRadius: 5,
   },
   searchButton: {
@@ -240,7 +241,6 @@ const styles = StyleSheet.create({
     padding: width < 500 ? 10 : 20, 
     borderRadius: 10,
     flex: 1,
-    marginRight: width < 500 ? 0 : 10,
   },
   buttonText: {
     color: 'white',

@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     color: theme.colors.text,
     fontFamily: theme.fonts.regular,
+    flex: 1;
   },
   total: {
     fontSize: 24,

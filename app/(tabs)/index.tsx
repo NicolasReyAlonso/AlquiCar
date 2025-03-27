@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     padding: width < 500 ? 20 : 30, 
     borderRadius: 10,
     width: width < 500 ? 300 : 400, 
-    height: width < 500 ? 250 : 300, 
+    height: width < 500 ? 257 : 300, 
     marginLeft: width < 500 ? 0 : -100, 
     marginTop: width < 500 ? 0 : -70,
   },

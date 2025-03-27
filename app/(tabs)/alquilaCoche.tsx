@@ -28,6 +28,10 @@ export default function AlquilarCoche() {
     alert('Debe ser un año válido');
     return;
     }
+    if (city.length < 3) {
+      alert('La ciudad debe tener al menos 3 caracteres');
+      return;
+    }
     const numericPrice = Number(price);
     if (isNaN(numericPrice) || numericPrice <= 0) {
     alert('El precio debe ser un número válido mayor que 0');

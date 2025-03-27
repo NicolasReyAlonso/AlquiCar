@@ -2,31 +2,55 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, Dimensions, ScrollView } from 'react-native';
 import theme from "@/components/Theme";
 
-const{ width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
   const [birthYear, setBirthYear] = useState('');
-  const [province, setProvince] = useState('');
+  const [city, setCity] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const isValidEmail = (email: string) => {
+    return /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/.test(email);
+  };
+
+  const isValidPassword = (password: string) => {
+    return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
+  };
+
   const handleRegister = () => {
-    if (!name || !birthYear || !province || !email || !password || !confirmPassword) {
+    if (!name || !birthYear || !city || !email || !password || !confirmPassword) {
       alert('Faltan campos por rellenar');
+      return;
+    }
+    if (name.length < 3) {
+      alert('El nombre debe tener al menos 3 caracteres');
+      return;
+    }
+    const numericBirthYear = Number(birthYear);
+    if (isNaN(numericBirthYear) || numericBirthYear < 1925 || numericBirthYear >= 2007) {
+      alert('Debe ser un año válido');
+      return;
+    }
+    if (city.length < 3) {
+      alert('La ciudad debe tener al menos 3 caracteres');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      alert('Ingrese un email válido');
+      return;
+    }
+    if (!isValidPassword(password)) {
+      alert('La contraseña debe tener al menos 8 caracteres y contener al menos un número');
       return;
     }
     if (password !== confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
-    const numericBirthYear = Number(birthYear);
-    if (isNaN(numericBirthYear) || numericBirthYear < 1925 || numericBirthYear >= 2007) {
-    alert('Debe ser un año válido');
-    return;
-    }
-    console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Provincia: ${province}, Email: ${email}, Contraseña: ${password}`);
+    console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Ciudad: ${city}, Email: ${email}, Contraseña: ${password}`);
   };
 
   return (
@@ -35,7 +59,7 @@ export default function RegisterScreen() {
         <Text style={styles.headerText}>Crear cuenta</Text>
         <TextInput style={styles.input} placeholder="Nombre" value={name} onChangeText={setName} />
         <TextInput style={styles.input} placeholder="Año de nacimiento" value={birthYear} onChangeText={setBirthYear} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder="Provincia" value={province} onChangeText={setProvince} />
+        <TextInput style={styles.input} placeholder="Ciudad" value={city} onChangeText={setCity} />
         <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
         <TextInput style={styles.input} placeholder="Contraseña" value={password} onChangeText={setPassword} secureTextEntry />
         <TextInput style={styles.input} placeholder="Repetir contraseña" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
@@ -57,10 +81,10 @@ const styles = StyleSheet.create({
   },
   container: {
     width: width < 500 ? 300 : 600,
-    backgroundColor: theme.colors.secondary, 
-    padding: 20, 
-    borderRadius: 10, 
-    borderWidth: 2, 
+    backgroundColor: theme.colors.secondary,
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 2,
     borderColor: '#4472C4',
   },
   headerText: {

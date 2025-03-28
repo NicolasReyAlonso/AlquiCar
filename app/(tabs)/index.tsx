@@ -200,10 +200,12 @@ const styles = StyleSheet.create({
     color: theme.lightTemplate.textColor
   },
   inputFlex: {
+    display: 'flex',
     flex: 1,
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
+    
     fontFamily: theme.fonts.regular,
     color: theme.lightTemplate.textColor
   },
@@ -212,16 +214,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 5,
-    marginBottom: 10,
     paddingHorizontal: 5,
     flex: 1,
     fontFamily: theme.fonts.regular,
     color: theme.lightTemplate.textColor
   },
   smallInput: {
+    display: 'flex',
     width: width < 500 ? '20%' : 80, 
     backgroundColor: 'white',
     padding: 10,
+    margin: 10,
+    marginBottom: 10,
     borderRadius: 5,
   },
   searchButton: {

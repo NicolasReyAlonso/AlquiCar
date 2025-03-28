@@ -73,7 +73,9 @@ export default function ConfirmacionReserva() {
   const precioSeguro = seguro ? reserva.precioSeguroBase : 0;
   const precioTotal = precioCoche + precioSeguro;
   const fechaCancelacionMax = calcularFechaCancelacion();
-
+  if (pickupDate){
+    console.log(pickupDate.toISOString()); //FechaISO   
+  }
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Resumen de la reserva</Text>

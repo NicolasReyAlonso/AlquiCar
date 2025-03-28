@@ -37,6 +37,14 @@ const index = () => {
     closeReturnDatePicker();
   };
 
+  const handleBuscar = () => {
+    if (!pickupDate || !returnDate){
+      alert('Faltan campos por rellenar');
+      return;
+    }
+    console.log(`Fecha de recogida: ${pickupDate.toISOString()}, Fecha de devolución: ${returnDate.toISOString()}`); //FechasISO
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -112,7 +120,7 @@ const index = () => {
                   style={styles.smallInput}
                 />
               </View>
-              <TouchableOpacity style={styles.searchButton}>
+              <TouchableOpacity style={styles.searchButton} onPress={handleBuscar}>
                 <Text style={styles.searchButtonText}>Buscar</Text>
               </TouchableOpacity>
             </View>

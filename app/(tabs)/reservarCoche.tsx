@@ -73,8 +73,13 @@ export default function ConfirmacionReserva() {
   const precioSeguro = seguro ? reserva.precioSeguroBase : 0;
   const precioTotal = precioCoche + precioSeguro;
   const fechaCancelacionMax = calcularFechaCancelacion();
-  if (pickupDate){
-    console.log(pickupDate.toISOString()); //FechaISO   
+
+  const handlePublicar = () => {
+    if (!pickupDate || !returnDate){
+      alert('Faltan campos por rellenar');
+      return;
+    }
+    console.log(`Fecha de recogida: ${pickupDate.toISOString()}, Fecha de devolución: ${returnDate.toISOString()}`); //FechasISO
   }
   return (
     <ScrollView style={styles.container}>
@@ -157,7 +162,7 @@ export default function ConfirmacionReserva() {
       <Text style={styles.text}>——————</Text>
       <Text style={styles.total}>Total: {precioTotal}€</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => alert('Reserva confirmada')}>
+      <TouchableOpacity style={styles.button} onPress={handlePublicar}>
         <Text style={styles.buttonText}>Confirmar Reserva</Text>
       </TouchableOpacity>
 

@@ -144,9 +144,10 @@ export default function ConfirmacionReserva() {
 
       <Text style={styles.subtitle}>Precio del seguro</Text>
       <Text style={styles.text}>Precio: {reserva.precioSeguroBase}€</Text>
-      <Switch value={seguro} onValueChange={setSeguro} />
-      <Text style={styles.text}>Añadir seguro</Text>
-
+      <View style={styles.seguro}>
+        <Text style={styles.text}>Añadir seguro</Text>
+        <Switch value={seguro} onValueChange={setSeguro} />
+      </View>
       <Text style={styles.subtitle}>Precio total</Text>
       <Text style={styles.text}>Precio coche: {reserva.precioPorDia}€/día × {dias} días = {precioCoche}€</Text>
       <Text style={styles.text}>+</Text>
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.regular,
   },
   subtitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     marginTop: 10,
     color: theme.colors.text,
@@ -244,6 +245,11 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginTop: 10,
     textAlign: 'center',
+    marginBottom:30,
+  },
+  seguro: {
+    flexDirection: 'row',
+    alignItems:'center',
   },
 });
 

@@ -23,7 +23,7 @@ const ofertas = () => {
     {
       brand: "Honda Civic",
       seats: 5,
-      imageUrl: "https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg",
+      imageUrl: "https://a.ccdn.es/cnet/contents/media/honda/civic/1159931.jpg",
       type: "Sedán",
       mileage: "30,000 km",
       pickupLocation: "Barcelona, España",
@@ -33,7 +33,7 @@ const ofertas = () => {
       brand: "Ford Focus",
       seats: 5,
       type: "Compacto",
-      imageUrl: "https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg",
+      imageUrl: "https://images.prismic.io/carwow/1e66c2e9-e6b7-4d21-be92-79e80403feaf_LHD+Ford+Focus+2022+Exterior-1.jpg?auto=format&cs=tinysrgb&fit=crop&q=60&w=750.jpg",
       mileage: "40,000 km",
       pickupLocation: "Valencia, España",
       price: "€35/día",
@@ -42,8 +42,7 @@ const ofertas = () => {
       brand: "BMW Serie 3",
       seats: 5,
       type: "Premium",
-      imageUrl: "https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg",
-
+      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9KXga-3enJCVZRftu89iBe1LIyl0GYHvHMQ&s.jpg",
       mileage: "20,000 km",
       pickupLocation: "Sevilla, España",
       price: "€80/día",
@@ -52,7 +51,7 @@ const ofertas = () => {
       brand: "Audi A3",
       seats: 5,
       type: "Premium",
-      imageUrl: "https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg",
+      imageUrl: "https://espirituracer.com/archivos/2020/12/audi-a3-sportback-45-tfsi-e-2021-1.jpg",
 
       mileage: "25,000 km",
       pickupLocation: "Bilbao, España",

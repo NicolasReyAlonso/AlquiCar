@@ -1,0 +1,121 @@
+###
+GET http://localhost:3000/users
+
+###
+GET http://localhost:3000/vehicles/
+
+###
+GET http://localhost:3000/vehicles/6
+
+###
+POST http://localhost:3000/vehicles/
+Content-Type: application/json
+
+{
+  "owner_id": "345e4567-e89b-12d3-a456-426614174222",
+  "brand": "TOYOTA",
+  "model": "YARIS",
+  "year": 1991,
+  "type": "Sports",
+  "transmission": "Manual",
+  "fuel_type": "Diesel",
+  "capacity": 5,
+  "num_doors": 4,
+  "daily_price": 30
+}
+
+
+
+###
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "id" : "1f1e081f-0c90-41c5-98d5-c1b4801a1a55",  
+  "name": "Pepe",
+  "email": "pepito@gmail.com",
+  "password": "12345678",
+  "phone": "666666666",
+  "role": "user",
+  "address":"MICASA2",
+  "dni": "02342322B"
+}
+
+###
+PATCH http://localhost:3000/users/234e4567-e89b-12d3-a456-426614174111
+Content-Type: application/json
+
+{
+  "name": "Nicolasio",
+  "dni": "04325549B",
+  "role": "user"
+}
+
+###
+DELETE http://localhost:3000/users/123e4567-e89b-12d3-a456-426614174000
+
+
+###
+GET http://localhost:3000/reservations
+
+###
+GET http://localhost:3000/reservations/2
+
+###
+GET http://localhost:3000/reservations/3
+
+### 
+POST http://localhost:3000/reservations
+Content-Type: application/json
+
+{
+  "vehicle_id":2,
+  "customer_id":"234e4567-e89b-12d3-a456-426614174111",
+  "start_date":"2023-05-15T09:00:00Z",
+  "end_date":"2023-05-18T09:00:00Z",
+  "total_price":50.00
+}
+
+###
+POST http://localhost:3000/reservations
+Content-Type: application/json
+
+{
+  "vehicle_id":2,
+  "customer_id":"234e4567-e89b-12d3-a456-426614174111",
+  "start_date":"2023-05-15T09:00:00Z",
+  "end_date":"2023-05-17T09:00:00Z",
+  "total_price":50.00
+
+}
+
+###
+PATCH http://localhost:3000/reservations/5
+Content-Type: application/json
+
+{
+  "status": "cancelled",
+  "total_price": 60.50
+}
+
+###
+PATCH http://localhost:3000/reservations/4
+Content-Type: application/json
+
+{
+  "id" : 4,
+  "status": "cancelled",
+  "total_price": 60.50
+}
+
+###
+GET http://localhost:3000/reservations/4
+
+###
+DELETE http://localhost:3000/reservations/5
+
+###
+GET http://localhost:3000/reservations/vehicle/2
+
+###
+GET http://localhost:3000/reservations/customer/234e4567-e89b-12d3-a456-426614174111

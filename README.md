@@ -1,6 +1,11 @@
 # AlquiCar
 Aplicación react native de alquiler de coches
 
+## Para construir y arrancar:
+```bash
+npx expo start
+```
+- Si se desea probar la aplicación en dispositivos móviles se hará a traves de la aplicación de la APP STORE o PLAY STORE [Expo Go](https://expo.dev/go)
 ## Dependencias:
 - Para correr y construir este proyecto es necesario el framework expo y node.js
 ```bash 

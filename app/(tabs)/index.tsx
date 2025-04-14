@@ -5,12 +5,16 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router'; 
 import theme from "@/components/Theme";
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 
 const { width, height } = Dimensions.get('window');
 
 const index = () => {
   const router = useRouter(); // para q vaya a otra página
+
+  const { t } = useTranslation();
 
   const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
   const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
@@ -57,19 +61,19 @@ const index = () => {
           />
 
           <View style={styles.textContainer}>
-            <Text style={styles.titleText}>Inicia tu aventura</Text>
+            <Text style={styles.titleText}>{t('Index.welcome')}</Text>
             
             {/* Cuadro gris */}
             <View style={styles.grayBox}>
               <TextInput
-                placeholder="Origen"
+                placeholder={t('Index.card.origin')}
                 placeholderTextColor="gray"
                 style={styles.input}
               />
               <View style={styles.buttonGroup}>
                 <View style={styles.inputWithIcon}>
                   <TextInput
-                    placeholder="Fecha de recogida"
+                    placeholder={t('Index.card.startDate')}
                     placeholderTextColor="gray"
                     style={styles.inputFlex}
                     value={pickupDate ? pickupDate.toLocaleDateString() : ''}
@@ -78,7 +82,7 @@ const index = () => {
                     <Icon name="calendar" size={24} color="gray" />
                   </TouchableOpacity>
                   <DatePickerModal
-                    locale="es"
+                    locale={i18n.language}
                     mode="single"
                     visible={pickupDatePickerVisible}
                     onDismiss={closePickupDatePicker}
@@ -88,7 +92,7 @@ const index = () => {
                   />
                 </View>
                 <TextInput
-                  placeholder="Hora"
+                  placeholder={t('Index.card.hour')}
                   placeholderTextColor="gray"
                   style={styles.smallInput}
                 />
@@ -96,7 +100,7 @@ const index = () => {
               <View style={styles.buttonGroup}>
                 <View style={styles.inputWithIcon}>
                   <TextInput
-                    placeholder="Fecha de devolución"
+                    placeholder={t('Index.card.finishDate')}
                     placeholderTextColor="gray"
                     style={styles.inputFlex}
                     value={returnDate ? returnDate.toLocaleDateString() : ''}
@@ -105,7 +109,7 @@ const index = () => {
                     <Icon name="calendar" size={24} color="gray" />
                   </TouchableOpacity>
                   <DatePickerModal
-                    locale="es"
+                    locale={i18n.language}
                     mode="single"
                     visible={returnDatePickerVisible}
                     onDismiss={closeReturnDatePicker}
@@ -115,13 +119,13 @@ const index = () => {
                   />
                 </View>
                 <TextInput
-                  placeholder="Hora"
+                  placeholder={t('Index.card.hour')}
                   placeholderTextColor="gray"
                   style={styles.smallInput}
                 />
               </View>
               <TouchableOpacity style={styles.searchButton} onPress={handleBuscar}>
-                <Text style={styles.searchButtonText}>Buscar</Text>
+                <Text style={styles.searchButtonText}>{t('Index.buttons.search')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -130,14 +134,14 @@ const index = () => {
             <TouchableOpacity 
               style={styles.button}
               onPress={() => router.push('/(tabs)/alquilaCoche')}
-              >
-              <Text style={styles.buttonText}>Poner en alquiler tu coche</Text>
+            >
+              <Text style={styles.buttonText}>{t('Index.buttons.rent')}</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              style={styles.button} 
-              onPress={() => router.push('/(tabs)/ofertas')} // Navegación al presionar el botón
+              style={styles.button}
+              onPress={() => router.push('/(tabs)/ofertas')}
             >
-              <Text style={styles.buttonText}>Ofertas cerca de ti</Text>
+              <Text style={styles.buttonText}>{t('Index.buttons.offers')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -147,7 +151,6 @@ const index = () => {
 };
 
 const styles = StyleSheet.create({
-  // Todos los estilos permanecen igual
   safeArea: { flex: 1 },
   scrollViewContent: { flexGrow: 1 },
   viewContainer: { flex: 1 },
@@ -187,7 +190,7 @@ const styles = StyleSheet.create({
     padding: width < 500 ? 20 : 30, 
     borderRadius: 10,
     width: width < 500 ? 300 : 400, 
-    height: width < 500 ? 257 : 300, 
+    height: 300, 
     
   },
   input: {

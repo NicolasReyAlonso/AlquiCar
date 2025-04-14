@@ -4,6 +4,8 @@ import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import theme from "@/components/Theme";
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 const carModels = {
   Seat: ['Ibiza', 'León', 'Ateca'],
@@ -17,6 +19,8 @@ export default function AlquilarCoche() {
   const [year, setYear] = useState('');
   const [city, setCity] = useState('');
   const [price, setPrice] = useState('');
+
+  const { t } = useTranslation();
 
   const handleSubmit = () => {
     if (!brand || !model || !year || !city || !price) {
@@ -43,8 +47,8 @@ export default function AlquilarCoche() {
   return (
     <ScrollView contentContainerStyle={styles.formContainer}>
       <ThemedView style={styles.form}>
-        <ThemedText style={styles.title} type="title">Publicar tu coche</ThemedText>
-        <Text>Marca del coche</Text>
+        <ThemedText style={styles.title} type="title">{t('RentYourVehicle.title')}</ThemedText>
+        <Text>{t('RentYourVehicle.card.brand')}</Text>
         <Picker
           selectedValue={brand}
           onValueChange={(itemValue) => {
@@ -57,20 +61,20 @@ export default function AlquilarCoche() {
             <Picker.Item key={brand} label={brand} value={brand} />
           ))}
         </Picker>
-        <Text>Modelo del coche</Text>
+        <Text>{t('RentYourVehicle.card.model')}</Text>
         <Picker selectedValue={model} onValueChange={setModel} style={styles.input}>
           {carModels[brand].map((model) => (
             <Picker.Item key={model} label={model} value={model} />
           ))}
         </Picker>
-        <TextInput style={styles.input} placeholder="Año del coche" value={year} onChangeText={setYear} />
-        <TextInput style={styles.input} placeholder="Tu ciudad" value={city} onChangeText={setCity} />
-        <TextInput style={styles.input} placeholder="Precio por día" value={price} onChangeText={setPrice} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} />
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.city')} value={city} onChangeText={setCity} />
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.price')} value={price} onChangeText={setPrice} keyboardType="numeric" />
         <TouchableOpacity style={styles.buttonAd}>
-          <Text style={styles.buttonTextAd}>Adjuntar imagen</Text>
+          <Text style={styles.buttonTextAd}>{t('RentYourVehicle.buttons.image')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonPub} onPress={handleSubmit}>
-          <Text style={styles.buttonTextPub}>Publicar</Text>
+          <Text style={styles.buttonTextPub}>{t('RentYourVehicle.buttons.publish')}</Text>
         </TouchableOpacity>
       </ThemedView>
     </ScrollView>

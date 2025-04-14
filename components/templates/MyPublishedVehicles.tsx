@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import theme from "@/components/Theme";
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 interface MyPublishedVehiclesProps {
   brand: string;
@@ -20,6 +22,7 @@ const PublishedVehicles: React.FC<MyPublishedVehiclesProps> = ({
   const { width } = useWindowDimensions(); 
   const isDesktop = width > 576;
   const styles = getStyles(width, isDesktop); 
+  const { t } = useTranslation();
 
   return (
     <View style={isDesktop ? styles.containerDesktop : styles.containerMobile}>
@@ -28,11 +31,11 @@ const PublishedVehicles: React.FC<MyPublishedVehiclesProps> = ({
         <View style={isDesktop ? styles.detailsContainerDesktop : styles.detailsContainerMobile}>
           <View style={isDesktop ? styles.rowDesktop : styles.rowMobile}>
             <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand}</Text>
-            <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}</Text>
+            <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t('MyPublishedVehicles.day')}</Text>
           </View>
-          <Text style={isDesktop ? styles.cityDesktop : styles.cityMobile}>Ciudad: {city}</Text>
+          <Text style={isDesktop ? styles.cityDesktop : styles.cityMobile}>{t('MyPublishedVehicles.city')}: {city}</Text>
           <TouchableOpacity style={isDesktop ? styles.buttonDesktop : styles.buttonMobile} onPress={onCancel}>
-            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>Quitar vehículo</Text>
+            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>{t('MyPublishedVehicles.buttons.remove')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -159,7 +162,7 @@ const getStyles = (width: number, isDesktop: boolean) =>
     buttonTextDesktop: {
       color: "white",
       fontWeight: "bold",
-      fontSize: width * 0.015,
+      fontSize: width * 0.014,
       fontFamily: theme.fonts.bold,
     },
     buttonTextMobile: {

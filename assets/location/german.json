@@ -1,0 +1,123 @@
+{
+  "Index": {
+    "welcome": "Beginne dein Abenteuer",
+    "buttons": {
+      "search": "Suchen",
+      "rent": "Auto zur Vermietung anbieten",
+      "offers": "Angebote in deiner Nähe"
+    },
+    "card": {
+      "origin": "Herkunft",
+      "startDate": "Abholdatum",
+      "finishDate": "Rückgabedatum",
+      "hour": "Uhrzeit"
+    }
+  },
+
+  "Account": {
+    "title": "Kontodetails",
+    "name": "Name",
+    "buttons": {
+      "reservations": "Meine Reservierungen",
+      "publications": "Meine Inserate",
+      "logout": "Abmelden"
+    }
+  },
+
+  "Login": {
+    "title": "Anmelden",
+    "password": "Passwort",
+    "buttons": {
+      "login": "ANMELDEN",
+      "register": "REGISTRIEREN"
+    }
+  },
+
+  "Register": {
+    "title": "Konto Erstellen",
+    "password": "Passwort",
+    "buttons": {
+      "register": "Registrieren"
+    },
+    "card": {
+      "name": "Name",
+      "birthday": "Geburtsjahr",
+      "city": "Stadt",
+      "password": "Passwort",
+      "repeatPassword": "Passwort wiederholen"
+    }
+  },
+
+  "RentYourVehicle": {
+    "title": "Auto veröffentlichen",
+    "card": {
+      "brand": "Automarke",
+      "model": "Automodell",
+      "year": "Baujahr",
+      "city": "Deine Stadt",
+      "price": "Preis pro Tag"
+    },
+    "buttons": {
+      "image": "Bild anhängen",
+      "publish": "Veröffentlichen"
+    }
+  },
+
+  "MyReservationCard": {
+    "day": "Tag",
+    "date": "Datum",
+    "buttons": {
+      "cancel": "Reservierung stornieren"
+    }
+  },
+
+  "MyPublishedVehicles": {
+    "day": "Tag",
+    "city": "Stadt",
+    "buttons": {
+      "remove": "Fahrzeug entfernen"
+    }
+  },
+
+  "VehicleCard": {
+    "places": "Sitzplätze",
+    "mileage": "Kilometerstand",
+    "location": "Abholort",
+    "day": "Tag",
+    "buttons": {
+      "reservation": "Reservieren"
+    }
+  },
+
+  "reserveVehicle": {
+    "title": "Reservierungsübersicht",
+    "places": "Sitze",
+    "city": "Stadt",
+    "startDate": "Abholdatum",
+    "finishDate": "Rückgabedatum",
+    "duration": "Dauer",
+    "day": "tag",
+    "days": "tags",
+    "insurancePrice": "Versicherungspreis",
+    "price": "Preis",
+    "addInsurance": "Versicherung hinzufügen",
+    "totalPrice": "Gesamtpreis",
+    "vehiclePrice": "Fahrzeugpreis",
+    "total": "gesamt",
+    "buttons": {
+      "confirmation": "Reservierung bestätigen"
+    },
+    "cancelDate": "Letztes Stornierungsdatum:"
+  },
+
+  "layout": {
+    "search": "Suchen...",
+    "Menu": "MENÜ",
+    "menuButtons": {
+      "close": "✖ Schließen",
+      "home": "Startseite",
+      "reservations": "Meine Reservierungen",
+      "publications": "Meine Inserate"
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import theme from "@/components/Theme";
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 interface VehicleCardProps {
   brand: string;
@@ -26,22 +28,23 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
   const { width } = useWindowDimensions(); 
   const isDesktop = width > 576;
   const styles = getStyles(width); 
+  const { t } = useTranslation();
 
   return (
     <View style={isDesktop ? styles.cardDesktop : styles.cardMobile}>
       <View style={styles.infoContainer}>
         <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand}</Text>
         <View style={styles.spacing} />
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{seats} Plazas {type}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Kilometraje: {mileage}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{seats} {t('VehicleCard.places')} {type}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{t('VehicleCard.mileage')}: {mileage}</Text>
         <View style={styles.spacing} />
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Lugar de recogida: {pickupLocation}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{t('VehicleCard.location')}: {pickupLocation}</Text>
       </View>
       <View style={styles.rightContainer}>
         <Image source={{ uri: imageUrl }} style={isDesktop ? styles.imageDesktop : styles.imageMobile} />
-        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}</Text>
+        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t('VehicleCard.day')}</Text>
         <TouchableOpacity style={styles.button} onPress={onReserve}>
-          <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>Reservar</Text>
+          <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>{t('VehicleCard.buttons.reservation')}</Text>
         </TouchableOpacity>
       </View>
     </View>

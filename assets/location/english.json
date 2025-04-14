@@ -1,0 +1,123 @@
+{
+  "Index": {
+    "welcome": "Start your adventure",
+    "buttons": {
+      "search": "Search",
+      "rent": "List your car for rent",
+      "offers": "Offers near you"
+    },
+    "card": {
+      "origin": "Origin",
+      "startDate": "Pick-up date",
+      "finishDate": "Return date",
+      "hour": "Hour"
+    }
+  },
+
+  "Account": {
+    "title": "Account Details",
+    "name": "Name",
+    "buttons": {
+      "reservations": "My Reservations",
+      "publications": "My Listings",
+      "logout": "Log Out"
+    }
+  },
+
+  "Login": {
+    "title": "Log In",
+    "password": "Password",
+    "buttons": {
+      "login": "LOG IN",
+      "register": "REGISTER"
+    }
+  },
+
+  "Register": {
+    "title": "Create Account",
+    "password": "Password",
+    "buttons": {
+      "register": "Register"
+    },
+    "card": {
+      "name": "Name",
+      "birthday": "Year of birth",
+      "city": "City",
+      "password": "Password",
+      "repeatPassword": "Repeat Password"
+    }
+  },
+
+  "RentYourVehicle": {
+    "title": "List Your Car",
+    "card": {
+      "brand": "Car brand",
+      "model": "Car model",
+      "year": "Car year",
+      "city": "Your city",
+      "price": "Price per day"
+    },
+    "buttons": {
+      "image": "Attach image",
+      "publish": "Publish"
+    }
+  },
+
+  "MyReservationCard": {
+    "day": "day",
+    "date": "Date",
+    "buttons": {
+      "cancel": "Cancel Reservation"
+    }
+  },
+
+  "MyPublishedVehicles": {
+    "day": "day",
+    "city": "City",
+    "buttons": {
+      "remove": "Remove Vehicle"
+    }
+  },
+
+  "VehicleCard": {
+    "places": "Seats",
+    "mileage": "Mileage",
+    "location": "Pick-up location",
+    "day": "day",
+    "buttons": {
+      "reservation": "Reserve"
+    }
+  },
+
+  "reserveVehicle": {
+    "title": "Reservation Summary",
+    "places": "seats",
+    "city": "city",
+    "startDate": "Pick-up date",
+    "finishDate": "Return date",
+    "duration": "Duration",
+    "day": "day",
+    "days": "days",
+    "insurancePrice": "Insurance price",
+    "price": "price",
+    "addInsurance": "Add insurance",
+    "totalPrice": "Total price",
+    "vehiclePrice": "Car price",
+    "total": "total",
+    "buttons": {
+      "confirmation": "Confirm Reservation"
+    },
+    "cancelDate": "Maximum cancellation date:"
+  },
+
+  "layout": {
+    "search": "Search...",
+    "Menu": "MENU",
+    "menuButtons": {
+      "close": "✖ Close",
+      "home": "Home Page",
+      "reservations": "My Reservations",
+      "publications": "My Listings"
+    }
+  }
+}

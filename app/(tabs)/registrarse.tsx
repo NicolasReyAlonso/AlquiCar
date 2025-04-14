@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, Dimensions, ScrollView } from 'react-native';
 import theme from "@/components/Theme";
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 const { width } = Dimensions.get('window');
 
@@ -11,6 +13,8 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const { t } = useTranslation();
 
   const isValidEmail = (email: string) => {
     return /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/.test(email);
@@ -56,15 +60,15 @@ export default function RegisterScreen() {
   return (
     <ScrollView contentContainerStyle={styles.outerContainer}>
       <View style={styles.container}>
-        <Text style={styles.headerText}>Crear cuenta</Text>
-        <TextInput style={styles.input} placeholder="Nombre" value={name} onChangeText={setName} />
-        <TextInput style={styles.input} placeholder="Año de nacimiento" value={birthYear} onChangeText={setBirthYear} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder="Ciudad" value={city} onChangeText={setCity} />
+        <Text style={styles.headerText}>{t('Register.title')}</Text>
+        <TextInput style={styles.input} placeholder={t('Register.card.name')} value={name} onChangeText={setName} />
+        <TextInput style={styles.input} placeholder={t('Register.card.birthday')} value={birthYear} onChangeText={setBirthYear} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder={t('Register.card.name')} value={city} onChangeText={setCity} />
         <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
-        <TextInput style={styles.input} placeholder="Contraseña" value={password} onChangeText={setPassword} secureTextEntry />
-        <TextInput style={styles.input} placeholder="Repetir contraseña" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+        <TextInput style={styles.input} placeholder={t('Register.card.password')} value={password} onChangeText={setPassword} secureTextEntry />
+        <TextInput style={styles.input} placeholder={t('Register.card.repeatPassword')} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Registrarse</Text>
+          <Text style={styles.buttonText}>{t('Register.buttons.register')}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

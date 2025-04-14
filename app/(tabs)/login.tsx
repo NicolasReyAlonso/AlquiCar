@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
 import AsyncStorage from '@react-native-async-storage/async-storage';  // Importa AsyncStorage
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 const { width } = Dimensions.get('window'); 
 
@@ -14,6 +16,8 @@ type RootStackParamList = {
 
 export default function LoginScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,7 +45,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
-        <Text style={styles.title}>Iniciar Sesión</Text>
+        <Text style={styles.title}>{t('Login.title')}</Text>
 
         {/* Campo de Email */}
         <TextInput
@@ -55,7 +59,7 @@ export default function LoginScreen() {
         {/* Campo de Contraseña */}
         <TextInput
           style={styles.input}
-          placeholder="Contraseña"
+          placeholder={t('Login.password')}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -63,9 +67,9 @@ export default function LoginScreen() {
 
         {/* Botones */}
         <View style={styles.buttonContainer}>
-          <Button title="Iniciar Sesión" onPress={handleLogin} />
+          <Button title={t('Login.buttons.login')} onPress={handleLogin} />
           <Text style={styles.separator}>o</Text>
-          <Button title="Registrarse" onPress={handleRegister} />
+          <Button title={t('Login.buttons.register')} onPress={handleRegister} />
         </View>
       </View>
     </View>

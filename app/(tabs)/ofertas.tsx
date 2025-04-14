@@ -18,7 +18,7 @@ const ofertas = () => {
       type: "Turismo",
       mileage: "50,000 km",
       pickupLocation: "Madrid, España",
-      price: "€40/día",
+      price: "€40",
     },
     {
       brand: "Honda Civic",
@@ -27,7 +27,7 @@ const ofertas = () => {
       type: "Sedán",
       mileage: "30,000 km",
       pickupLocation: "Barcelona, España",
-      price: "€45/día",
+      price: "€45",
     },
     {
       brand: "Ford Focus",
@@ -36,7 +36,7 @@ const ofertas = () => {
       imageUrl: "https://images.prismic.io/carwow/1e66c2e9-e6b7-4d21-be92-79e80403feaf_LHD+Ford+Focus+2022+Exterior-1.jpg?auto=format&cs=tinysrgb&fit=crop&q=60&w=750.jpg",
       mileage: "40,000 km",
       pickupLocation: "Valencia, España",
-      price: "€35/día",
+      price: "€35",
     },
     {
       brand: "BMW Serie 3",
@@ -45,7 +45,7 @@ const ofertas = () => {
       imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9KXga-3enJCVZRftu89iBe1LIyl0GYHvHMQ&s.jpg",
       mileage: "20,000 km",
       pickupLocation: "Sevilla, España",
-      price: "€80/día",
+      price: "€80",
     },
     {
       brand: "Audi A3",
@@ -55,7 +55,7 @@ const ofertas = () => {
 
       mileage: "25,000 km",
       pickupLocation: "Bilbao, España",
-      price: "€75/día",
+      price: "€75",
     },
   ];
 

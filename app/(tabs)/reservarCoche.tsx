@@ -4,10 +4,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from "@/components/Theme";
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 export default function ConfirmacionReserva() {
   const router = useRouter();
   const params = useLocalSearchParams();
+
+  const { t } = useTranslation();
 
   const [seguro, setSeguro] = useState(false);
   const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
@@ -83,7 +87,7 @@ export default function ConfirmacionReserva() {
   }
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Resumen de la reserva</Text>
+      <Text style={styles.header}>{t('reserveVehicle.title')}</Text>
 
       <View style={styles.row}>
         <Image
@@ -94,15 +98,15 @@ export default function ConfirmacionReserva() {
           <Text style={styles.title}>{reserva.marca}</Text>
           <Text style={styles.text}>{reserva.tipo} - {reserva.plazas} plazas</Text>
           <Text style={styles.text}>{reserva.transmision}</Text>
-          <Text style={styles.text}>Ciudad: {reserva.ciudad}</Text>
+          <Text style={styles.text}>{t('reserveVehicle.city')}: {reserva.ciudad}</Text>
         </View>
       </View>
 
       {/* Fecha de recogida */}
       <View style={styles.dateRow}>
-        <Text style={styles.subtitle}>Fecha de recogida</Text>
+        <Text style={styles.subtitle}>{t('reserveVehicle.startDate')}</Text>
         <TextInput
-          placeholder="Fecha de recogida"
+          placeholder={t('reserveVehicle.startDate')}
           placeholderTextColor="gray"
           value={pickupDate ? pickupDate.toLocaleDateString() : ''}
           editable={false} // Desactivar edición directa
@@ -124,9 +128,9 @@ export default function ConfirmacionReserva() {
 
       {/* Fecha de devolución */}
       <View style={styles.dateRow}>
-        <Text style={styles.subtitle}>Fecha de devolución</Text>
+        <Text style={styles.subtitle}>{t('reserveVehicle.finishDate')}</Text>
         <TextInput
-          placeholder="Fecha de devolución"
+          placeholder={t('reserveVehicle.finishDate')}
           placeholderTextColor="gray"
           value={returnDate ? returnDate.toLocaleDateString() : ''}
           editable={false} // Desactivar edición directa
@@ -146,27 +150,27 @@ export default function ConfirmacionReserva() {
         />
       </View>
 
-      <Text style={styles.subtitle}>Duración</Text>
-      <Text style={styles.text}>{dias} días</Text>
+      <Text style={styles.subtitle}>{t('reserveVehicle.duration')}</Text>
+      <Text style={styles.text}>{dias} {t('reserveVehicle.days')}</Text>
 
-      <Text style={styles.subtitle}>Precio del seguro</Text>
-      <Text style={styles.text}>Precio: {reserva.precioSeguroBase}€</Text>
+      <Text style={styles.subtitle}>{t('reserveVehicle.insurancePrice')}</Text>
+      <Text style={styles.text}>{t('reserveVehicle.price')}{reserva.precioSeguroBase}€</Text>
       <View style={styles.seguro}>
-        <Text style={styles.text}>Añadir seguro</Text>
+        <Text style={styles.text}>{t('reserveVehicle.addInsurance')}</Text>
         <Switch value={seguro} onValueChange={setSeguro} />
       </View>
-      <Text style={styles.subtitle}>Precio total</Text>
-      <Text style={styles.text}>Precio coche: {reserva.precioPorDia}€/día × {dias} días = {precioCoche}€</Text>
+      <Text style={styles.subtitle}>{t('reserveVehicle.totalPrice')}</Text>
+      <Text style={styles.text}>{t('reserveVehicle.vehiclePrice')}: {reserva.precioPorDia}€/{t('reserveVehicle.day')} × {dias} {t('reserveVehicle.days')} = {precioCoche}€</Text>
       <Text style={styles.text}>+</Text>
-      <Text style={styles.text}>Precio seguro: {precioSeguro}€</Text>
+      <Text style={styles.text}>{t('reserveVehicle.insurancePrice')}: {precioSeguro}€</Text>
       <Text style={styles.text}>——————</Text>
-      <Text style={styles.total}>Total: {precioTotal}€</Text>
+      <Text style={styles.total}>{t('reserveVehicle.total')}: {precioTotal}€</Text>
 
       <TouchableOpacity style={styles.button} onPress={handlePublicar}>
-        <Text style={styles.buttonText}>Confirmar Reserva</Text>
+        <Text style={styles.buttonText}>{t('reserveVehicle.buttons.confirmation')}</Text>
       </TouchableOpacity>
 
-      <Text style={styles.cancelText}>Fecha de cancelación máxima: {fechaCancelacionMax}</Text>
+      <Text style={styles.cancelText}>{t('reserveVehicle.cancelDate')}: {fechaCancelacionMax}</Text>
     </ScrollView>
   );
 }

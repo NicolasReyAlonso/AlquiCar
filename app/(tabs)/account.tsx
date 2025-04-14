@@ -5,11 +5,15 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 export default function AccountPage() {
   const nombre = "Nelson";
   const email = "Nelso@ulpgc.es";
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const { t } = useTranslation();
   
   const handleReservas = () => {
     navigation.navigate("misReservas");
@@ -24,21 +28,21 @@ export default function AccountPage() {
   }
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Detalles de la Cuenta</Text>
+      <Text style={styles.title}>{t('Account.title')}</Text>
       <Image source={require('@/assets/images/avatar.png')} style={styles.avatar} />
       <View style={styles.infoContainer}>
-        <Text style={styles.info}>Nombre: {nombre}</Text>
+        <Text style={styles.info}>{t('Account.name')} {nombre}</Text>
         <Text style={styles.info}>Email: {email}</Text>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleReservas}>
-          <Text style={styles.buttonText}>Mis Reservas</Text>
+          <Text style={styles.buttonText}>{t('Account.buttons.reservations')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handlePublicaciones}>
-          <Text style={styles.buttonText}>Mis Publicaciones</Text>
+          <Text style={styles.buttonText}>{t('Account.buttons.publications')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleCerrarSesion}>
-          <Text style={styles.buttonText}>Cerrar Sesión</Text>
+          <Text style={styles.buttonText}>{t('Account.buttons.logout')}</Text>
         </TouchableOpacity>
       </View>
     </View>

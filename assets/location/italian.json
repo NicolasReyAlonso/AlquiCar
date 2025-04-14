@@ -1,0 +1,123 @@
+{
+  "Index": {
+    "welcome": "Inizia la tua avventura",
+    "buttons": {
+      "search": "Cerca",
+      "rent": "Metti la tua auto in affitto",
+      "offers": "Offerte vicino a te"
+    },
+    "card": {
+      "origin": "Origine",
+      "startDate": "Data di ritiro",
+      "finishDate": "Data di restituzione",
+      "hour": "Ora"
+    }
+  },
+
+  "Account": {
+    "title": "Dettagli Account",
+    "name": "Nome",
+    "buttons": {
+      "reservations": "Le Mie Prenotazioni",
+      "publications": "Le Mie Pubblicazioni",
+      "logout": "Esci"
+    }
+  },
+
+  "Login": {
+    "title": "Accedi",
+    "password": "Password",
+    "buttons": {
+      "login": "ACCEDI",
+      "register": "REGISTRATI"
+    }
+  },
+
+  "Register": {
+    "title": "Crea Account",
+    "password": "Password",
+    "buttons": {
+      "register": "Registrati"
+    },
+    "card": {
+      "name": "Nome",
+      "birthday": "Anno di nascita",
+      "city": "Città",
+      "password": "Password",
+      "repeatPassword": "Ripeti Password"
+    }
+  },
+
+  "RentYourVehicle": {
+    "title": "Pubblica la tua auto",
+    "card": {
+      "brand": "Marca dell'auto",
+      "model": "Modello dell'auto",
+      "year": "Anno dell'auto",
+      "city": "La tua città",
+      "price": "Prezzo al giorno"
+    },
+    "buttons": {
+      "image": "Allega immagine",
+      "publish": "Pubblica"
+    }
+  },
+
+  "MyReservationCard": {
+    "day": "giorno",
+    "date": "Data",
+    "buttons": {
+      "cancel": "Annulla Prenotazione"
+    }
+  },
+
+  "MyPublishedVehicles": {
+    "day": "giorno",
+    "city": "Città",
+    "buttons": {
+      "remove": "Rimuovi veicolo"
+    }
+  },
+
+  "VehicleCard": {
+    "places": "Posti",
+    "mileage": "Chilometraggio",
+    "location": "Luogo di ritiro",
+    "day": "giorno",
+    "buttons": {
+      "reservation": "Prenota"
+    }
+  },
+
+  "reserveVehicle": {
+    "title": "Riepilogo della prenotazione",
+    "places": "posti",
+    "city": "città",
+    "startDate": "Data di ritiro",
+    "finishDate": "Data di restituzione",
+    "duration": "Durata",
+    "day": "giorno",
+    "days": "giorni",
+    "insurancePrice": "Prezzo assicurazione",
+    "price": "prezzo",
+    "addInsurance": "Aggiungi assicurazione",
+    "totalPrice": "Prezzo totale",
+    "vehiclePrice": "Prezzo auto",
+    "total": "totale",
+    "buttons": {
+      "confirmation": "Conferma Prenotazione"
+    },
+    "cancelDate": "Data massima per annullamento:"
+  },
+
+  "layout": {
+    "search": "Cerca...",
+    "Menu": "MENU",
+    "menuButtons": {
+      "close": "✖ Chiudi",
+      "home": "Pagina Principale",
+      "reservations": "Le Mie Prenotazioni",
+      "publications": "Le Mie Pubblicazioni"
+    }
+  }
+}

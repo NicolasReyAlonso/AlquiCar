@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import theme from "@/components/Theme";
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 interface MyReservationCardProps {
   brand: string;
@@ -21,7 +23,8 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
 }) => {
   const { width } = useWindowDimensions(); 
   const isDesktop = width > 576;
-  const styles = getStyles(width, isDesktop); 
+  const styles = getStyles(width, isDesktop);
+  const { t } = useTranslation();
 
   return (
     <View style={isDesktop ? styles.containerDesktop : styles.containerMobile}>
@@ -30,9 +33,9 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
         <View style={isDesktop ? styles.detailsContainerDesktop : styles.detailsContainerMobile}>
           <View style={isDesktop ? styles.rowDesktop : styles.rowMobile}>
             <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand}</Text>
-            <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}</Text>
+            <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t('MyReservationCard.day')} </Text>
           </View>
-          <Text style={isDesktop ? styles.dateDesktop : styles.dateMobile}>Fecha: {date}</Text>
+          <Text style={isDesktop ? styles.dateDesktop : styles.dateMobile}>{t('MyReservationCard.date')}: {date}</Text>
           <Text style={[
             isDesktop ? styles.statusDesktop : styles.statusMobile,
             status === 'Confirmada' ? styles.confirmed : styles.pending
@@ -40,7 +43,7 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
             {status}
           </Text>
           <TouchableOpacity style={isDesktop ? styles.buttonDesktop : styles.buttonMobile} onPress={onCancel}>
-            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>Cancelar Reserva</Text>
+            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>{t('MyReservationCard.buttons.cancel')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -173,8 +176,8 @@ const getStyles = (width: number, isDesktop: boolean) =>
       paddingVertical: 8,
       borderRadius: 5,
       alignItems: "center",
-      width: width * 0.15,
-      marginTop: 5,
+      width: width * 0.17,
+      marginTop: 9,
       alignSelf: "flex-end",
     },
     buttonMobile: {
@@ -189,7 +192,7 @@ const getStyles = (width: number, isDesktop: boolean) =>
     buttonTextDesktop: {
       color: "white",
       fontWeight: "bold",
-      fontSize: width * 0.015,
+      fontSize: width * 0.014,
       fontFamily: theme.fonts.bold,
     },
     buttonTextMobile: {

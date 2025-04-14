@@ -1,0 +1,124 @@
+{
+    "Index": {
+      "welcome": "Inicia tu aventura",
+      "buttons": {
+        "search": "Buscar",
+        "rent": "Poner en alquiler tu coche",
+        "offers": "Ofertas cerca de ti"
+      },
+      "card": {
+        "origin": "Origen",
+        "startDate": "Fecha de recogida",
+        "finishDate": "Fecha de devolución",
+        "hour": "Hora"
+      }
+    },
+  
+    "Account": {
+      "title": "Detalles de la Cuenta",
+      "name": "Nombre",
+      "buttons": {
+        "reservations": "Mis Reservas",
+        "publications": "Mis Publicaciones",
+        "logout": "Cerrar Sesión"
+      }
+    },
+  
+    "Login": {
+      "title": "Iniciar Sesión",
+      "password": "Contraseña",
+      "buttons": {
+        "login": "INICIAR SESIÓN",
+        "register": "REGISTRARSE"
+      }
+    },
+  
+    "Register": {
+      "title": "Crear Cuenta",
+      "password": "Contraseña",
+      "buttons": {
+        "register": "Registrarse"
+      },
+      "card": {
+        "name": "Nombre",
+        "birthday": "Año de nacimiento",
+        "city": "Ciudad",
+        "password": "Contraseña",
+        "repeatPassword": "Repetir Contraseña"
+      }
+    },
+  
+    "RentYourVehicle": {
+      "title": "Publicar tu coche",
+      "card": {
+        "brand": "Marca del coche",
+        "model": "Modelo del coche",
+        "year": "Año del coche",
+        "city": "Tu ciudad",
+        "price": "Precio por día"
+      },
+      "buttons": {
+        "image": "Adjuntar imagen",
+        "publish": "Publicar"
+      }
+    },
+  
+    "MyReservationCard": {
+      "day": "día",
+      "date": "Fecha",
+      "buttons": {
+        "cancel": "Cancelar Reserva"
+      }
+    },
+  
+    "MyPublishedVehicles": {
+      "day": "día",
+      "city": "Ciudad",
+      "buttons": {
+        "remove": "Quitar vehículo"
+      }
+    },
+  
+    "VehicleCard": {
+      "places": "Plazas",
+      "mileage": "Kilometraje",
+      "location": "Lugar de recogida",
+      "day": "día",
+      "buttons": {
+        "reservation": "Reservar"
+      }
+    },
+  
+    "reserveVehicle": {
+      "title": "Resumen de la reserva",
+      "places": "plazas",
+      "city": "ciudad",
+      "startDate": "Fecha de recogida",
+      "finishDate": "Fecha de devolución",
+      "duration": "Duración",
+      "day": "día",
+      "days": "días",
+      "insurancePrice": "Precio del seguro",
+      "price": "precio",
+      "addInsurance": "Añadir seguro",
+      "totalPrice": "Precio total",
+      "vehiclePrice": "Precio coche",
+      "total": "total",
+      "buttons": {
+        "confirmation": "Confirmar Reserva"
+      },
+      "cancelDate": "Fecha de cancelación máxima:"
+    },
+  
+    "layout": {
+      "search": "Buscar...",
+      "Menu": "MENÚ",
+      "menuButtons": {
+        "close": "✖ Cerrar",
+        "home": "Página Principal",
+        "reservations": "Mis Reservas",
+        "publications": "Mis Publicaciones"
+      }
+    }
+  }
+  

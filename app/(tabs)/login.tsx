@@ -1,38 +1,35 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Dimensions, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
-import AsyncStorage from '@react-native-async-storage/async-storage';  // Importa AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
 
-const { width } = Dimensions.get('window'); 
+const { width } = Dimensions.get('window');
 
 type RootStackParamList = {
-  Home: 'account';  // Cambia esto al nombre de la pantalla a la que quieres ir
+  Home: 'account'; 
   Register: undefined;
 };
 
 export default function LoginScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const userName="Nelson@ulpgc.es";
-  const userPass="Soy_Nelson1";
+  const userName = "Nelson@ulpgc.es";
+  const userPass = "Soy_Nelson1";
+
   const handleLogin = async () => {
     if (email.toLowerCase() === userName.toLowerCase() && password === userPass) {
-      await AsyncStorage.setItem("isLoggedIn", "true");  // Usar AsyncStorage
+      await AsyncStorage.setItem("isLoggedIn", "true");
       navigation.navigate("account");
     } 
-    
     if (email.toLowerCase() !== userName.toLowerCase()) {
       Alert.alert("Email incorrecto");
     }
-
     if (password !== userPass) {
       Alert.alert("Contraseña incorrecta");
     }
@@ -47,7 +44,6 @@ export default function LoginScreen() {
       <View style={styles.formContainer}>
         <Text style={styles.title}>{t('Login.title')}</Text>
 
-        {/* Campo de Email */}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -56,7 +52,6 @@ export default function LoginScreen() {
           keyboardType="email-address"
         />
 
-        {/* Campo de Contraseña */}
         <TextInput
           style={styles.input}
           placeholder={t('Login.password')}
@@ -65,11 +60,14 @@ export default function LoginScreen() {
           secureTextEntry
         />
 
-        {/* Botones */}
         <View style={styles.buttonContainer}>
-          <Button title={t('Login.buttons.login')} onPress={handleLogin} />
+          <TouchableOpacity style={styles.touchableButton} onPress={handleLogin}>
+            <Text style={styles.touchableText}>{t('Login.buttons.login')}</Text>
+          </TouchableOpacity>
           <Text style={styles.separator}>o</Text>
-          <Button title={t('Login.buttons.register')} onPress={handleRegister} />
+          <TouchableOpacity style={styles.touchableButton} onPress={handleRegister}>
+            <Text style={styles.touchableText}>{t('Login.buttons.register')}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -113,6 +111,18 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+  },
+  touchableButton: {
+    backgroundColor: '#4472C4',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  touchableText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
     fontFamily: theme.fonts.bold,
   },
   separator: {

@@ -1,5 +1,5 @@
 import React, { useState, ReactNode, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert, Platform, ActivityIndicator, StyleSheet, useColorScheme } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, Alert, Platform, ActivityIndicator, StyleSheet, useColorScheme, Image } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useNavigation } from 'expo-router';
 import { FontAwesome, FontAwesome5, Ionicons } from '@expo/vector-icons';
@@ -78,6 +78,10 @@ export default function Layout({ children }: LayoutProps) {
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
+            <Image 
+              source={require('@/assets/images/logo2.png')} // Ajusta la ruta según la ubicación de tu logo
+              style={styles.logo} 
+            />
               <TouchableOpacity
                 style={styles.touchableButton}
                 onPress={() => setIsLangMenuOpen(!isLangMenuOpen)}
@@ -204,4 +208,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  logo: {
+    width: 60,  // Ajusta el tamaño según tu diseño
+    height: 40,
+    marginRight: 10,  // Espaciado antes de otros elementos
+  },
+  
 });

@@ -1,12 +1,15 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import { View, Text, SafeAreaView, Image, TextInput, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, SafeAreaView, Image, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { DatePickerModal } from 'react-native-paper-dates';
+import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useRouter } from 'expo-router'; 
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import VehicleCard from "@/components/templates/VehicleCard"; 
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -20,6 +23,9 @@ const index = () => {
   const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const [city, setCity] = useState('');
+  const [brand, setBrand] = useState('');
+  const [vehicles, setVehicles] = useState([]);
 
   const openPickupDatePicker = () => setPickupDatePickerVisible(true);
   const closePickupDatePicker = () => setPickupDatePickerVisible(false);
@@ -41,13 +47,32 @@ const index = () => {
     closeReturnDatePicker();
   };
 
-  const handleBuscar = () => {
-    if (!pickupDate || !returnDate){
-      alert('Faltan campos por rellenar');
-      return;
+  const handleBuscar = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/vehicles/');
+      const allVehicles = await response.json();
+
+      const filteredVehicles = allVehicles.filter(vehicle => {
+        const isCityMatch = city === "" || vehicle.city?.toLowerCase().includes(city.toLowerCase());
+        const isBrandMatch = brand === "" || vehicle.brand.trim().toLowerCase() === brand.trim().toLowerCase();
+        return isCityMatch && isBrandMatch;
+      });
+
+      if (filteredVehicles.length === 1) {
+        router.push(`/vehicleDetails?id=${filteredVehicles[0].id}`);
+      } else {
+        setVehicles(filteredVehicles);
+      }
+
+      if (filteredVehicles.length === 0) {
+        Alert.alert('Sin resultados', 'No se encontraron vehículos para los criterios seleccionados');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Hubo un problema al buscar los vehículos');
+      console.error(error);
     }
-    console.log(`Fecha de recogida: ${pickupDate.toISOString()}, Fecha de devolución: ${returnDate.toISOString()}`); //FechasISO
-  }
+  };
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -77,6 +102,8 @@ const index = () => {
                     placeholderTextColor="gray"
                     style={styles.inputFlex}
                     value={pickupDate ? pickupDate.toLocaleDateString() : ''}
+                    editable={false}
+
                   />
                   <TouchableOpacity onPress={openPickupDatePicker}>
                     <Icon name="calendar" size={24} color="gray" />
@@ -104,6 +131,8 @@ const index = () => {
                     placeholderTextColor="gray"
                     style={styles.inputFlex}
                     value={returnDate ? returnDate.toLocaleDateString() : ''}
+                    editable={false}
+
                   />
                   <TouchableOpacity onPress={openReturnDatePicker}>
                     <Icon name="calendar" size={24} color="gray" />
@@ -124,10 +153,19 @@ const index = () => {
                   style={styles.smallInput}
                 />
               </View>
+
+              <Picker selectedValue={brand} onValueChange={(itemValue) => setBrand(itemValue)} style={styles.picker}>
+              <Picker.Item label="Selecciona una marca" value="" />
+              <Picker.Item label="Toyota" value="Toyota" />
+              <Picker.Item label="Citroën" value="Citroën" />
+              <Picker.Item label="Nissan" value="Nissan" />
+              <Picker.Item label="Ford" value="Ford" />
+              </Picker>
+
               <TouchableOpacity style={styles.searchButton} onPress={handleBuscar}>
-                <Text style={styles.searchButtonText}>{t('Index.buttons.search')}</Text>
+              <Text style={styles.searchButtonText}>Buscar</Text>
               </TouchableOpacity>
-            </View>
+              </View>
           </View>
 
           <View style={styles.footerButtons}>
@@ -143,6 +181,10 @@ const index = () => {
             >
               <Text style={styles.buttonText}>{t('Index.buttons.offers')}</Text>
             </TouchableOpacity>
+
+
+
+
           </View>
         </View>
       </ScrollView>

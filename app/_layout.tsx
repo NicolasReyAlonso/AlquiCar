@@ -79,7 +79,7 @@ export default function Layout({ children }: LayoutProps) {
           <View style={styles.header}>
             <View style={styles.headerLeft}>
             <Image 
-              source={require('@/assets/images/logo2.png')} // Ajusta la ruta según la ubicación de tu logo
+              source={require('@/assets/images/logo2.png')} 
               style={styles.logo} 
             />
               <TouchableOpacity

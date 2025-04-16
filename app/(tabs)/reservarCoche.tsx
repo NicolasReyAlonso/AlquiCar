@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Switch, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function ConfirmacionReserva() {
-  const router = useRouter();
   const params = useLocalSearchParams();
-
   const { t } = useTranslation();
 
   const [seguro, setSeguro] = useState(false);
@@ -18,10 +18,13 @@ export default function ConfirmacionReserva() {
   const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const [dias, setDias] = useState(1);
+  const [precioCoche, setPrecioCoche] = useState(0);
+  const [precioSeguro, setPrecioSeguro] = useState(0);
+  const [precioTotal, setPrecioTotal] = useState(0);
 
   const openPickupDatePicker = () => setPickupDatePickerVisible(true);
   const closePickupDatePicker = () => setPickupDatePickerVisible(false);
-
   const openReturnDatePicker = () => setReturnDatePickerVisible(true);
   const closeReturnDatePicker = () => setReturnDatePickerVisible(false);
 
@@ -39,13 +42,36 @@ export default function ConfirmacionReserva() {
     closeReturnDatePicker();
   };
 
-  // Función para convertir el precio de "€75/día" a número
   const obtenerPrecioNumerico = (precio: string) => {
-    const match = precio.match(/\d+/); // Extrae solo los números
+    const match = precio.match(/\d+/); 
     return match ? Number(match[0]) : 0;
   };
 
-  // Si no hay datos en params, evita errores y usa un objeto vacío
+  const handleConfirmReservation = async () => {
+    if (!pickupDate || !returnDate){
+      alert('Faltan campos por rellenar');
+      return;
+    }
+  
+    const nuevaReserva = {
+      brand: reserva.marca,
+      price: `${precioTotal}€`,
+      date: pickupDate.toLocaleDateString(),
+      status: "Confirmada",
+      imageUrl: reserva.imagen
+    };
+  
+    try {
+      const reservasGuardadas = await AsyncStorage.getItem('reservas');
+      const reservas = reservasGuardadas ? JSON.parse(reservasGuardadas) : [];
+      reservas.push(nuevaReserva);
+      await AsyncStorage.setItem('reservas', JSON.stringify(reservas));
+      alert("Reserva confirmada y guardada en Mis Reservas");
+    } catch (error) {
+      console.error("Error al guardar la reserva:", error);
+    }
+  };
+  
   const reserva = {
     marca: params.brand || 'Desconocido',
     tipo: params.type || 'Desconocido',
@@ -57,34 +83,29 @@ export default function ConfirmacionReserva() {
     ciudad: params.pickupLocation || 'Desconocido',
   };
 
-  // Calcular la duración en días
-  const calcularDias = () => {
-    if (!pickupDate || !returnDate) return 0; // Si no hay fechas válidas, no se puede calcular la duración
-    const diffTime = returnDate.getTime() - pickupDate.getTime();
-    return Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24))); // Mínimo 1 día
-  };
+  useEffect(() => {
+    if (pickupDate && returnDate) {
+      const diffTime = returnDate.getTime() - pickupDate.getTime();
+      const newDias = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+      setDias(newDias);
+      setPrecioCoche(reserva.precioPorDia * newDias);
+    }
+  }, [pickupDate, returnDate]);
 
-  // Calcular la fecha de cancelación máxima (1 semana antes de la fecha de recogida)
+  useEffect(() => {
+    setPrecioSeguro(seguro ? reserva.precioSeguroBase : 0);
+    setPrecioTotal(precioCoche + (seguro ? reserva.precioSeguroBase : 0));
+  }, [seguro, precioCoche]);
+
   const calcularFechaCancelacion = () => {
-    if (!pickupDate) return ''; // Si no hay fecha de recogida, no se puede calcular la fecha de cancelación
+    if (!pickupDate) return ''; 
     const fechaCancelacion = new Date(pickupDate);
     fechaCancelacion.setDate(pickupDate.getDate() - 7);
-    return fechaCancelacion.toLocaleDateString(); // Formato legible
+    return fechaCancelacion.toLocaleDateString(); 
   };
 
-  const dias = calcularDias();
-  const precioCoche = reserva.precioPorDia * dias;
-  const precioSeguro = seguro ? reserva.precioSeguroBase : 0;
-  const precioTotal = precioCoche + precioSeguro;
   const fechaCancelacionMax = calcularFechaCancelacion();
 
-  const handlePublicar = () => {
-    if (!pickupDate || !returnDate){
-      alert('Faltan campos por rellenar');
-      return;
-    }
-    console.log(`Fecha de recogida: ${pickupDate.toISOString()}, Fecha de devolución: ${returnDate.toISOString()}`); //FechasISO
-  }
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>{t('reserveVehicle.title')}</Text>
@@ -102,14 +123,13 @@ export default function ConfirmacionReserva() {
         </View>
       </View>
 
-      {/* Fecha de recogida */}
       <View style={styles.dateRow}>
         <Text style={styles.subtitle}>{t('reserveVehicle.startDate')}</Text>
         <TextInput
           placeholder={t('reserveVehicle.startDate')}
           placeholderTextColor="gray"
           value={pickupDate ? pickupDate.toLocaleDateString() : ''}
-          editable={false} // Desactivar edición directa
+          editable={false}
           style={styles.dateInput}
         />
         <TouchableOpacity onPress={openPickupDatePicker}>
@@ -126,14 +146,13 @@ export default function ConfirmacionReserva() {
         />
       </View>
 
-      {/* Fecha de devolución */}
       <View style={styles.dateRow}>
         <Text style={styles.subtitle}>{t('reserveVehicle.finishDate')}</Text>
         <TextInput
           placeholder={t('reserveVehicle.finishDate')}
           placeholderTextColor="gray"
           value={returnDate ? returnDate.toLocaleDateString() : ''}
-          editable={false} // Desactivar edición directa
+          editable={false}
           style={styles.dateInput}
         />
         <TouchableOpacity onPress={openReturnDatePicker}>
@@ -153,12 +172,6 @@ export default function ConfirmacionReserva() {
       <Text style={styles.subtitle}>{t('reserveVehicle.duration')}</Text>
       <Text style={styles.text}>{dias} {t('reserveVehicle.days')}</Text>
 
-      <Text style={styles.subtitle}>{t('reserveVehicle.insurancePrice')}</Text>
-      <Text style={styles.text}>{t('reserveVehicle.price')}{reserva.precioSeguroBase}€</Text>
-      <View style={styles.seguro}>
-        <Text style={styles.text}>{t('reserveVehicle.addInsurance')}</Text>
-        <Switch value={seguro} onValueChange={setSeguro} />
-      </View>
       <Text style={styles.subtitle}>{t('reserveVehicle.totalPrice')}</Text>
       <Text style={styles.text}>{t('reserveVehicle.vehiclePrice')}: {reserva.precioPorDia}€/{t('reserveVehicle.day')} × {dias} {t('reserveVehicle.days')} = {precioCoche}€</Text>
       <Text style={styles.text}>+</Text>
@@ -166,14 +179,16 @@ export default function ConfirmacionReserva() {
       <Text style={styles.text}>——————</Text>
       <Text style={styles.total}>{t('reserveVehicle.total')}: {precioTotal}€</Text>
 
-      <TouchableOpacity style={styles.button} onPress={handlePublicar}>
+      <TouchableOpacity style={styles.button} onPress={handleConfirmReservation}>
         <Text style={styles.buttonText}>{t('reserveVehicle.buttons.confirmation')}</Text>
       </TouchableOpacity>
+
 
       <Text style={styles.cancelText}>{t('reserveVehicle.cancelDate')}: {fechaCancelacionMax}</Text>
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

@@ -117,7 +117,24 @@
         "close": "✖ Cerrar",
         "home": "Página Principal",
         "reservations": "Mis Reservas",
-        "publications": "Mis Publicaciones"
+        "publications": "Mis Publicaciones",
+        "incidences" : "Mis Incidencias"
+      }
+    },
+
+    "Incidencias": {
+      "titulo": "Título de la Incidencia",
+      "descripcion": "Descripción",
+      "crear": "Crear Incidencia",
+      "misIncidencias": "Mis Incidencias",
+      "sinIncidencias": "No hay incidencias reportadas",
+      "estado" : "Estado",
+      "fecha" : "Fecha",
+      "categoria" : "Categoría",
+      "formatoFecha" : "DD/MM/AAAA",
+      "botones": {
+        "guardar": "Guardar",
+        "cancelar": "Cancelar"
       }
     }
   }

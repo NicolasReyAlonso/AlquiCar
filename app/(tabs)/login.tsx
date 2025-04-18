@@ -23,16 +23,21 @@ export default function LoginScreen() {
   const userPass = "Soy_Nelson1";
 
   const handleLogin = async () => {
-    if (email.toLowerCase() === userName.toLowerCase() && password === userPass) {
-      await AsyncStorage.setItem("isLoggedIn", "true");
-      navigation.navigate("account");
-    } 
-    if (email.toLowerCase() !== userName.toLowerCase()) {
-      Alert.alert("Email incorrecto");
+    console.log("helo");
+    const response = await fetch('https://localhost:3000/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Error en el login');
     }
-    if (password !== userPass) {
-      Alert.alert("Contraseña incorrecta");
-    }
+    await AsyncStorage.setItem("token", data.token);
+    await AsyncStorage.setItem("isLoggedIn", "true");
   };
 
   const handleRegister = () => {

@@ -6,6 +6,8 @@ import { ThemedText } from '@/components/ThemedText';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'react-native'; 
 
 const carModels = {
   Seat: ['Ibiza', 'León', 'Ateca'],
@@ -19,8 +21,31 @@ export default function AlquilarCoche() {
   const [year, setYear] = useState('');
   const [city, setCity] = useState('');
   const [price, setPrice] = useState('');
+  const [image, setImage] = useState<string | null>(null);
 
   const { t } = useTranslation();
+
+  const pickImage = async () => {
+    // Pide permisos
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Necesitas permiso para acceder a la galería');
+      return;
+    }
+  
+    // Abre la galería
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+  
+    if (!result.canceled && result.assets.length > 0) {
+      setImage(result.assets[0].uri);
+    }
+  };
+  
 
   const handleSubmit = () => {
     if (!brand || !model || !year || !city || !price) {
@@ -70,9 +95,12 @@ export default function AlquilarCoche() {
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} />
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.city')} value={city} onChangeText={setCity} />
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.price')} value={price} onChangeText={setPrice} keyboardType="numeric" />
-        <TouchableOpacity style={styles.buttonAd}>
+        <TouchableOpacity style={styles.buttonAd} onPress={pickImage}>
           <Text style={styles.buttonTextAd}>{t('RentYourVehicle.buttons.image')}</Text>
         </TouchableOpacity>
+        {image && (
+            <Image source={{ uri: image }} style={{ width: 200, height: 200, marginVertical: 10 }} />
+          )}
         <TouchableOpacity style={styles.buttonPub} onPress={handleSubmit}>
           <Text style={styles.buttonTextPub}>{t('RentYourVehicle.buttons.publish')}</Text>
         </TouchableOpacity>

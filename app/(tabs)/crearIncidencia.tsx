@@ -22,14 +22,32 @@ const CrearIncidencia = () => {
   const [toId, setToId] = useState<string | null>(null);
   const [reservationId, setReservationId] = useState<number | null>(null);
   const [description, setDescription] = useState('');
+  const [descriptionError, setDescriptionError] = useState('');
+  const [reservationIdError, setReservationIdError] = useState('');
 
   const handleSubmit = async () => {
     const fromId = await AsyncStorage.getItem('userId');
+    let hasError = false;
+    setDescriptionError('');
+    setReservationIdError('');
+
+    if (description.trim().length < 50) {
+      setDescriptionError(t('La descripción debe tener al menos 50 caracteres'));
+      hasError = true;
+    }
+
+    if (type === 'USER' && !reservationId) {
+      setReservationIdError(t('Debes indicar un ID de reserva para incidencias hacia usuarios'));
+      hasError = true;
+    } 
+
+    if (hasError) return;
 
     const body = {
       from_id: fromId,
+      // El backend debería resolver to_id automáticamente si se proporciona reservation_id
       to_id: type === 'USER' ? toId : null,
-      reservation_id: reservationId,
+      reservation_id: type === 'USER' ? reservationId : null,
       description,
       type,
     };
@@ -53,7 +71,7 @@ const CrearIncidencia = () => {
     } catch (error) {
       console.error(error);
       Alert.alert(t('Error'), t('Error de red'));
-    }
+    } 
   };
 
   return (
@@ -62,7 +80,7 @@ const CrearIncidencia = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.label}>{t('Tipo de incidencia')}</Text>
+        <Text style={styles.label}>{t('Incidencias.tipo')}</Text>
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={type}
@@ -70,47 +88,40 @@ const CrearIncidencia = () => {
             style={styles.picker}
             dropdownIconColor={theme.colors.text}
           >
-            <Picker.Item label={t('Plataforma')} value="PLATFORM" />
-            <Picker.Item label={t('Usuario')} value="USER" />
+            <Picker.Item label={t('Incidencias.plataforma')} value="PLATFORM" color={'black'} />
+            <Picker.Item label={t('Incidencias.usuario')} value="USER" color={'black'} />
           </Picker>
         </View>
 
         {type === 'USER' && (
           <>
-            <Text style={styles.label}>{t('ID del usuario involucrado')}</Text>
+            <Text style={styles.label}>{t('Incidencias.reserva')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="UUID usuario"
-              placeholderTextColor="#888"
-              value={toId || ''}
-              onChangeText={setToId}
+              placeholder="Ej: 123"
+              placeholderTextColor="black"
+              keyboardType="numeric"
+              value={reservationId?.toString() || ''}
+              onChangeText={(text) => setReservationId(text ? parseInt(text) : null)}
             />
+            {reservationIdError ? <Text style={styles.error}>{reservationIdError}</Text> : null}
           </>
         )}
 
-        <Text style={styles.label}>{t('ID de la reserva (opcional)')}</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ej: 123"
-          placeholderTextColor="#888"
-          keyboardType="numeric"
-          value={reservationId?.toString() || ''}
-          onChangeText={(text) => setReservationId(text ? parseInt(text) : null)}
-        />
-
-        <Text style={styles.label}>{t('Descripción')}</Text>
+        <Text style={styles.label}>{t('Incidencias.descripcion')}</Text>
         <TextInput
           style={[styles.input, styles.textarea]}
           multiline
           numberOfLines={5}
-          placeholder={t('Describe el problema')}
-          placeholderTextColor="#888"
+          placeholder={t('Incidencias.problema')}
+          placeholderTextColor="black"
           value={description}
           onChangeText={setDescription}
         />
+        {descriptionError ? <Text style={styles.error}>{descriptionError}</Text> : null}
 
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>{t('Enviar')}</Text>
+          <Text style={styles.buttonText}>{t('Incidencias.enviar')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -138,8 +149,8 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 15,
     fontFamily: theme.fonts.regular,
-    color: theme.colors.text,
-    backgroundColor: theme.colors.secondary,
+    color: 'black',
+    backgroundColor: 'white',
   },
   textarea: {
     height: 120,
@@ -153,7 +164,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   picker: {
-    color: theme.colors.text,
+    color: 'black',
     height: 50,
   },
   button: {
@@ -172,6 +183,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontFamily: theme.fonts.bold,
+  },
+  error: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 4,
+    fontFamily: theme.fonts.regular,
   },
 });
 

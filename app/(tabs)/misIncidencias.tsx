@@ -58,28 +58,23 @@ export default function MisIncidencias() {
   const renderItem = ({ item }: { item: Incidence }) => (
     <View style={styles.card}>
       <Text style={styles.label}>
-        {t('ID de incidencia')}: <Text style={styles.value}>{item.id}</Text>
+        {t('Incidencias.id')}: <Text style={styles.value}>{item.id}</Text>
       </Text>
       <Text style={styles.label}>
-        {t('Tipo')}: <Text style={styles.value}>{item.type === 'USER' ? t('Usuario') : t('Plataforma')}</Text>
+        {t('Incidencias.tipo')}: <Text style={styles.value}>{item.type === 'USER' ? t('Incidencias.usuario') : t('Incidencias.platform')}</Text>
       </Text>
-      {item.to_id && (
-        <Text style={styles.label}>
-          {t('Contra usuario')}: <Text style={styles.value}>{item.to_id}</Text>
-        </Text>
-      )}
       {item.reservation_id && (
         <Text style={styles.label}>
-          {t('Reserva')}: <Text style={styles.value}>#{item.reservation_id}</Text>
+          {t('Incidencias.reserva')}: <Text style={styles.value}>#{item.reservation_id}</Text>
         </Text>
       )}
-      <Text style={styles.label}>{t('Descripción')}:</Text>
+      <Text style={styles.label}>{t('Incidencias.descripcion')}:</Text>
       <Text style={styles.value}>{item.description}</Text>
       <Text style={styles.label}>
-        {t('Estado')}: <Text style={styles.value}>{t(item.status)}</Text>
+        {t('Incidencias.estado')}: <Text style={styles.value}>{t(item.status)}</Text>
       </Text>
       <Text style={styles.label}>
-        {t('Fecha')}: <Text style={styles.value}>{new Date(item.created_at).toLocaleString()}</Text>
+        {t('Incidencias.fecha')}: <Text style={styles.value}>{new Date(item.created_at).toLocaleString()}</Text>
       </Text>
     </View>
   );
@@ -95,7 +90,7 @@ export default function MisIncidencias() {
   if (incidencias.length === 0) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.value}>{t('No tienes incidencias registradas')}</Text>
+        <Text style={styles.value}>{t('Incidencias.sinIncidencias')}</Text>
         <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('crearIncidencia')}>
           <Text style={styles.fabText}>+</Text>
         </TouchableOpacity>

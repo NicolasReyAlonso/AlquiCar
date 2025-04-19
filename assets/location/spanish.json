@@ -117,7 +117,31 @@
         "close": "✖ Cerrar",
         "home": "Página Principal",
         "reservations": "Mis Reservas",
-        "publications": "Mis Publicaciones"
+        "publications": "Mis Publicaciones",
+        "incidences" : "Mis Incidencias"
+      }
+    },
+
+    "Incidencias": {
+      "titulo": "Título de la Incidencia",
+      "descripcion": "Descripción",
+      "crear": "Crear Incidencia",
+      "reserva": "ID de la reserva",
+      "id": "Id de la incidencia",
+      "tipo": "Tipo de incidencia",
+      "usuario": "Usuario",
+      "plataforma": "Plataforma",
+      "misIncidencias": "Mis Incidencias",
+      "sinIncidencias": "No hay incidencias reportadas",
+      "estado" : "Estado",
+      "fecha" : "Fecha",
+      "categoria" : "Categoría",
+      "formatoFecha" : "DD/MM/AAAA",
+      "problema": "Describe el problema",
+      "enviar": "Enviar",
+      "botones": {
+        "guardar": "Guardar",
+        "cancelar": "Cancelar"
       }
     }
   }

@@ -117,7 +117,30 @@
       "close": "✖ Close",
       "home": "Home Page",
       "reservations": "My Reservations",
-      "publications": "My Listings"
+      "publications": "My Listings",
+      "incidences" : "My Issues"
+    }
+  },
+  "Incidencias": {
+    "titulo": "Issue Title",
+    "descripcion": "Description",
+    "crear": "Create Issue",
+    "reserva": "Reservation ID",
+    "id": "Issue ID",
+    "tipo": "Issue Type",
+    "usuario": "User",
+    "plataforma": "Platform",
+    "misIncidencias": "My Issues",
+    "sinIncidencias": "No issues reported",
+    "estado" : "State",
+    "fecha" : "Date",
+    "categoria" : "Category",
+    "formatoFecha" : "DD/MM/YYYY",
+    "problema": "Explain the problem",
+    "enviar": "Send",
+    "botones": {
+      "guardar": "Save",
+      "cancelar": "Cancel"
     }
   }
 }

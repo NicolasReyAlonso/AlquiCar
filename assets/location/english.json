@@ -41,27 +41,36 @@
     },
     "card": {
       "name": "Name",
-      "birthday": "Year of birth",
+      "birthday": "Birth Year",
+      "address": "Address",
+      "phone": "Phone",
       "city": "City",
+      "dni" : "ID Card",
       "password": "Password",
       "repeatPassword": "Repeat Password"
     }
   },
 
   "RentYourVehicle": {
-    "title": "List Your Car",
-    "card": {
-      "brand": "Car brand",
-      "model": "Car model",
-      "year": "Car year",
-      "city": "Your city",
-      "price": "Price per day"
-    },
-    "buttons": {
-      "image": "Attach image",
-      "publish": "Publish"
-    }
+  "title": "List Your Car",
+  "card": {
+    "brand": "Car brand",
+    "model": "Car model",
+    "year": "Car year",
+    "city": "Your city",
+    "type": "Car type",
+    "transmission": "Transmission",
+    "fuel_type": "Fuel type",
+    "capacity": "Seating capacity",
+    "num_doors": "Number of doors",
+    "price": "Price per day",
+    "deposit": "Security deposit"
   },
+  "buttons": {
+    "image": "Attach image",
+    "publish": "Publish"
+  }
+},
 
   "MyReservationCard": {
     "day": "day",

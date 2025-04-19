@@ -42,7 +42,10 @@
       "card": {
         "name": "Nombre",
         "birthday": "Año de nacimiento",
+        "address": "Dirección",
+        "phone": "Teléfono",
         "city": "Ciudad",
+        "dni" : "DNI",
         "password": "Contraseña",
         "repeatPassword": "Repetir Contraseña"
       }

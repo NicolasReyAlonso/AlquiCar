@@ -41,8 +41,11 @@
     },
     "card": {
       "name": "Name",
-      "birthday": "Year of birth",
+      "birthday": "Birth Year",
+      "address": "Address",
+      "phone": "Phone",
       "city": "City",
+      "dni" : "ID Card",
       "password": "Password",
       "repeatPassword": "Repeat Password"
     }

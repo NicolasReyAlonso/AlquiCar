@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
+import * as ImagePicker from 'expo-image-picker';
 
 const carModels = {
   Seat: ['Ibiza', 'León', 'Ateca'],
@@ -18,6 +19,7 @@ const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
 
 export default function AlquilarCoche() {
   const { t } = useTranslation();
+  const scrollRef = useRef<ScrollView>(null);
 
   const [brand, setBrand] = useState<keyof typeof carModels>('Seat');
   const [model, setModel] = useState(carModels['Seat'][0]);
@@ -30,21 +32,41 @@ export default function AlquilarCoche() {
   const [numDoors, setNumDoors] = useState('');
   const [price, setPrice] = useState('');
   const [deposit, setDeposit] = useState('');
+  const [image, setImage] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso requerido', 'Necesitamos acceso a tu galería para subir una imagen.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   const handleSubmit = () => {
     if (!brand || !model || !year || !city || !type || !transmission || !fuelType || !capacity || !numDoors || !price) {
-      alert('Faltan campos por rellenar');
+      Alert.alert('Error', 'Faltan campos por rellenar');
+      scrollRef.current?.scrollTo({ y: 0, animated: true });
       return;
     }
 
     const numericYear = Number(year);
     if (isNaN(numericYear) || numericYear < 1900 || numericYear >= 2026) {
-      alert('Debe ser un año válido');
+      Alert.alert('Error', 'Debe ser un año válido');
       return;
     }
 
     if (city.length < 3) {
-      alert('La ciudad debe tener al menos 3 caracteres');
+      Alert.alert('Error', 'La ciudad debe tener al menos 3 caracteres');
       return;
     }
 
@@ -58,7 +80,7 @@ export default function AlquilarCoche() {
       isNaN(numericNumDoors) || numericNumDoors <= 0 ||
       isNaN(numericPrice) || numericPrice <= 0
     ) {
-      alert('Los valores numéricos deben ser válidos y mayores que 0');
+      Alert.alert('Error', 'Los valores numéricos deben ser válidos y mayores que 0');
       return;
     }
 
@@ -74,18 +96,20 @@ export default function AlquilarCoche() {
       num_doors: numericNumDoors,
       daily_price: numericPrice,
       deposit: numericDeposit,
+      image: image || null,
     };
 
     console.log('Vehículo a enviar:', vehicle);
-    // Aquí iría la llamada al backend
+    Alert.alert('Éxito', 'Vehículo publicado correctamente');
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    // Aquí puedes enviar `vehicle` al backend
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.formContainer}>
+    <ScrollView contentContainerStyle={styles.formContainer} ref={scrollRef}>
       <ThemedView style={styles.form}>
         <ThemedText style={styles.title} type="title">{t('RentYourVehicle.title')}</ThemedText>
 
-        {/* Marca y modelo */}
         <Text>{t('RentYourVehicle.card.brand')}</Text>
         <Picker selectedValue={brand} onValueChange={(item) => {
           setBrand(item as keyof typeof carModels);
@@ -103,11 +127,9 @@ export default function AlquilarCoche() {
           ))}
         </Picker>
 
-        {/* Año y ciudad */}
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} keyboardType="numeric" />
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.city')} value={city} onChangeText={setCity} />
 
-        {/* Tipo de coche */}
         <Text>{t('RentYourVehicle.card.type')}</Text>
         <Picker selectedValue={type} onValueChange={setType} style={styles.input}>
           {types.map((type) => (
@@ -115,7 +137,6 @@ export default function AlquilarCoche() {
           ))}
         </Picker>
 
-        {/* Transmisión */}
         <Text>{t('RentYourVehicle.card.transmission')}</Text>
         <Picker selectedValue={transmission} onValueChange={setTransmission} style={styles.input}>
           {transmissions.map((t) => (
@@ -123,7 +144,6 @@ export default function AlquilarCoche() {
           ))}
         </Picker>
 
-        {/* Combustible */}
         <Text>{t('RentYourVehicle.card.fuel_type')}</Text>
         <Picker selectedValue={fuelType} onValueChange={setFuelType} style={styles.input}>
           {fuelTypes.map((f) => (
@@ -131,17 +151,18 @@ export default function AlquilarCoche() {
           ))}
         </Picker>
 
-        {/* Plazas y puertas */}
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.capacity')} value={capacity} onChangeText={setCapacity} keyboardType="numeric" />
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.num_doors')} value={numDoors} onChangeText={setNumDoors} keyboardType="numeric" />
-
-        {/* Precio y depósito */}
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.price')} value={price} onChangeText={setPrice} keyboardType="numeric" />
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.deposit')} value={deposit} onChangeText={setDeposit} keyboardType="numeric" />
 
-        <TouchableOpacity style={styles.buttonAd}>
+        <TouchableOpacity style={styles.buttonAd} onPress={pickImage}>
           <Text style={styles.buttonTextAd}>{t('RentYourVehicle.buttons.image')}</Text>
         </TouchableOpacity>
+
+        {image && (
+          <Image source={{ uri: image }} style={{ width: '50%', height: 500, borderRadius: 10, marginVertical: 10 }} />
+        )}
 
         <TouchableOpacity style={styles.buttonPub} onPress={handleSubmit}>
           <Text style={styles.buttonTextPub}>{t('RentYourVehicle.buttons.publish')}</Text>
@@ -197,6 +218,8 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
     width: 150,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   buttonTextAd: {
     color: 'black',

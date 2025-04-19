@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'react-native'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const carModels = {
   Seat: ['Ibiza', 'León', 'Ateca'],
@@ -45,29 +47,81 @@ export default function AlquilarCoche() {
       setImage(result.assets[0].uri);
     }
   };
-  
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    console.log('Formulario enviado'); // Verificar si se llama a la función
+
     if (!brand || !model || !year || !city || !price) {
       alert('Faltan campos por rellenar');
       return;
     }
+
     const numericYear = Number(year);
     if (isNaN(numericYear) || numericYear < 1900 || numericYear >= 2026) {
-    alert('Debe ser un año válido');
-    return;
+      alert('Debe ser un año válido');
+      return;
     }
+
     if (city.length < 3) {
       alert('La ciudad debe tener al menos 3 caracteres');
       return;
     }
+
     const numericPrice = Number(price);
     if (isNaN(numericPrice) || numericPrice <= 0) {
-    alert('El precio debe ser un número válido mayor que 0');
-    return;
+      alert('El precio debe ser un número válido mayor que 0');
+      return;
     }
+
+    try {
+      const token = await AsyncStorage.getItem("token");
+      console.log('Token obtenido:', token); // Verificar si el token se obtiene correctamente
+
+      if (!token) {
+        alert("No autenticado");
+        return;
+      }
+
+      const response = await fetch('https://localhost:3000/vehicles/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          marca: brand,
+          modelo: model,
+          año: numericYear,
+          ciudad: city,
+          precio: numericPrice,
+          imagen: image || null,
+        }),
+      });
+
+      console.log('Respuesta de la API:', response); // Verificar la respuesta de la API
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log('Error de la API:', errorData); // Mostrar los errores de la API
+        throw new Error(errorData.message || 'Error al publicar el vehículo');
+      }
+
+      alert("Vehículo publicado correctamente");
+
+      // Limpiar campos
+      setYear('');
+      setCity('');
+      setPrice('');
+      setImage(null);
+
+    } catch (error: any) {
+      alert("Ocurrió un error al publicar");
+      console.log('Error:', error); // Verificar si se está capturando algún error
+    }
+
     console.log(`Marca: ${brand}, Modelo: ${model}, Año: ${year}, Ciudad: ${city}, Precio: ${price}`);
   };
+
 
   return (
     <ScrollView contentContainerStyle={styles.formContainer}>

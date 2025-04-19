@@ -58,7 +58,13 @@
         "model": "Modelo del coche",
         "year": "Año del coche",
         "city": "Tu ciudad",
-        "price": "Precio por día"
+        "price": "Precio por día",
+        "type": "Tipo de coche",
+        "transmission": "Transmisión",
+        "fuel_type": "Tipo de combustible",
+        "capacity": "Número de asientos",
+        "num_doors": "Número de puertas",
+        "deposit": "Déposito"
       },
       "buttons": {
         "image": "Adjuntar imagen",

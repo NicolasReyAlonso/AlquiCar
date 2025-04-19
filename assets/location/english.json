@@ -52,19 +52,25 @@
   },
 
   "RentYourVehicle": {
-    "title": "List Your Car",
-    "card": {
-      "brand": "Car brand",
-      "model": "Car model",
-      "year": "Car year",
-      "city": "Your city",
-      "price": "Price per day"
-    },
-    "buttons": {
-      "image": "Attach image",
-      "publish": "Publish"
-    }
+  "title": "List Your Car",
+  "card": {
+    "brand": "Car brand",
+    "model": "Car model",
+    "year": "Car year",
+    "city": "Your city",
+    "type": "Car type",
+    "transmission": "Transmission",
+    "fuel_type": "Fuel type",
+    "capacity": "Seating capacity",
+    "num_doors": "Number of doors",
+    "price": "Price per day",
+    "deposit": "Security deposit"
   },
+  "buttons": {
+    "image": "Attach image",
+    "publish": "Publish"
+  }
+},
 
   "MyReservationCard": {
     "day": "day",

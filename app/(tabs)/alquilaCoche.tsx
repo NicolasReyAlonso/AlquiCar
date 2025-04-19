@@ -5,7 +5,6 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
 
 const carModels = {
   Seat: ['Ibiza', 'León', 'Ateca'],
@@ -13,66 +12,137 @@ const carModels = {
   Ford: ['Fiesta', 'Focus', 'Mustang'],
 };
 
+const types = ['Sedan', 'SUV', 'Truck', 'Sports', 'Hatchback', 'Convertible'];
+const transmissions = ['Manual', 'Automatic'];
+const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
+
 export default function AlquilarCoche() {
+  const { t } = useTranslation();
+
   const [brand, setBrand] = useState<keyof typeof carModels>('Seat');
   const [model, setModel] = useState(carModels['Seat'][0]);
   const [year, setYear] = useState('');
   const [city, setCity] = useState('');
+  const [type, setType] = useState(types[0]);
+  const [transmission, setTransmission] = useState(transmissions[0]);
+  const [fuelType, setFuelType] = useState(fuelTypes[0]);
+  const [capacity, setCapacity] = useState('');
+  const [numDoors, setNumDoors] = useState('');
   const [price, setPrice] = useState('');
-
-  const { t } = useTranslation();
+  const [deposit, setDeposit] = useState('');
 
   const handleSubmit = () => {
-    if (!brand || !model || !year || !city || !price) {
+    if (!brand || !model || !year || !city || !type || !transmission || !fuelType || !capacity || !numDoors || !price) {
       alert('Faltan campos por rellenar');
       return;
     }
+
     const numericYear = Number(year);
     if (isNaN(numericYear) || numericYear < 1900 || numericYear >= 2026) {
-    alert('Debe ser un año válido');
-    return;
+      alert('Debe ser un año válido');
+      return;
     }
+
     if (city.length < 3) {
       alert('La ciudad debe tener al menos 3 caracteres');
       return;
     }
+
+    const numericCapacity = Number(capacity);
+    const numericNumDoors = Number(numDoors);
     const numericPrice = Number(price);
-    if (isNaN(numericPrice) || numericPrice <= 0) {
-    alert('El precio debe ser un número válido mayor que 0');
-    return;
+    const numericDeposit = Number(deposit || 0);
+
+    if (
+      isNaN(numericCapacity) || numericCapacity <= 0 ||
+      isNaN(numericNumDoors) || numericNumDoors <= 0 ||
+      isNaN(numericPrice) || numericPrice <= 0
+    ) {
+      alert('Los valores numéricos deben ser válidos y mayores que 0');
+      return;
     }
-    console.log(`Marca: ${brand}, Modelo: ${model}, Año: ${year}, Ciudad: ${city}, Precio: ${price}`);
+
+    const vehicle = {
+      brand,
+      model,
+      year: numericYear,
+      city,
+      type,
+      transmission,
+      fuel_type: fuelType,
+      capacity: numericCapacity,
+      num_doors: numericNumDoors,
+      daily_price: numericPrice,
+      deposit: numericDeposit,
+    };
+
+    console.log('Vehículo a enviar:', vehicle);
+    // Aquí iría la llamada al backend
   };
 
   return (
     <ScrollView contentContainerStyle={styles.formContainer}>
       <ThemedView style={styles.form}>
         <ThemedText style={styles.title} type="title">{t('RentYourVehicle.title')}</ThemedText>
+
+        {/* Marca y modelo */}
         <Text>{t('RentYourVehicle.card.brand')}</Text>
-        <Picker
-          selectedValue={brand}
-          onValueChange={(itemValue) => {
-            setBrand(itemValue as keyof typeof carModels);
-            setModel(carModels[itemValue as keyof typeof carModels][0]);
-          }}
-          style={styles.input}
-        >
+        <Picker selectedValue={brand} onValueChange={(item) => {
+          setBrand(item as keyof typeof carModels);
+          setModel(carModels[item as keyof typeof carModels][0]);
+        }} style={styles.input}>
           {Object.keys(carModels).map((brand) => (
             <Picker.Item key={brand} label={brand} value={brand} />
           ))}
         </Picker>
+
         <Text>{t('RentYourVehicle.card.model')}</Text>
         <Picker selectedValue={model} onValueChange={setModel} style={styles.input}>
           {carModels[brand].map((model) => (
             <Picker.Item key={model} label={model} value={model} />
           ))}
         </Picker>
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} />
+
+        {/* Año y ciudad */}
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} keyboardType="numeric" />
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.city')} value={city} onChangeText={setCity} />
+
+        {/* Tipo de coche */}
+        <Text>{t('RentYourVehicle.card.type')}</Text>
+        <Picker selectedValue={type} onValueChange={setType} style={styles.input}>
+          {types.map((type) => (
+            <Picker.Item key={type} label={type} value={type} />
+          ))}
+        </Picker>
+
+        {/* Transmisión */}
+        <Text>{t('RentYourVehicle.card.transmission')}</Text>
+        <Picker selectedValue={transmission} onValueChange={setTransmission} style={styles.input}>
+          {transmissions.map((t) => (
+            <Picker.Item key={t} label={t} value={t} />
+          ))}
+        </Picker>
+
+        {/* Combustible */}
+        <Text>{t('RentYourVehicle.card.fuel_type')}</Text>
+        <Picker selectedValue={fuelType} onValueChange={setFuelType} style={styles.input}>
+          {fuelTypes.map((f) => (
+            <Picker.Item key={f} label={f} value={f} />
+          ))}
+        </Picker>
+
+        {/* Plazas y puertas */}
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.capacity')} value={capacity} onChangeText={setCapacity} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.num_doors')} value={numDoors} onChangeText={setNumDoors} keyboardType="numeric" />
+
+        {/* Precio y depósito */}
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.price')} value={price} onChangeText={setPrice} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.deposit')} value={deposit} onChangeText={setDeposit} keyboardType="numeric" />
+
         <TouchableOpacity style={styles.buttonAd}>
           <Text style={styles.buttonTextAd}>{t('RentYourVehicle.buttons.image')}</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.buttonPub} onPress={handleSubmit}>
           <Text style={styles.buttonTextPub}>{t('RentYourVehicle.buttons.publish')}</Text>
         </TouchableOpacity>

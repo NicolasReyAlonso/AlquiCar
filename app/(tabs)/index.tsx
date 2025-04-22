@@ -49,7 +49,7 @@ const index = () => {
 
   const handleBuscar = async () => {
     try {
-      const response = await fetch('http://localhost:3000/vehicles/');
+      const response = await fetch('https://localhost:3000/vehicles/');
       const allVehicles = await response.json();
 
       const filteredVehicles = allVehicles.filter(vehicle => {

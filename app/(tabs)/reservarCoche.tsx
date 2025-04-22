@@ -190,6 +190,17 @@ export default function ConfirmacionReserva() {
         <Text style={styles.total}>{precioTotal}€</Text>
       </View>
 
+      <View style={styles.resumenContainer}>
+        <Text style={styles.resumenTitulo}>Resumen de la Reserva</Text>
+        <Text style={styles.resumenText}>Vehículo: {reserva.marca}</Text>
+        <Text style={styles.resumenText}>Tipo: {reserva.tipo}</Text>
+        <Text style={styles.resumenText}>Ubicación: {reserva.ciudad}</Text>
+        <Text style={styles.resumenText}>Fecha de recogida: {pickupDate ? pickupDate.toLocaleDateString() : 'No seleccionada'}</Text>
+        <Text style={styles.resumenText}>Fecha de devolución: {returnDate ? returnDate.toLocaleDateString() : 'No seleccionada'}</Text>
+        <Text style={styles.resumenTotal}>Total: {precioTotal}€</Text>
+      </View>
+
+
       <TouchableOpacity style={styles.button} onPress={handleConfirmReservation}>
         <Text style={styles.buttonText}>{t('reserveVehicle.buttons.confirmation')}</Text>
       </TouchableOpacity>
@@ -313,6 +324,35 @@ total: {
   },
   dateContainer: {
     marginBottom: 15, // Separación entre el título y el input
+  },
+  resumenContainer: {
+    backgroundColor: "#F5F5F5",
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 15,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  resumenTitulo: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: theme.colors.primary,
+    marginBottom: 10,
+  },
+  resumenText: {
+    fontSize: 16,
+    color: "#444",
+    marginBottom: 5,
+  },
+  resumenTotal: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#3B6ED5",
+    textAlign: "right",
+    marginTop: 10,
   },
 });
 

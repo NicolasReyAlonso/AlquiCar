@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import VehicleCard from "@/components/templates/VehicleCard"; 
 import { useRouter } from 'expo-router';
@@ -12,7 +12,7 @@ export default function VehicleDetails() {
   useEffect(() => {
     const fetchVehicle = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/vehicles/${id}`);
+        const response = await fetch(`https://localhost:3000/vehicles/${id}`);
         const data = await response.json();
         setVehicle(data[0]); 
       } catch (error) {
@@ -25,10 +25,14 @@ export default function VehicleDetails() {
     }
   }, [id]);
 
-  if (!vehicle) return <Text style={{ color: 'red', fontSize: 20 }}>Cargando vehículo...</Text>;
-
+  if (!vehicle) return (
+    <View style={styles.noVehiclesContainer}>
+      <Text style={styles.noVehiclesText}>No hay vehículos disponibles en este momento.</Text>
+    </View>
+  );
   return (
     <View>
+
       <VehicleCard
         brand={vehicle.brand}
         seats={vehicle.capacity}
@@ -36,7 +40,7 @@ export default function VehicleDetails() {
         mileage={vehicle.mileage || "Desconocido"}
         pickupLocation={vehicle.city || "Ubicación no disponible"}
         price={`€${vehicle.daily_price}`}
-        imageUrl={vehicle.imageUrl || "https://via.placeholder.com/150"}
+        imageUrl={vehicle.imageUrl}
         onReserve={() => router.push({
           pathname: "reservarCoche", 
           params: {
@@ -45,10 +49,26 @@ export default function VehicleDetails() {
             type: vehicle.type,
             pickupLocation: vehicle.city || "Ubicación no disponible",
             price: `€${vehicle.daily_price}`,
-            imageUrl: vehicle.imageUrl || "https://via.placeholder.com/150"
+            imageUrl: vehicle.imageUrl
           }
+          
         })}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  noVehiclesContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    marginTop: 50,
+  },
+  noVehiclesText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#888",
+    textAlign: "center",
+  },
+});

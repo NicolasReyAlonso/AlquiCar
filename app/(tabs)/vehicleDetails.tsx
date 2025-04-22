@@ -31,30 +31,38 @@ export default function VehicleDetails() {
     </View>
   );
   return (
-    <View>
+    <VehicleCard
+      brand={vehicle.brand}
+      model={vehicle.model}
+      year={vehicle.year}
+      seats={vehicle.capacity}
+      type={vehicle.type}
+      transmission={vehicle.transmission}
+      fuelType={vehicle.fuel_type}
+      numDoors={vehicle.num_doors}
+      deposit={`€${vehicle.deposit}`}
+      mileage={vehicle.mileage || "Desconocido"}
+      pickupLocation={vehicle.city || "Ubicación no disponible"}
+      price={`€${vehicle.daily_price}`}
+      imageUrl={vehicle.imageUrl}
+      onReserve={() => router.push({
+        pathname: "reservarCoche",
+        params: {
+          brand: vehicle.brand,
+          model: vehicle.model,
+          year: vehicle.year,
+          seats: vehicle.capacity,
+          type: vehicle.type,
+          transmission: vehicle.transmission,
+          fuelType: vehicle.fuel_type,
+          numDoors: vehicle.num_doors,
+          deposit: `€${vehicle.deposit}`,
+          price: `€${vehicle.daily_price}`,
+          imageUrl: vehicle.imageUrl
+        }
+      })}
+    />
 
-      <VehicleCard
-        brand={vehicle.brand}
-        seats={vehicle.capacity}
-        type={vehicle.type}
-        mileage={vehicle.mileage || "Desconocido"}
-        pickupLocation={vehicle.city || "Ubicación no disponible"}
-        price={`€${vehicle.daily_price}`}
-        imageUrl={vehicle.imageUrl}
-        onReserve={() => router.push({
-          pathname: "reservarCoche", 
-          params: {
-            brand: vehicle.brand,
-            seats: vehicle.capacity,
-            type: vehicle.type,
-            pickupLocation: vehicle.city || "Ubicación no disponible",
-            price: `€${vehicle.daily_price}`,
-            imageUrl: vehicle.imageUrl
-          }
-          
-        })}
-      />
-    </View>
   );
 }
 

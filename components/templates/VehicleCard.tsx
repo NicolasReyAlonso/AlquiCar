@@ -6,8 +6,14 @@ import i18n from 'i18next';
 
 interface VehicleCardProps {
   brand: string;
+  model: string;  
+  year: number;  
   seats: number;
   type: string;
+  transmission: string; 
+  fuelType: string; 
+  numDoors: number;  
+  deposit: string;  
   mileage: string;
   pickupLocation: string;
   price: string;
@@ -15,10 +21,17 @@ interface VehicleCardProps {
   onReserve: () => void;
 }
 
+
 const VehicleCard: React.FC<VehicleCardProps> = ({
   brand,
+  model,  // ✅ Ahora sí está definido
+  year,  // ✅ Ahora sí está definido
   seats,
   type,
+  transmission,  // ✅ Ahora sí está definido
+  fuelType,  // ✅ Ahora sí está definido
+  numDoors,  // ✅ Ahora sí está definido
+  deposit,  // ✅ Ahora sí está definido
   mileage,
   pickupLocation,
   price,
@@ -33,13 +46,16 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
   return (
     <View style={isDesktop ? styles.cardDesktop : styles.cardMobile}>
       <View style={styles.infoContainer}>
-        <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand}</Text>
-        <View style={styles.spacing} />
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{seats} {t('VehicleCard.places')} {type}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{t('VehicleCard.mileage')}: {mileage}</Text>
-        <View style={styles.spacing} />
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{t('VehicleCard.location')}: {pickupLocation}</Text>
+        <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand} {model} ({year})</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Tipo: {type}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Transmisión: {transmission}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Combustible: {fuelType}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Capacidad: {seats} pasajeros</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Puertas: {numDoors}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Depósito: {deposit}</Text>
+        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>Precio Diario: {price}</Text>
       </View>
+
       <View style={styles.rightContainer}>
         <Image source={{ uri: imageUrl }} style={isDesktop ? styles.imageDesktop : styles.imageMobile} />
         <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t('VehicleCard.day')}</Text>

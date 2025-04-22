@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, Dimensions, ScrollView } from 'react-native';
-import theme from "@/components/Theme";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
+import theme from '@/components/Theme';
 import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
 
 const { width } = Dimensions.get('window');
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
   const [birthYear, setBirthYear] = useState('');
+  const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
+  const [phone, setPhone] = useState('');
+  const [dni, setDni] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,7 +36,17 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = () => {
-    if (!name || !birthYear || !city || !email || !password || !confirmPassword) {
+    if (
+      !name ||
+      !birthYear ||
+      !address ||
+      !city ||
+      !phone ||
+      !dni ||
+      !email ||
+      !password ||
+      !confirmPassword
+    ) {
       alert('Faltan campos por rellenar');
       return;
     }
@@ -38,8 +59,20 @@ export default function RegisterScreen() {
       alert('Debe ser un año válido');
       return;
     }
+    if (address.length < 5) {
+      alert('La dirección debe tener al menos 5 caracteres');
+      return;
+    }
     if (city.length < 3) {
       alert('La ciudad debe tener al menos 3 caracteres');
+      return;
+    }
+    if (!/^\d{9}$/.test(phone)) {
+      alert('El teléfono debe tener 9 dígitos');
+      return;
+    }
+    if (!/^\d{8}[A-Za-z]$/.test(dni)) {
+      alert('El DNI debe tener 8 números seguidos de una letra');
       return;
     }
     if (!isValidEmail(email)) {
@@ -54,19 +87,74 @@ export default function RegisterScreen() {
       alert('Las contraseñas no coinciden');
       return;
     }
-    console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Ciudad: ${city}, Email: ${email}, Contraseña: ${password}`);
+
+    console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Dirección: ${address}, Ciudad: ${city}, Teléfono: ${phone}, DNI: ${dni}, Email: ${email}, Contraseña: ${password}`);
+    // Fetch/post al backend.
   };
 
   return (
     <ScrollView contentContainerStyle={styles.outerContainer}>
       <View style={styles.container}>
         <Text style={styles.headerText}>{t('Register.title')}</Text>
-        <TextInput style={styles.input} placeholder={t('Register.card.name')} value={name} onChangeText={setName} />
-        <TextInput style={styles.input} placeholder={t('Register.card.birthday')} value={birthYear} onChangeText={setBirthYear} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder={t('Register.card.name')} value={city} onChangeText={setCity} />
-        <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
-        <TextInput style={styles.input} placeholder={t('Register.card.password')} value={password} onChangeText={setPassword} secureTextEntry />
-        <TextInput style={styles.input} placeholder={t('Register.card.repeatPassword')} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+        <TextInput
+          style={styles.input}
+          placeholder={t('Register.card.name')}
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={t('Register.card.birthday')}
+          value={birthYear}
+          onChangeText={setBirthYear}
+          keyboardType="numeric"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={t('Register.card.address')}
+          value={address}
+          onChangeText={setAddress}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={t('Register.card.city')}
+          value={city}
+          onChangeText={setCity}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={t('Register.card.phone')}
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={t('Register.card.dni')}
+          value={dni}
+          onChangeText={setDni}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={t('Register.card.password')}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={t('Register.card.repeatPassword')}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>{t('Register.buttons.register')}</Text>
         </TouchableOpacity>

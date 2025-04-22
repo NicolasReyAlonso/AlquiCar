@@ -49,19 +49,26 @@
   },
 
   "RentYourVehicle": {
-    "title": "Publier ta voiture",
+    "title": "Publier votre voiture",
     "card": {
       "brand": "Marque de la voiture",
       "model": "Modèle de la voiture",
       "year": "Année de la voiture",
-      "city": "Ta ville",
-      "price": "Prix par jour"
+      "city": "Votre ville",
+      "price": "Prix par jour",
+      "type": "Type de voiture",
+      "transmission": "Transmission",
+      "fuel_type": "Type de carburant",
+      "capacity": "Nombre de sièges",
+      "num_doors": "Nombre de portes",
+      "deposit": "Dépôt"
     },
     "buttons": {
       "image": "Joindre une image",
       "publish": "Publier"
     }
   },
+
 
   "MyReservationCard": {
     "day": "jour",
@@ -119,5 +126,28 @@
       "reservations": "Mes Réservations",
       "publications": "Mes Annonces"
     }
+  },
+
+  "Incidencias": {
+  "titulo": "Titre de l'incident",
+  "descripcion": "Description",
+  "crear": "Créer un incident",
+  "reserva": "ID de réservation",
+  "id": "ID de l'incident",
+  "tipo": "Type d'incident",
+  "usuario": "Utilisateur",
+  "plataforma": "Plateforme",
+  "misIncidencias": "Mes incidents",
+  "sinIncidencias": "Aucun incident signalé",
+  "estado": "État",
+  "fecha": "Date",
+  "categoria": "Catégorie",
+  "formatoFecha": "JJ/MM/AAAA",
+  "problema": "Décrivez le problème",
+  "enviar": "Envoyer",
+  "botones": {
+    "guardar": "Enregistrer",
+    "cancelar": "Annuler"
   }
+}
 }

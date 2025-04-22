@@ -49,19 +49,25 @@
   },
 
   "RentYourVehicle": {
-    "title": "Auto veröffentlichen",
-    "card": {
-      "brand": "Automarke",
-      "model": "Automodell",
-      "year": "Baujahr",
-      "city": "Deine Stadt",
-      "price": "Preis pro Tag"
-    },
-    "buttons": {
-      "image": "Bild anhängen",
-      "publish": "Veröffentlichen"
-    }
+  "title": "Dein Auto veröffentlichen",
+  "card": {
+    "brand": "Automarke",
+    "model": "Automodell",
+    "year": "Baujahr",
+    "city": "Deine Stadt",
+    "price": "Preis pro Tag",
+    "type": "Autotyp",
+    "transmission": "Getriebe",
+    "fuel_type": "Kraftstoffart",
+    "capacity": "Anzahl der Sitze",
+    "num_doors": "Anzahl der Türen",
+    "deposit": "Kaution"
   },
+  "buttons": {
+    "image": "Bild anhängen",
+    "publish": "Veröffentlichen"
+  }
+},
 
   "MyReservationCard": {
     "day": "Tag",
@@ -119,5 +125,29 @@
       "reservations": "Meine Reservierungen",
       "publications": "Meine Inserate"
     }
+  },
+
+  "Incidencias": {
+  "titulo": "Titel der Störung",
+  "descripcion": "Beschreibung",
+  "crear": "Störung erstellen",
+  "reserva": "Reservierungs-ID",
+  "id": "Störungs-ID",
+  "tipo": "Störungstyp",
+  "usuario": "Benutzer",
+  "plataforma": "Plattform",
+  "misIncidencias": "Meine Störungen",
+  "sinIncidencias": "Keine Störungen gemeldet",
+  "estado": "Status",
+  "fecha": "Datum",
+  "categoria": "Kategorie",
+  "formatoFecha": "TT/MM/JJJJ",
+  "problema": "Beschreibe das Problem",
+  "enviar": "Senden",
+  "botones": {
+    "guardar": "Speichern",
+    "cancelar": "Abbrechen"
   }
+}
+
 }

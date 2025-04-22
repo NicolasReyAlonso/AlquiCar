@@ -38,6 +38,8 @@ export default function LoginScreen() {
     }
     await AsyncStorage.setItem("token", data.token);
     await AsyncStorage.setItem("isLoggedIn", "true");
+    await AsyncStorage.setItem("email", email); //
+    navigation.navigate("account");
   };
 
   const handleRegister = () => {

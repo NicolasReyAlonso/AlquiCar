@@ -106,6 +106,15 @@ export default function Layout({ children }: LayoutProps) {
             <TouchableOpacity onPress={() => changeLanguage('en')}>
               <Text style={styles.languageOption}>🇬🇧 English</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeLanguage('fr')}>
+               <Text style={styles.languageOption}>🇫🇷 Français</Text>
+             </TouchableOpacity>
+             <TouchableOpacity onPress={() => changeLanguage('de')}>
+               <Text style={styles.languageOption}>🇩🇪 Deutsch</Text>
+             </TouchableOpacity>
+             <TouchableOpacity onPress={() => changeLanguage('it')}>
+               <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
+             </TouchableOpacity>
           </View>
         )}
 

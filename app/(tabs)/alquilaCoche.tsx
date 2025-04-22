@@ -110,12 +110,14 @@ export default function AlquilarCoche() {
         Alert.alert("Error", "Usuario no autenticado");
         return;
       }
-
       const email = await AsyncStorage.getItem("email");
 
       const userRes = await fetch(`https://localhost:3000/users/email/${email}`);
-      const userData = await userRes.json();
 
+      //const userRes = await fetch(`https://localhost:3000/users/getdata/${token}`);
+      console.log(userRes);
+      const userData = await userRes.json();
+      console.log(userData)
       const owner_id = userData.id;
 
       const vehicle = {

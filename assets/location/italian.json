@@ -55,13 +55,20 @@
       "model": "Modello dell'auto",
       "year": "Anno dell'auto",
       "city": "La tua città",
-      "price": "Prezzo al giorno"
+      "price": "Prezzo al giorno",
+      "type": "Tipo di auto",
+      "transmission": "Trasmissione",
+      "fuel_type": "Tipo di carburante",
+      "capacity": "Numero di posti",
+      "num_doors": "Numero di porte",
+      "deposit": "Deposito"
     },
     "buttons": {
       "image": "Allega immagine",
       "publish": "Pubblica"
     }
   },
+
 
   "MyReservationCard": {
     "day": "giorno",
@@ -119,5 +126,29 @@
       "reservations": "Le Mie Prenotazioni",
       "publications": "Le Mie Pubblicazioni"
     }
+  },
+
+  "Incidencias": {
+  "titulo": "Titolo dell'incidente",
+  "descripcion": "Descrizione",
+  "crear": "Crea incidente",
+  "reserva": "ID della prenotazione",
+  "id": "ID dell'incidente",
+  "tipo": "Tipo di incidente",
+  "usuario": "Utente",
+  "plataforma": "Piattaforma",
+  "misIncidencias": "I miei incidenti",
+  "sinIncidencias": "Nessun incidente segnalato",
+  "estado": "Stato",
+  "fecha": "Data",
+  "categoria": "Categoria",
+  "formatoFecha": "GG/MM/AAAA",
+  "problema": "Descrivi il problema",
+  "enviar": "Invia",
+  "botones": {
+    "guardar": "Salva",
+    "cancelar": "Annulla"
   }
+}
+
 }

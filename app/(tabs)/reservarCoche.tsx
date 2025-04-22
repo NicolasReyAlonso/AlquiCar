@@ -123,18 +123,20 @@ export default function ConfirmacionReserva() {
         </View>
       </View>
 
-      <View style={styles.dateRow}>
-        <Text style={styles.subtitle}>{t('reserveVehicle.startDate')}</Text>
-        <TextInput
-          placeholder={t('reserveVehicle.startDate')}
-          placeholderTextColor="gray"
-          value={pickupDate ? pickupDate.toLocaleDateString() : ''}
-          editable={false}
-          style={styles.dateInput}
-        />
-        <TouchableOpacity onPress={openPickupDatePicker}>
-          <Icon name="calendar" size={24} color="gray" />
-        </TouchableOpacity>
+      <View style={styles.dateContainer}>
+        <Text style={styles.subtitle}>{t('reserveVehicle.startDate')}</Text> {/* Título separado */}
+        <View style={styles.dateRow}>
+          <TextInput
+            placeholder="Selecciona la fecha"
+            placeholderTextColor="gray"
+            value={pickupDate ? pickupDate.toLocaleDateString() : ''}
+            editable={false}
+            style={styles.dateInput}
+          />
+          <TouchableOpacity onPress={openPickupDatePicker}>
+            <Icon name="calendar" size={22} color="#3B6ED5" />
+          </TouchableOpacity>
+        </View>
         <DatePickerModal
           locale="es"
           mode="single"
@@ -146,18 +148,21 @@ export default function ConfirmacionReserva() {
         />
       </View>
 
-      <View style={styles.dateRow}>
-        <Text style={styles.subtitle}>{t('reserveVehicle.finishDate')}</Text>
-        <TextInput
-          placeholder={t('reserveVehicle.finishDate')}
-          placeholderTextColor="gray"
-          value={returnDate ? returnDate.toLocaleDateString() : ''}
-          editable={false}
-          style={styles.dateInput}
-        />
-        <TouchableOpacity onPress={openReturnDatePicker}>
-          <Icon name="calendar" size={24} color="gray" />
-        </TouchableOpacity>
+
+      <View style={styles.dateContainer}>
+        <Text style={styles.subtitle}>{t('reserveVehicle.finishDate')}</Text> {/* Título separado */}
+        <View style={styles.dateRow}>
+          <TextInput
+            placeholder="Selecciona la fecha"
+            placeholderTextColor="gray"
+            value={returnDate ? returnDate.toLocaleDateString() : ''}
+            editable={false}
+            style={styles.dateInput}
+          />
+          <TouchableOpacity onPress={openReturnDatePicker}>
+            <Icon name="calendar" size={22} color="#3B6ED5" />
+          </TouchableOpacity>
+        </View>
         <DatePickerModal
           locale="es"
           mode="single"
@@ -169,15 +174,32 @@ export default function ConfirmacionReserva() {
         />
       </View>
 
+
       <Text style={styles.subtitle}>{t('reserveVehicle.duration')}</Text>
       <Text style={styles.text}>{dias} {t('reserveVehicle.days')}</Text>
 
-      <Text style={styles.subtitle}>{t('reserveVehicle.totalPrice')}</Text>
+
+
       <Text style={styles.text}>{t('reserveVehicle.vehiclePrice')}: {reserva.precioPorDia}€/{t('reserveVehicle.day')} × {dias} {t('reserveVehicle.days')} = {precioCoche}€</Text>
       <Text style={styles.text}>+</Text>
       <Text style={styles.text}>{t('reserveVehicle.insurancePrice')}: {precioSeguro}€</Text>
       <Text style={styles.text}>——————</Text>
-      <Text style={styles.total}>{t('reserveVehicle.total')}: {precioTotal}€</Text>
+
+      <View style={styles.totalContainer}>
+        <Text style={styles.total}>{t('reserveVehicle.totalPrice')}</Text>
+        <Text style={styles.total}>{precioTotal}€</Text>
+      </View>
+
+      <View style={styles.resumenContainer}>
+        <Text style={styles.resumenTitulo}>Resumen de la Reserva</Text>
+        <Text style={styles.resumenText}>Vehículo: {reserva.marca}</Text>
+        <Text style={styles.resumenText}>Tipo: {reserva.tipo}</Text>
+        <Text style={styles.resumenText}>Ubicación: {reserva.ciudad}</Text>
+        <Text style={styles.resumenText}>Fecha de recogida: {pickupDate ? pickupDate.toLocaleDateString() : 'No seleccionada'}</Text>
+        <Text style={styles.resumenText}>Fecha de devolución: {returnDate ? returnDate.toLocaleDateString() : 'No seleccionada'}</Text>
+        <Text style={styles.resumenTotal}>Total: {precioTotal}€</Text>
+      </View>
+
 
       <TouchableOpacity style={styles.button} onPress={handleConfirmReservation}>
         <Text style={styles.buttonText}>{t('reserveVehicle.buttons.confirmation')}</Text>
@@ -189,93 +211,148 @@ export default function ConfirmacionReserva() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
-    padding: 30,
+    padding: 20,
     backgroundColor: theme.colors.background,
+    flexGrow: 1,
   },
+  totalContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end", // Alinea a la derecha
+    alignItems: "center", // Asegura que los textos estén alineados verticalmente
+    marginTop: 30,
+  },
+total: {
+    fontSize: 28, // Tamaño más grande
+    fontWeight: "bold",
+    color: "#FFFFFF", // Color blanco para destacar
+    textAlign: "right",
+    paddingLeft: 10, // Separación con otros elementos
+  },
+
   header: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 34,
+    fontWeight: "bold",
     color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
+    textAlign: "center",
+    marginBottom: 20,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    borderRadius: 15,
+    padding: 15,
     marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 4,
   },
   image: {
-    width: 100,
+    width: 120,
     height: 100,
-    marginRight: 10,
+    borderRadius: 10,
+    marginRight: 15,
   },
   title: {
-    fontSize: 24,
-    color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#333",
   },
   text: {
-    color: theme.colors.text,
-    fontFamily: theme.fonts.regular,
+    fontSize: 18,
+    color: "#555",
   },
   subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 10,
-    color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
+    fontSize: 22,
+    fontWeight: "bold",
+    color: theme.colors.primary,
+    marginTop: 15,
   },
   dateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F9F9F9",
+    padding: 6,
+    borderRadius: 10,
     marginBottom: 20,
-  
+    marginRight: 800,
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
   dateInput: {
     fontSize: 18,
-    padding: 10,
-    width: '100%',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginRight: 10,
-    color: theme.colors.text,
-    fontFamily: theme.fonts.regular,
     flex: 1,
-  },
-  total: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: theme.colors.text,
-    fontFamily: theme.fonts.regular,
+    padding: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    backgroundColor: "#FFF",
+    marginRight: 10,
+    marginLeft: 20,
   },
   button: {
-    backgroundColor: '#4472C4',
-    paddingVertical: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-    
+    backgroundColor: "#3B6ED5",
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 30,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 5,
   },
   buttonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: "bold",
     color: "white",
-    fontFamily: theme.fonts.bold,
+    textTransform: "uppercase",
   },
   cancelText: {
-    fontSize: 20,
-    color: 'gray',
-    marginTop: 10,
-    textAlign: 'center',
-    marginBottom:30,
+    fontSize: 18,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 15,
   },
   seguro: {
     flexDirection: 'row',
     alignItems:'center',
+  },
+  dateContainer: {
+    marginBottom: 15, // Separación entre el título y el input
+  },
+  resumenContainer: {
+    backgroundColor: "#F5F5F5",
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 15,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  resumenTitulo: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: theme.colors.primary,
+    marginBottom: 10,
+  },
+  resumenText: {
+    fontSize: 16,
+    color: "#444",
+    marginBottom: 5,
+  },
+  resumenTotal: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#3B6ED5",
+    textAlign: "right",
+    marginTop: 10,
   },
 });
 

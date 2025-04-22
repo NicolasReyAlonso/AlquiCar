@@ -49,7 +49,7 @@ const index = () => {
 
   const handleBuscar = async () => {
     try {
-      const response = await fetch('http://localhost:3000/vehicles/');
+      const response = await fetch('https://localhost:3000/vehicles/');
       const allVehicles = await response.json();
 
       const filteredVehicles = allVehicles.filter(vehicle => {
@@ -155,7 +155,7 @@ const index = () => {
               </View>
 
               <Picker selectedValue={brand} onValueChange={(itemValue) => setBrand(itemValue)} style={styles.picker}>
-              <Picker.Item label="Selecciona una marca" value="" />
+              <Picker.Item label={t('Index.card.brand')} value="" />
               <Picker.Item label="Toyota" value="Toyota" />
               <Picker.Item label="Citroën" value="Citroën" />
               <Picker.Item label="Nissan" value="Nissan" />
@@ -163,7 +163,7 @@ const index = () => {
               </Picker>
 
               <TouchableOpacity style={styles.searchButton} onPress={handleBuscar}>
-              <Text style={styles.searchButtonText}>Buscar</Text>
+              <Text style={styles.searchButtonText}>{t('Index.buttons.search')}</Text>
               </TouchableOpacity>
               </View>
           </View>

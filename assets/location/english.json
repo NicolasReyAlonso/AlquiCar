@@ -10,7 +10,8 @@
       "origin": "Origin",
       "startDate": "Pick-up date",
       "finishDate": "Return date",
-      "hour": "Hour"
+      "hour": "Hour",
+      "brand": "Select a brand"
     }
   },
 

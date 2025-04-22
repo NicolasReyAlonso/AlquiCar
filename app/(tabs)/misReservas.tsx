@@ -7,6 +7,22 @@ import theme from "@/components/Theme";
 const misReservas = () => {
   const [reservations, setReservations] = useState([]);
 
+  const handleCancelReservation = async (brand) => {
+    try {
+      const reservasGuardadas = await AsyncStorage.getItem("reservas");
+      let reservas = reservasGuardadas ? JSON.parse(reservasGuardadas) : [];
+      reservas = reservas.filter(reserva => reserva.brand !== brand);
+      
+      await AsyncStorage.setItem("reservas", JSON.stringify(reservas));
+      setReservations(reservas);
+  
+      alert(`Reserva cancelada para ${brand}`);
+    } catch (error) {
+      console.error("Error al cancelar la reserva:", error);
+    }
+  };
+  
+
   useEffect(() => {
     const cargarReservas = async () => {
       try {
@@ -37,7 +53,7 @@ const misReservas = () => {
               date={reservation.date}
               status={reservation.status}
               imageUrl={reservation.imageUrl}
-              onCancel={() => alert(`Reserva cancelada para ${reservation.brand}`)}
+              onCancel={() => handleCancelReservation(reservation.brand)}
             />
           </View>
         ))

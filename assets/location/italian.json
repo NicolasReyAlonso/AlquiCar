@@ -10,7 +10,8 @@
       "origin": "Origine",
       "startDate": "Data di ritiro",
       "finishDate": "Data di restituzione",
-      "hour": "Ora"
+      "hour": "Ora",
+      "brand": "Seleziona un marchio"
     }
   },
 

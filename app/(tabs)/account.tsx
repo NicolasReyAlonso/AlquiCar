@@ -1,20 +1,46 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Button, Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
 
 export default function AccountPage() {
-  const nombre = "Nelson";
-  const email = "Nelso@ulpgc.es";
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const { t } = useTranslation();
-  
+
+  const [userName, setName] = useState('');
+  const [userEmail, setEmail] = useState('');
+
+  useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        Alert.alert("Error", "Usuario no autenticado");
+        return;
+      }
+
+      const response = await fetch(`https://localhost:3000/users/getdata/${token}`);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Error al obtener los datos");
+      }
+      setName(data[0].name);
+      setEmail(data[0].email)
+    } catch (error) {
+      Alert.alert("Error", (error as Error).message);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
   const handleReservas = () => {
     navigation.navigate("misReservas");
   };
@@ -30,10 +56,10 @@ export default function AccountPage() {
     <View style={styles.container}>
       <Text style={styles.title}>{t('Account.title')}</Text>
       <Image source={require('@/assets/images/avatar.png')} style={styles.avatar} />
-      <View style={styles.infoContainer}>
-        <Text style={styles.info}>{t('Account.name')} {nombre}</Text>
-        <Text style={styles.info}>Email: {email}</Text>
-      </View>
+  <View style={styles.infoContainer}>
+    <Text style={styles.info}>{t('Account.name')}: {userName}</Text>
+    <Text style={styles.info}>Email: {userEmail}</Text>
+  </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleReservas}>
           <Text style={styles.buttonText}>{t('Account.buttons.reservations')}</Text>

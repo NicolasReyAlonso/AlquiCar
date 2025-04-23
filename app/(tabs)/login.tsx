@@ -19,8 +19,6 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const userName = "Nelson@ulpgc.es";
-  const userPass = "Soy_Nelson1";
 
   const handleLogin = async () => {
     console.log("helo");

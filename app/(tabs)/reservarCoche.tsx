@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Switch, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Switch, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Alert } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 export default function ConfirmacionReserva() {
   const params = useLocalSearchParams();
@@ -29,59 +26,80 @@ export default function ConfirmacionReserva() {
   const closeReturnDatePicker = () => setReturnDatePickerVisible(false);
 
   const onPickupDateConfirm = (params: { date: Date | undefined }) => {
-    if (params.date) {
-      setPickupDate(params.date);
-    }
+    if (params.date) setPickupDate(params.date);
     closePickupDatePicker();
   };
 
   const onReturnDateConfirm = (params: { date: Date | undefined }) => {
-    if (params.date) {
-      setReturnDate(params.date);
-    }
+    if (params.date) setReturnDate(params.date);
     closeReturnDatePicker();
   };
 
   const obtenerPrecioNumerico = (precio: string) => {
-    const match = precio.match(/\d+/); 
+    const match = precio.match(/\d+/);
     return match ? Number(match[0]) : 0;
   };
 
   const handleConfirmReservation = async () => {
-    if (!pickupDate || !returnDate){
-      alert('Faltan campos por rellenar');
+    if (!pickupDate || !returnDate) {
+      alert("Faltan campos por rellenar");
+      return;
+    }
+  
+    if (!params.vehicleId) {
+      alert("Error: el ID del vehículo no se recibió correctamente.");
       return;
     }
   
     const nuevaReserva = {
-      brand: reserva.marca,
-      price: `${precioTotal}€`,
-      date: pickupDate.toLocaleDateString(),
-      status: "Confirmada",
-      imageUrl: reserva.imagen
+      vehicle_id: Number(params.vehicleId), // Convierte vehicleId a número
+      customer_id: "234e4567-e89b-12d3-a456-426614174111",
+      start_date: pickupDate.toISOString(),
+      end_date: returnDate.toISOString(),
+      total_price: Number(precioTotal), // Convierte precioTotal a número
     };
+    
+    
   
     try {
-      const reservasGuardadas = await AsyncStorage.getItem('reservas');
-      const reservas = reservasGuardadas ? JSON.parse(reservasGuardadas) : [];
-      reservas.push(nuevaReserva);
-      await AsyncStorage.setItem('reservas', JSON.stringify(reservas));
-      alert("Reserva confirmada y guardada en Mis Reservas");
+      const response = await fetch("https://localhost:3000/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuevaReserva),
+      });
+  
+      if (response.ok) {
+        alert("Reserva confirmada y guardada en el backend.");
+      } else {
+        const errorData = await response.json();
+        console.error("Detalles del error:", errorData);
+        alert("Hubo un problema al guardar la reserva.");
+      }
     } catch (error) {
-      console.error("Error al guardar la reserva:", error);
+      console.error("Error al conectar con el servidor:", error);
+      alert("Error de conexión al servidor.");
     }
   };
   
+  
+  
+  
+
   const reserva = {
-    marca: params.brand || 'Desconocido',
-    tipo: params.type || 'Desconocido',
+    marca: params.brand || "Desconocido",
+    tipo: params.type || "Desconocido",
     plazas: params.seats || 0,
-    transmision: 'Manual',
-    precioPorDia: obtenerPrecioNumerico(Array.isArray(params.price) ? params.price[0] : params.price || '0'),
-    imagen: params.imageUrl || 'https://via.placeholder.com/100',
+    transmision: "Manual",
+    precioPorDia: obtenerPrecioNumerico(Array.isArray(params.price) ? params.price[0] : params.price || "0"),
+    imagen: params.imageUrl || "https://via.placeholder.com/100",
     precioSeguroBase: 20,
-    ciudad: params.pickupLocation || 'Desconocido',
+    ciudad: params.pickupLocation || "Desconocido",
   };
+
+  useEffect(() => {
+    console.log("Parámetros recibidos en ConfirmacionReserva:", params); // Verifica que el ID del vehículo llega
+  }, []);
+  
 
   useEffect(() => {
     if (pickupDate && returnDate) {
@@ -98,38 +116,33 @@ export default function ConfirmacionReserva() {
   }, [seguro, precioCoche]);
 
   const calcularFechaCancelacion = () => {
-    if (!pickupDate) return ''; 
+    if (!pickupDate) return "";
     const fechaCancelacion = new Date(pickupDate);
     fechaCancelacion.setDate(pickupDate.getDate() - 7);
-    return fechaCancelacion.toLocaleDateString(); 
+    return fechaCancelacion.toLocaleDateString();
   };
 
   const fechaCancelacionMax = calcularFechaCancelacion();
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>{t('reserveVehicle.title')}</Text>
-
+      <Text style={styles.header}>{t("reserveVehicle.title")}</Text>
       <View style={styles.row}>
-        <Image
-          source={{ uri: Array.isArray(reserva.imagen) ? reserva.imagen[0] : reserva.imagen }}
-          style={styles.image}
-        />
+        <Image source={{ uri: reserva.imagen }} style={styles.image} />
         <View>
           <Text style={styles.title}>{reserva.marca}</Text>
           <Text style={styles.text}>{reserva.tipo} - {reserva.plazas} plazas</Text>
           <Text style={styles.text}>{reserva.transmision}</Text>
-          <Text style={styles.text}>{t('reserveVehicle.city')}: {reserva.ciudad}</Text>
+          <Text style={styles.text}>{t("reserveVehicle.city")}: {reserva.ciudad}</Text>
         </View>
       </View>
-
       <View style={styles.dateContainer}>
-        <Text style={styles.subtitle}>{t('reserveVehicle.startDate')}</Text> {/* Título separado */}
+        <Text style={styles.subtitle}>{t("reserveVehicle.startDate")}</Text>
         <View style={styles.dateRow}>
           <TextInput
             placeholder="Selecciona la fecha"
             placeholderTextColor="gray"
-            value={pickupDate ? pickupDate.toLocaleDateString() : ''}
+            value={pickupDate ? pickupDate.toLocaleDateString() : ""}
             editable={false}
             style={styles.dateInput}
           />
@@ -147,15 +160,13 @@ export default function ConfirmacionReserva() {
           validRange={{ startDate: new Date() }}
         />
       </View>
-
-
       <View style={styles.dateContainer}>
-        <Text style={styles.subtitle}>{t('reserveVehicle.finishDate')}</Text> {/* Título separado */}
+        <Text style={styles.subtitle}>{t("reserveVehicle.finishDate")}</Text>
         <View style={styles.dateRow}>
           <TextInput
             placeholder="Selecciona la fecha"
             placeholderTextColor="gray"
-            value={returnDate ? returnDate.toLocaleDateString() : ''}
+            value={returnDate ? returnDate.toLocaleDateString() : ""}
             editable={false}
             style={styles.dateInput}
           />
@@ -173,43 +184,24 @@ export default function ConfirmacionReserva() {
           validRange={{ startDate: new Date() }}
         />
       </View>
-
-
-      <Text style={styles.subtitle}>{t('reserveVehicle.duration')}</Text>
-      <Text style={styles.text}>{dias} {t('reserveVehicle.days')}</Text>
-
-
-
-      <Text style={styles.text}>{t('reserveVehicle.vehiclePrice')}: {reserva.precioPorDia}€/{t('reserveVehicle.day')} × {dias} {t('reserveVehicle.days')} = {precioCoche}€</Text>
+      <Text style={styles.subtitle}>{t("reserveVehicle.duration")}</Text>
+      <Text style={styles.text}>{dias} {t("reserveVehicle.days")}</Text>
+      <Text style={styles.text}>{t("reserveVehicle.vehiclePrice")}: {reserva.precioPorDia}€/día × {dias} días = {precioCoche}€</Text>
       <Text style={styles.text}>+</Text>
-      <Text style={styles.text}>{t('reserveVehicle.insurancePrice')}: {precioSeguro}€</Text>
+      <Text style={styles.text}>{t("reserveVehicle.insurancePrice")}: {precioSeguro}€</Text>
       <Text style={styles.text}>——————</Text>
-
       <View style={styles.totalContainer}>
-        <Text style={styles.total}>{t('reserveVehicle.totalPrice')}</Text>
+        <Text style={styles.total}>{t("reserveVehicle.totalPrice")}</Text>
         <Text style={styles.total}>{precioTotal}€</Text>
       </View>
-
-      <View style={styles.resumenContainer}>
-        <Text style={styles.resumenTitulo}>Resumen de la Reserva</Text>
-        <Text style={styles.resumenText}>Vehículo: {reserva.marca}</Text>
-        <Text style={styles.resumenText}>Tipo: {reserva.tipo}</Text>
-        <Text style={styles.resumenText}>Ubicación: {reserva.ciudad}</Text>
-        <Text style={styles.resumenText}>Fecha de recogida: {pickupDate ? pickupDate.toLocaleDateString() : 'No seleccionada'}</Text>
-        <Text style={styles.resumenText}>Fecha de devolución: {returnDate ? returnDate.toLocaleDateString() : 'No seleccionada'}</Text>
-        <Text style={styles.resumenTotal}>Total: {precioTotal}€</Text>
-      </View>
-
-
       <TouchableOpacity style={styles.button} onPress={handleConfirmReservation}>
-        <Text style={styles.buttonText}>{t('reserveVehicle.buttons.confirmation')}</Text>
+        <Text style={styles.buttonText}>{t("reserveVehicle.buttons.confirmation")}</Text>
       </TouchableOpacity>
-
-
-      <Text style={styles.cancelText}>{t('reserveVehicle.cancelDate')}: {fechaCancelacionMax}</Text>
+      <Text style={styles.cancelText}>{t("reserveVehicle.cancelDate")}: {fechaCancelacionMax}</Text>
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

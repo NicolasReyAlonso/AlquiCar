@@ -24,14 +24,14 @@ interface VehicleCardProps {
 
 const VehicleCard: React.FC<VehicleCardProps> = ({
   brand,
-  model,  // ✅ Ahora sí está definido
-  year,  // ✅ Ahora sí está definido
+  model,  
+  year,  
   seats,
   type,
-  transmission,  // ✅ Ahora sí está definido
-  fuelType,  // ✅ Ahora sí está definido
-  numDoors,  // ✅ Ahora sí está definido
-  deposit,  // ✅ Ahora sí está definido
+  transmission,  
+  fuelType,  
+  numDoors,  
+  deposit,  
   mileage,
   pickupLocation,
   price,

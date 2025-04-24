@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import MyReservationCard from "@/components/templates/MyReservationCard";
 import theme from "@/components/Theme";
 
 const misReservas = () => {
   const [reservations, setReservations] = useState([]);
 
-  const handleCancelReservation = async (brand) => {
+  const handleCancelReservation = async (reservationId) => {
     try {
-      const reservasGuardadas = await AsyncStorage.getItem("reservas");
-      let reservas = reservasGuardadas ? JSON.parse(reservasGuardadas) : [];
-      reservas = reservas.filter(reserva => reserva.brand !== brand);
-      
-      await AsyncStorage.setItem("reservas", JSON.stringify(reservas));
-      setReservations(reservas);
-  
-      alert(`Reserva cancelada para ${brand}`);
+      // Enviar solicitud DELETE al backend
+      const response = await fetch(`https://localhost:3000/reservations/${reservationId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Actualizar el estado eliminando la reserva cancelada
+        setReservations(reservations.filter(reserva => reserva.id !== reservationId));
+        alert("Reserva cancelada correctamente");
+      } else {
+        alert("Error al cancelar la reserva");
+      }
     } catch (error) {
       console.error("Error al cancelar la reserva:", error);
     }
   };
-  
 
   useEffect(() => {
     const cargarReservas = async () => {
       try {
-        const reservasGuardadas = await AsyncStorage.getItem("reservas");
-        const reservas = reservasGuardadas ? JSON.parse(reservasGuardadas) : [];
-
-        console.log("Reservas recuperadas en MisReservas.js:", reservas); 
-
-        setReservations(reservas);
+        // Obtener las reservas desde el backend
+        const response = await fetch("https://localhost:3000/reservations/customer/234e4567-e89b-12d3-a456-426614174111");
+        const reservas = await response.json();
+        setReservations(reservas); // Actualizar el estado con las reservas obtenidas
       } catch (error) {
         console.error("Error al cargar las reservas:", error);
       }
@@ -49,12 +49,13 @@ const misReservas = () => {
           <View key={index} style={styles.cardWrapper}>
             <MyReservationCard
               brand={reservation.brand}
-              price={reservation.price}
-              date={reservation.date}
-              status={reservation.status}
+              price={`${reservation.total_price}€`}
+              date={`${new Date(reservation.start_date).toLocaleDateString()} - ${new Date(reservation.end_date).toLocaleDateString()}`}
+              status={reservation.status || "Activa"}
               imageUrl={reservation.imageUrl}
-              onCancel={() => handleCancelReservation(reservation.brand)}
+              onCancel={() => handleCancelReservation(reservation.id)}
             />
+
           </View>
         ))
       )}

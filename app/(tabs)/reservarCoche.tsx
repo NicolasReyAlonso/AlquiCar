@@ -52,11 +52,11 @@ export default function ConfirmacionReserva() {
     }
   
     const nuevaReserva = {
-      vehicle_id: Number(params.vehicleId), // Convierte vehicleId a número
+      vehicle_id: Number(params.vehicleId), 
       customer_id: "234e4567-e89b-12d3-a456-426614174111",
       start_date: pickupDate.toISOString(),
       end_date: returnDate.toISOString(),
-      total_price: Number(precioTotal), // Convierte precioTotal a número
+      total_price: Number(precioTotal), 
     };
     
     
@@ -97,7 +97,7 @@ export default function ConfirmacionReserva() {
   };
 
   useEffect(() => {
-    console.log("Parámetros recibidos en ConfirmacionReserva:", params); // Verifica que el ID del vehículo llega
+    console.log("Parámetros recibidos en ConfirmacionReserva:", params); 
   }, []);
   
 
@@ -211,16 +211,16 @@ const styles = StyleSheet.create({
   },
   totalContainer: {
     flexDirection: "row",
-    justifyContent: "flex-end", // Alinea a la derecha
-    alignItems: "center", // Asegura que los textos estén alineados verticalmente
+    justifyContent: "flex-end", 
+    alignItems: "center", 
     marginTop: 30,
   },
 total: {
-    fontSize: 28, // Tamaño más grande
+    fontSize: 28, 
     fontWeight: "bold",
-    color: "#FFFFFF", // Color blanco para destacar
+    color: "#FFFFFF", 
     textAlign: "right",
-    paddingLeft: 10, // Separación con otros elementos
+    paddingLeft: 10,
   },
 
   header: {

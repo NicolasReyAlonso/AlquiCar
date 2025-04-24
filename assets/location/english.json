@@ -58,7 +58,7 @@
     "brand": "Car brand",
     "model": "Car model",
     "year": "Car year",
-    "city": "Your city",
+    "address": "Address",
     "type": "Car type",
     "transmission": "Transmission",
     "fuel_type": "Fuel type",

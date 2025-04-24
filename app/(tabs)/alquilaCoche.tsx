@@ -53,7 +53,7 @@ export default function AlquilarCoche() {
   const [brand, setBrand] = useState<keyof typeof carModels>('Toyota');
   const [model, setModel] = useState(carModels['Toyota'][0]);
   const [year, setYear] = useState('');
-  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
   const [type, setType] = useState(types[0]);
   const [transmission, setTransmission] = useState(transmissions[0]);
   const [fuelType, setFuelType] = useState(fuelTypes[0]);
@@ -82,7 +82,7 @@ export default function AlquilarCoche() {
   };
 
   const handleSubmit = async () => {
-    if (!brand || !model || !year || !city || !type || !transmission || !fuelType || !capacity || !numDoors || !price) {
+    if (!brand || !model || !year || !address || !type || !transmission || !fuelType || !capacity || !numDoors || !price) {
       alert('Faltan campos por rellenar');
       scrollRef.current?.scrollTo({ y: 0, animated: true });
       return;
@@ -93,6 +93,22 @@ export default function AlquilarCoche() {
     const numericNumDoors = Number(numDoors);
     const numericPrice = Number(price);
     const numericDeposit = Number(deposit || 0);
+
+    const geocodeAddress = async (address: string): Promise<{ lat: number, lon: number } | null> => {
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        const data = await response.json();
+        if (data.length > 0) {
+          return { lat: parseFloat(parseFloat(data[0].lat).toFixed(6)), lon: parseFloat(parseFloat(data[0].lon).toFixed(6)) };
+        } else {
+          return null;
+        }
+      } catch (error) {
+        console.error('Error al geocodificar:', error);
+        return null;
+      }
+    };
+    
 
     if (
       isNaN(numericYear) || numericYear < 1900 || numericYear > 2025 ||
@@ -118,6 +134,12 @@ export default function AlquilarCoche() {
       console.log(userData)
       const owner_id = userData[0].id;
 
+      const coords = await geocodeAddress(address);
+      if (!coords) {
+        alert('No se pudo encontrar la ubicación para esa dirección');
+        return;
+      }
+
       const vehicle = {
         owner_id,
         brand,
@@ -130,7 +152,8 @@ export default function AlquilarCoche() {
         num_doors: numericNumDoors,
         daily_price: numericPrice,
         deposit: numericDeposit,
-        //city,
+        latitude: coords.lat,
+        longitude: coords.lon
       };
 
       console.log(vehicle)
@@ -150,7 +173,7 @@ export default function AlquilarCoche() {
 
       alert('Vehículo publicado correctamente');
       setYear('');
-      setCity('');
+      setAddress('');
       setCapacity('');
       setNumDoors('');
       setPrice('');
@@ -186,7 +209,8 @@ export default function AlquilarCoche() {
         </Picker>
 
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.city')} value={city} onChangeText={setCity} />
+        <Text>{t('RentYourVehicle.card.address')}</Text>
+        <TextInput style={styles.input} placeholder="Calle Pepito, 33, Las Palmas" value={address} onChangeText={setAddress} />
 
         <Text>{t('RentYourVehicle.card.type')}</Text>
         <Picker selectedValue={type} onValueChange={setType} style={styles.input}>

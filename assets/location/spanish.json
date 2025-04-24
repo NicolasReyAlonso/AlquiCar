@@ -58,7 +58,7 @@
         "brand": "Marca del coche",
         "model": "Modelo del coche",
         "year": "Año del coche",
-        "city": "Tu ciudad",
+        "address": "Dirección",
         "price": "Precio por día",
         "type": "Tipo de coche",
         "transmission": "Transmisión",

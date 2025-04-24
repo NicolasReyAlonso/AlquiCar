@@ -55,7 +55,7 @@
       "brand": "Marque de la voiture",
       "model": "Modèle de la voiture",
       "year": "Année de la voiture",
-      "city": "Votre ville",
+      "address": "Adresse",
       "price": "Prix par jour",
       "type": "Type de voiture",
       "transmission": "Transmission",

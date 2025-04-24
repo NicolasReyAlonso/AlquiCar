@@ -55,7 +55,7 @@
     "brand": "Automarke",
     "model": "Automodell",
     "year": "Baujahr",
-    "city": "Deine Stadt",
+    "address": "Adresse",
     "price": "Preis pro Tag",
     "type": "Autotyp",
     "transmission": "Getriebe",

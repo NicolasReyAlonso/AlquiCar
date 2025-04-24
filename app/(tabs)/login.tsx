@@ -19,8 +19,6 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const userName = "Nelson@ulpgc.es";
-  const userPass = "Soy_Nelson1";
 
   const handleLogin = async () => {
     console.log("helo");
@@ -38,7 +36,6 @@ export default function LoginScreen() {
     }
     await AsyncStorage.setItem("token", data.token);
     await AsyncStorage.setItem("isLoggedIn", "true");
-    await AsyncStorage.setItem("email", email); //
     navigation.navigate("account");
   };
 

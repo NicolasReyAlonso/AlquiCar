@@ -10,7 +10,8 @@
       "origin": "Origin",
       "startDate": "Pick-up date",
       "finishDate": "Return date",
-      "hour": "Hour"
+      "hour": "Hour",
+      "brand": "Select a brand"
     }
   },
 
@@ -57,7 +58,7 @@
     "brand": "Car brand",
     "model": "Car model",
     "year": "Car year",
-    "city": "Your city",
+    "address": "Address",
     "type": "Car type",
     "transmission": "Transmission",
     "fuel_type": "Fuel type",

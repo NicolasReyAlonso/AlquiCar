@@ -10,7 +10,8 @@
       "origin": "Herkunft",
       "startDate": "Abholdatum",
       "finishDate": "Rückgabedatum",
-      "hour": "Uhrzeit"
+      "hour": "Uhrzeit",
+      "brand": "Wählen Sie eine Marke aus"
     }
   },
 
@@ -54,7 +55,7 @@
     "brand": "Automarke",
     "model": "Automodell",
     "year": "Baujahr",
-    "city": "Deine Stadt",
+    "address": "Adresse",
     "price": "Preis pro Tag",
     "type": "Autotyp",
     "transmission": "Getriebe",

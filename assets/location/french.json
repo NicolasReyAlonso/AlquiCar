@@ -10,7 +10,8 @@
       "origin": "Origine",
       "startDate": "Date de prise en charge",
       "finishDate": "Date de retour",
-      "hour": "Heure"
+      "hour": "Heure",
+      "brand": "Sélectionnez une marque"
     }
   },
 
@@ -54,7 +55,7 @@
       "brand": "Marque de la voiture",
       "model": "Modèle de la voiture",
       "year": "Année de la voiture",
-      "city": "Votre ville",
+      "address": "Adresse",
       "price": "Prix par jour",
       "type": "Type de voiture",
       "transmission": "Transmission",

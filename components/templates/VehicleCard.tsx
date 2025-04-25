@@ -18,6 +18,7 @@ interface VehicleCardProps {
   pickupLocation: string;
   price: string;
   imageUrl: string;
+  adress: string;
   onReserve: () => void;
 }
 
@@ -36,6 +37,7 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
   pickupLocation,
   price,
   imageUrl,
+  address,
   onReserve,
 }) => {
   const { width } = useWindowDimensions(); 
@@ -52,8 +54,9 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Combustible: {fuelType}</Text>
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Capacidad: {seats} pasajeros</Text>
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Puertas: {numDoors}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Depósito: {deposit}</Text>
-        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>Precio Diario: {price}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Fianza: {deposit}</Text>
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Origen: {address}</Text>
+
       </View>
 
       <View style={styles.rightContainer}>

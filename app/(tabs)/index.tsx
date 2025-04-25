@@ -118,11 +118,7 @@ const index = () => {
                     validRange={{ startDate: new Date() }}
                   />
                 </View>
-                <TextInput
-                  placeholder={t('Index.card.hour')}
-                  placeholderTextColor="gray"
-                  style={styles.smallInput}
-                />
+                
               </View>
               <View style={styles.buttonGroup}>
                 <View style={styles.inputWithIcon}>
@@ -147,11 +143,7 @@ const index = () => {
                     validRange={{ startDate: new Date() }}
                   />
                 </View>
-                <TextInput
-                  placeholder={t('Index.card.hour')}
-                  placeholderTextColor="gray"
-                  style={styles.smallInput}
-                />
+
               </View>
 
               <Picker selectedValue={brand} onValueChange={(itemValue) => setBrand(itemValue)} style={styles.picker}>

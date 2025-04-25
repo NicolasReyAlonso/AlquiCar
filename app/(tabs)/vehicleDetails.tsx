@@ -5,19 +5,18 @@ import VehicleCard from "@/components/templates/VehicleCard";
 import { useRouter } from 'expo-router';
 
 export default function VehicleDetails() {
-  const { id } = useLocalSearchParams(); // Obtiene el ID del vehículo de los parámetros
+  const { id } = useLocalSearchParams(); 
   const [vehicle, setVehicle] = useState(null);
-  const router = useRouter(); // Para navegación
+  const router = useRouter(); 
 
   useEffect(() => {
-    // Función para obtener los detalles del vehículo desde el backend
     const fetchVehicle = async () => {
       try {
-        console.log("ID del vehículo recibido:", id); // Depuración del ID
-        const response = await fetch(`https://localhost:3000/vehicles/${id}`); // Cambia a HTTP si SSL no está configurado
+        console.log("ID del vehículo recibido:", id); 
+        const response = await fetch(`https://localhost:3000/vehicles/${id}`); 
         const data = await response.json();
         if (data && data.length > 0) {
-          setVehicle(data[0]); // Asigna los datos del vehículo al estado
+          setVehicle(data[0]); 
         } else {
           console.error("No se encontraron datos del vehículo con este ID");
         }
@@ -27,11 +26,10 @@ export default function VehicleDetails() {
     };
 
     if (id) {
-      fetchVehicle(); // Llama a la función solo si el ID está definido
+      fetchVehicle(); 
     }
   }, [id]);
 
-  // Manejo de errores o ausencia de datos
   if (!vehicle) {
     return (
       <View style={styles.noVehiclesContainer}>
@@ -42,7 +40,6 @@ export default function VehicleDetails() {
     );
   }
 
-  // Renderiza la tarjeta del vehículo con la opción de reservar
   return (
     <VehicleCard
       brand={vehicle.brand}
@@ -58,13 +55,12 @@ export default function VehicleDetails() {
       pickupLocation={vehicle.city || "Ubicación no disponible"}
       price={`€${vehicle.daily_price}`}
       imageUrl={vehicle.imageUrl}
-      // Navegación al componente de reserva al presionar "Reservar"
       onReserve={() => {
-        console.log("Navegando al componente de reserva con ID:", id); // Confirmación de depuración
+        console.log("Navegando al componente de reserva con ID:", id); 
         router.push({
-          pathname: "reservarCoche", // Ruta al componente de reserva
+          pathname: "reservarCoche", 
           params: {
-            vehicleId: id, // Pasa el ID del vehículo como parámetro
+            vehicleId: id, 
             brand: vehicle.brand,
             model: vehicle.model,
             year: vehicle.year,

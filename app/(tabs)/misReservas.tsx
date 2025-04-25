@@ -8,13 +8,11 @@ const misReservas = () => {
 
   const handleCancelReservation = async (reservationId) => {
     try {
-      // Enviar solicitud DELETE al backend
       const response = await fetch(`https://localhost:3000/reservations/${reservationId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        // Actualizar el estado eliminando la reserva cancelada
         setReservations(reservations.filter(reserva => reserva.id !== reservationId));
         alert("Reserva cancelada correctamente");
       } else {
@@ -28,10 +26,9 @@ const misReservas = () => {
   useEffect(() => {
     const cargarReservas = async () => {
       try {
-        // Obtener las reservas desde el backend
         const response = await fetch("https://localhost:3000/reservations/customer/234e4567-e89b-12d3-a456-426614174111");
         const reservas = await response.json();
-        setReservations(reservas); // Actualizar el estado con las reservas obtenidas
+        setReservations(reservas);
       } catch (error) {
         console.error("Error al cargar las reservas:", error);
       }

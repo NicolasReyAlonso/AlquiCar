@@ -29,6 +29,7 @@ const misReservas = () => {
         const response = await fetch("https://localhost:3000/reservations/customer/234e4567-e89b-12d3-a456-426614174111");
         const reservas = await response.json();
         setReservations(reservas); 
+        setReservations(reservas);
       } catch (error) {
         console.error("Error al cargar las reservas:", error);
       }

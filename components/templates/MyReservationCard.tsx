@@ -11,6 +11,7 @@ interface MyReservationCardProps {
   status: string;
   imageUrl?: string;
   onCancel: () => void;
+  onPress: () => void; // Nueva propiedad para manejar el evento onPress
 }
 
 const ReservationCard: React.FC<MyReservationCardProps> = ({
@@ -20,36 +21,55 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
   status,
   imageUrl,
   onCancel,
+  onPress, // Recibe onPress desde el componente padre
 }) => {
-  const { width } = useWindowDimensions(); 
+  const { width } = useWindowDimensions();
   const isDesktop = width > 576;
   const styles = getStyles(width, isDesktop);
   const { t } = useTranslation();
 
   return (
-    <View style={isDesktop ? styles.containerDesktop : styles.containerMobile}>
+    <TouchableOpacity
+      style={isDesktop ? styles.containerDesktop : styles.containerMobile}
+      onPress={onPress} // Llama a onPress cuando el usuario toca la tarjeta
+    >
       <View style={isDesktop ? styles.cardDesktop : styles.cardMobile}>
         <Image source={{ uri: imageUrl }} style={isDesktop ? styles.imageDesktop : styles.imageMobile} />
         <View style={isDesktop ? styles.detailsContainerDesktop : styles.detailsContainerMobile}>
           <View style={isDesktop ? styles.rowDesktop : styles.rowMobile}>
             <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand}</Text>
-            <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t('MyReservationCard.day')} </Text>
+            <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>
+              {price}/{t('MyReservationCard.day')}
+            </Text>
           </View>
-          <Text style={isDesktop ? styles.dateDesktop : styles.dateMobile}>{t('MyReservationCard.date')}: {date}</Text>
-          <Text style={[
-            isDesktop ? styles.statusDesktop : styles.statusMobile,
-            status === 'Confirmada' ? styles.confirmed : styles.pending
-          ]}>
+          <Text style={isDesktop ? styles.dateDesktop : styles.dateMobile}>
+            {t('MyReservationCard.date')}: {date}
+          </Text>
+          <Text
+            style={[
+              isDesktop ? styles.statusDesktop : styles.statusMobile,
+              status === 'Confirmada' ? styles.confirmed : styles.pending,
+            ]}
+          >
             {status}
           </Text>
-          <TouchableOpacity style={isDesktop ? styles.buttonDesktop : styles.buttonMobile} onPress={onCancel}>
-            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>{t('MyReservationCard.buttons.cancel')}</Text>
+          <TouchableOpacity
+            style={isDesktop ? styles.buttonDesktop : styles.buttonMobile}
+            onPress={(e) => {
+              e.stopPropagation(); // Evita que onPress de la tarjeta también se ejecute
+              onCancel();
+            }}
+          >
+            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>
+              {t('MyReservationCard.buttons.cancel')}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
+
 
 const getStyles = (width: number, isDesktop: boolean) =>
   StyleSheet.create({

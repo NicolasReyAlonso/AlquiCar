@@ -1,52 +1,61 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import theme from "@/components/Theme";
-import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
+import { useTranslation } from "react-i18next";
+import { useRouter } from "expo-router";
+
 
 interface VehicleCardProps {
   brand: string;
-  model: string;  
-  year: number;  
+  model: string;
+  year: number;
   seats: number;
   type: string;
-  transmission: string; 
-  fuelType: string; 
-  numDoors: number;  
-  deposit: string;  
+  transmission: string;
+  fuelType: string;
+  numDoors: number;
+  deposit: string;
   mileage: string;
   pickupLocation: string;
   price: string;
   imageUrl: string;
-  adress: string;
   onReserve: () => void;
 }
 
-
 const VehicleCard: React.FC<VehicleCardProps> = ({
   brand,
-  model,  
-  year,  
+  model,
+  year,
   seats,
   type,
-  transmission,  
-  fuelType,  
-  numDoors,  
-  deposit,  
+  transmission,
+  fuelType,
+  numDoors,
+  deposit,
   mileage,
   pickupLocation,
   price,
   imageUrl,
-  address,
   onReserve,
 }) => {
-  const { width } = useWindowDimensions(); 
+  const { width } = useWindowDimensions();
   const isDesktop = width > 576;
-  const styles = getStyles(width); 
+  const styles = getStyles(width);
   const { t } = useTranslation();
+  const router = useRouter();
+
 
   return (
-    <View style={isDesktop ? styles.cardDesktop : styles.cardMobile}>
+    <TouchableOpacity
+      onPress={() => {
+        console.log("Navegando a los detalles del vehículo con ID:", vehicleId);
+        router.push({
+          pathname: "/vehicleDetailsPage", // Ruta hacia la página de detalles
+          params: { id: vehicleId }, // Envía el ID del vehículo
+        });
+      }}
+      style={isDesktop ? styles.cardDesktop : styles.cardMobile}
+    >
       <View style={styles.infoContainer}>
         <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand} {model} ({year})</Text>
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Tipo: {type}</Text>
@@ -54,19 +63,18 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Combustible: {fuelType}</Text>
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Capacidad: {seats} pasajeros</Text>
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Puertas: {numDoors}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Fianza: {deposit}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Origen: {address}</Text>
-
+        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Depósito: {deposit}</Text>
+        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>Precio Diario: {price}</Text>
       </View>
 
       <View style={styles.rightContainer}>
         <Image source={{ uri: imageUrl }} style={isDesktop ? styles.imageDesktop : styles.imageMobile} />
-        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t('VehicleCard.day')}</Text>
+        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t("VehicleCard.day")}</Text>
         <TouchableOpacity style={styles.button} onPress={onReserve}>
-          <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>{t('VehicleCard.buttons.reservation')}</Text>
+          <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>{t("VehicleCard.buttons.reservation")}</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -119,9 +127,6 @@ const getStyles = (width: number) =>
       fontSize: width * 0.018,
       fontFamily: theme.fonts.regular,
       color: theme.lightTemplate.textColor,
-    },
-    spacing: {
-      height: width * 0.02,
     },
     rightContainer: {
       alignItems: "center",

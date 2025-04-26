@@ -53,6 +53,7 @@ export default function VehicleDetails() {
       deposit={`€${vehicle.deposit}`}
       mileage={vehicle.mileage || "Desconocido"}
       pickupLocation={vehicle.city || "Ubicación no disponible"}
+      vehicleId={id}
       price={`€${vehicle.daily_price}`}
       imageUrl={vehicle.imageUrl}
       onReserve={() => {

@@ -17,6 +17,7 @@ interface VehicleCardProps {
   deposit: string;
   mileage: string;
   pickupLocation: string;
+  vehicleId: number;
   price: string;
   imageUrl: string;
   onReserve: () => void;
@@ -34,6 +35,7 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
   deposit,
   mileage,
   pickupLocation,
+  vehicleId,
   price,
   imageUrl,
   onReserve,

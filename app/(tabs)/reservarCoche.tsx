@@ -52,11 +52,11 @@ export default function ConfirmacionReserva() {
     }
   
     const nuevaReserva = {
-      vehicle_id: Number(params.vehicleId), // Convierte vehicleId a número
+      vehicle_id: Number(params.vehicleId), 
       customer_id: "234e4567-e89b-12d3-a456-426614174111",
       start_date: pickupDate.toISOString(),
       end_date: returnDate.toISOString(),
-      total_price: Number(precioTotal), // Convierte precioTotal a número
+      total_price: Number(precioTotal), 
     };
     
     

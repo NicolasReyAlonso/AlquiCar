@@ -61,11 +61,8 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
       <View style={styles.infoContainer}>
         <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand} {model} ({year})</Text>
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Tipo: {type}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Transmisión: {transmission}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Combustible: {fuelType}</Text>
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Capacidad: {seats} pasajeros</Text>
         <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Puertas: {numDoors}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>Depósito: {deposit}</Text>
         <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>Precio Diario: {price}</Text>
       </View>
 

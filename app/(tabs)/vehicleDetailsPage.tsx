@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { useRouter } from "expo-router"; 
+import { useRouter } from "expo-router";
 
 export default function VehicleDetailsPage() {
-  const { id } = useLocalSearchParams(); 
+  const { id } = useLocalSearchParams();
   const [vehicle, setVehicle] = useState(null);
   const router = useRouter();
 
@@ -15,12 +15,11 @@ export default function VehicleDetailsPage() {
         const response = await fetch(`https://localhost:3000/vehicles/${id}`);
         const data = await response.json();
         if (data && data.length > 0) {
-          setVehicle(data[0]); // Asigna el primer elemento del array
+          setVehicle(data[0]);
           console.log("Datos del vehículo asignados:", data[0]);
         } else {
           console.error("No se encontraron datos del vehículo con este ID");
         }
-          
       } catch (error) {
         console.error("Error al obtener el vehículo:", error);
       }
@@ -39,6 +38,9 @@ export default function VehicleDetailsPage() {
     );
   }
 
+  const availabilityBackgroundColor = vehicle.availability === 1 ? "#DFF0D8" : "#F2DEDE";
+  const availabilityTextColor = vehicle.availability === 1 ? "#3C763D" : "#A94442";
+
   return (
     <ScrollView style={styles.container}>
       <Image source={{ uri: vehicle.imageUrl }} style={styles.mainImage} />
@@ -46,23 +48,24 @@ export default function VehicleDetailsPage() {
       <Text style={styles.subtitle}>{vehicle.year}</Text>
 
       <View style={styles.detailsContainer}>
+        {/* Disponibilidad destacada */}
+        <View style={[styles.availabilityContainer, { backgroundColor: availabilityBackgroundColor }]}>
+          <Text style={[styles.availabilityText, { color: availabilityTextColor }]}>
+            {vehicle.availability === 1 ? "¡Disponible!" : "No disponible"}
+          </Text>
+        </View>
+
+        {/* Otros detalles */}
         <Text style={styles.sectionTitle}>Detalles del Vehículo:</Text>
         <Text style={styles.detailText}>Capacidad: {vehicle.capacity} pasajeros</Text>
         <Text style={styles.detailText}>Tipo: {vehicle.type}</Text>
         <Text style={styles.detailText}>Transmisión: {vehicle.transmission}</Text>
         <Text style={styles.detailText}>Combustible: {vehicle.fuel_type}</Text>
         <Text style={styles.detailText}>Número de Puertas: {vehicle.num_doors}</Text>
-        <Text style={styles.detailText}>Fianza: {`€${vehicle.deposit}`}</Text>
+        <Text style={styles.detailText}>Depósito: {`€${vehicle.deposit}`}</Text>
         <Text style={styles.detailText}>Precio por Día: {`€${vehicle.daily_price}`}</Text>
-        <Text style={styles.detailText}>
-          Disponibilidad: {vehicle.availability === 1 ? "Disponible" : "No disponible"}
-        </Text>
       </View>
 
-
-
-
-      
       <View style={styles.galleryContainer}>
         <Text style={styles.sectionTitle}>Galería de Fotos:</Text>
         {vehicle.galleryImages?.map((image, index) => (
@@ -70,30 +73,30 @@ export default function VehicleDetailsPage() {
         )) || <Text style={styles.noGalleryText}>No hay fotos adicionales disponibles.</Text>}
       </View>
 
-
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => router.push({
-          pathname: "reservarCoche", 
-          params: {
-            vehicleId: vehicle.id, 
-            brand: vehicle.brand,
-            model: vehicle.model,
-            year: vehicle.year,
-            seats: vehicle.capacity,
-            type: vehicle.type,
-            transmission: vehicle.transmission,
-            fuelType: vehicle.fuel_type,
-            numDoors: vehicle.num_doors,
-            deposit: vehicle.deposit,
-            price: vehicle.daily_price,
-            imageUrl: vehicle.imageUrl,
-          }
-        })}
+        onPress={() =>
+          router.push({
+            pathname: "reservarCoche",
+            params: {
+              vehicleId: vehicle.id,
+              brand: vehicle.brand,
+              model: vehicle.model,
+              year: vehicle.year,
+              seats: vehicle.capacity,
+              type: vehicle.type,
+              transmission: vehicle.transmission,
+              fuelType: vehicle.fuel_type,
+              numDoors: vehicle.num_doors,
+              deposit: vehicle.deposit,
+              price: vehicle.daily_price,
+              imageUrl: vehicle.imageUrl,
+            },
+          })
+        }
       >
-      <Text style={styles.backButtonText}>Reservar</Text>
-    </TouchableOpacity>
-
+        <Text style={styles.backButtonText}>Reservar</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -103,6 +106,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     padding: 15,
+  },
+  availabilityContainer: {
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 15,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  availabilityText: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
   mainImage: {
     width: "100%",

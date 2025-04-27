@@ -1,66 +1,99 @@
-import React from "react";
-import { View, ScrollView, Dimensions, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, Text, Dimensions, StyleSheet } from "react-native";
 import MyPublishedVehicles from "@/components/templates/MyPublishedVehicles";
 import theme from "@/components/Theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const misCochesPublicados = () => {
-  const publishedVehicles = [
-    {
-      brand: "Toyota",
-      price: "€40",
-      city: "Madrid",
-      imageUrl: "https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
-    },
-    {
-      brand: "Honda",
-      price: "€45",
-      city: "Barcelona",
-      imageUrl: "https://a.ccdn.es/cnet/contents/media/honda/civic/1159931.jpg"
-    },
-    {
-      brand: "Ford",
-      price: "€35",
-      city: "Valencia",
-      imageUrl: "https://images.prismic.io/carwow/1e66c2e9-e6b7-4d21-be92-79e80403feaf_LHD+Ford+Focus+2022+Exterior-1.jpg?auto=format&cs=tinysrgb&fit=crop&q=60&w=750.jpg"
-    },
-    {
-      brand: "BMW",
-      price: "€80",
-      city: "Sevilla",
-      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9KXga-3enJCVZRftu89iBe1LIyl0GYHvHMQ&s.jpg"
-    },
-  ];
+  const [vehicles, setVehicles] = useState([]);
+
+  const cargarVehiculos = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        alert("Usuario no autenticado");
+        return;
+      }
+
+      const userRes = await fetch(`https://localhost:3000/users/getdata/${token}`);
+      const userData = await userRes.json();
+      const userId = userData[0].id;
+
+      console.log(userId);
+      
+      const response = await fetch(`https://localhost:3000/vehicles/`);
+      const allVehicles = await response.json();
+
+      console.log(allVehicles);
+
+      const userVehicles = allVehicles.filter(v => v.owner_id === userId);
+      setVehicles(userVehicles);
+    } catch (error) {
+      console.error("Error al cargar los vehículos:", error);
+    }
+  };
+
+  const handleDeleteVehicle = async (vehicleId: string) => {
+    try {
+      const response = await fetch(`https://localhost:3000/vehicles/${vehicleId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setVehicles(prev => prev.filter(v => v.id !== vehicleId));
+        alert("Vehículo eliminado correctamente");
+      } else {
+        alert("Error al eliminar el vehículo");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el vehículo:", error);
+    }
+  };
+
+  useEffect(() => {
+    cargarVehiculos();
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {publishedVehicles.map((vehicle, index) => (
-        <View key={index} style={styles.cardWrapper}>
-          <MyPublishedVehicles
-            brand={vehicle.brand}
-            price={vehicle.price}
-            city={vehicle.city}
-            imageUrl={vehicle.imageUrl}
-            onCancel={() => alert(`Vehículo eliminado: ${vehicle.brand}`)}
-          />
-        </View>
-      ))}
+      {vehicles.length === 0 ? (
+        <Text style={styles.emptyText}>No has publicado ningún vehículo aún.</Text>
+      ) : (
+        vehicles.map((vehicle, index) => (
+          <View key={index} style={styles.cardWrapper}>
+            <MyPublishedVehicles
+              brand={vehicle.brand}
+              price={`${vehicle.daily_price}€`}
+              city={vehicle.city || "Ciudad desconocida"}
+              imageUrl="https://via.placeholder.com/150"
+              onCancel={() => handleDeleteVehicle(vehicle.id)}
+            />
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row", 
-    flexWrap: "wrap", 
-    justifyContent: "space-between", 
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     padding: 20,
-    backgroundColor: theme.colors.background, 
+    backgroundColor: theme.colors.background,
   },
   cardWrapper: {
-    width: width < 500 ? "100%" : "48%", 
-    marginBottom: 15, 
+    width: width < 500 ? "100%" : "48%",
+    marginBottom: 15,
+  },
+  emptyText: {
+    textAlign: "center",
+    fontSize: 18,
+    color: "gray",
+    marginTop: 20,
   },
 });
 

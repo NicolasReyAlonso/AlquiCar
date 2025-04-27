@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image } from 'react-native'
 import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -180,6 +180,7 @@ export default function AlquilarCoche() {
       setDeposit('');
       setImage(null);
       scrollRef.current?.scrollTo({ y: 0, animated: true });
+      navigation.navigate("misCochesPublicados");
     } catch (err: any) {
       console.log(err);
       alert('Error');

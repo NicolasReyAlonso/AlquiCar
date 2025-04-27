@@ -152,5 +152,11 @@
       "guardar": "Save",
       "cancelar": "Cancel"
     }
+  },
+
+  "VerifyEmail": {
+    "title": "Verify your email!",
+    "message": "We have sent you a verification email. Please check your inbox to complete the registration.",
+    "goToLogin": "Go to login"
   }
 }

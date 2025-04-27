@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import theme from '@/components/Theme';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +25,7 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigation = useNavigation();
 
   const { t } = useTranslation();
 
@@ -90,6 +92,9 @@ export default function RegisterScreen() {
 
     console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Dirección: ${address}, Ciudad: ${city}, Teléfono: ${phone}, DNI: ${dni}, Email: ${email}, Contraseña: ${password}`);
     // Fetch/post al backend.
+
+    // Luego de recibir respuesta positiva:
+    navigation.navigate('VerifyEmail')
   };
 
   return (

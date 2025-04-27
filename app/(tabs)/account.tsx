@@ -19,15 +19,17 @@ export default function AccountPage() {
   const fetchUserData = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
+      console.log(token);
+
       if (!token) {
         Alert.alert("Error", "Usuario no autenticado");
         return;
       }
 
       const response = await fetch(`https://localhost:3000/users/getdata/${token}`);
-
+        
       const data = await response.json();
-
+      console.log(data)
       if (!response.ok) {
         throw new Error(data.message || "Error al obtener los datos");
       }

@@ -150,5 +150,12 @@
     "guardar": "Enregistrer",
     "cancelar": "Annuler"
   }
-}
+},
+
+  "VerifyEmail": {
+    "title": "Vérifiez votre e-mail!",
+    "message": "Nous vous avons envoyé un e-mail de vérification. Veuillez vérifier votre boîte de réception pour compléter l'inscription.",
+    "goToLogin": "Aller à la connexion"
+  }
+
 }

@@ -53,20 +53,19 @@ const CrearIncidencia = () => {
     };
 
     try {
-      const response = await fetch('https://tuservidor.com/api/incidences', {
+      const response = await fetch('https://localhost:3000/incidences/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
       if (response.ok) {
-        Alert.alert(t('Éxito'), t('Incidencia enviada correctamente'));
         setToId(null);
         setReservationId(null);
         setDescription('');
         setType('PLATFORM');
       } else {
-        Alert.alert(t('Error'), t('Error al enviar la incidencia'));
+        console.log("No se produjo la creación")
       }
     } catch (error) {
       console.error(error);

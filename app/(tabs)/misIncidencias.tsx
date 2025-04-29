@@ -40,9 +40,15 @@ export default function MisIncidencias() {
   useEffect(() => {
     const fetchIncidencias = async () => {
       const userId = await AsyncStorage.getItem('userId');
+      const role = await AsyncStorage.getItem('role');
 
       try {
-        const response = await fetch(`https://tuservidor.com/api/incidences?from_id=${userId}`);
+        let url = 'https://localhost:3000/incidences/';
+        if (role !== 'admin') {
+          url += `?from_id=${userId}`;
+        }
+
+        const response = await fetch(url);
         const data = await response.json();
         setIncidencias(data);
       } catch (error) {

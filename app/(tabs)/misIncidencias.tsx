@@ -29,6 +29,7 @@ type Incidence = {
 
 type RootStackParamList = {
   crearIncidencia: undefined;
+  misIncidencias: undefined;
 };
 
 export default function MisIncidencias() {
@@ -36,19 +37,21 @@ export default function MisIncidencias() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [incidencias, setIncidencias] = useState<Incidence[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchIncidencias = async () => {
       const userId = await AsyncStorage.getItem('userId');
-      const role = await AsyncStorage.getItem('role');
+      const role = await AsyncStorage.getItem('role'); 
+
+      setIsAdmin(role === 'admin');
 
       try {
         let url = 'https://localhost:3000/incidences/';
         if (role !== 'admin') {
           url += `?from_id=${userId}`;
         }
-
-        const response = await fetch(url);
+	const response = await fetch(url);
         const data = await response.json();
         setIncidencias(data);
       } catch (error) {
@@ -59,7 +62,34 @@ export default function MisIncidencias() {
     };
 
     fetchIncidencias();
-  }, []);
+  }, [isAdmin]);
+
+  const handleAccionIncidencia = async (id: number, accion: 'resolve' | 'dismiss') => {
+    try {
+      let url = 'https://localhost:3000/incidences/';
+      url += `?from_id=${id}`;
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: accion === 'resolve' ? 'Resolved' : 'Dismissed',
+        }),
+      });
+      if (response.ok) {
+        setIncidencias((prevIncidencias) =>
+          prevIncidencias.map((incidencia) =>
+            incidencia.id === id ? { ...incidencia, status: accion === 'resolve' ? 'Resolved' : 'Dismissed' } : incidencia
+          )
+        );
+      } else {
+        throw new Error('Error al actualizar la incidencia');
+      }
+    } catch (error) {
+      console.error('Error al actualizar incidencia:', error);
+    }
+  };
 
   const renderItem = ({ item }: { item: Incidence }) => (
     <View style={styles.card}>
@@ -82,6 +112,17 @@ export default function MisIncidencias() {
       <Text style={styles.label}>
         {t('Incidencias.fecha')}: <Text style={styles.value}>{new Date(item.created_at).toLocaleString()}</Text>
       </Text>
+
+      {isAdmin && item.status === 'Pending' && (
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => handleAccionIncidencia(item.id, 'resolve')}>
+            <Text style={styles.buttonText}>{t('Incidencias.resolver')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleAccionIncidencia(item.id, 'dismiss')}>
+            <Text style={styles.buttonText}>{t('Incidencias.denegar')}</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 
@@ -97,9 +138,11 @@ export default function MisIncidencias() {
     return (
       <View style={styles.centered}>
         <Text style={styles.value}>{t('Incidencias.sinIncidencias')}</Text>
-        <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('crearIncidencia')}>
-          <Text style={styles.fabText}>+</Text>
-        </TouchableOpacity>
+        {!isAdmin && (
+          <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('crearIncidencia')}>
+            <Text style={styles.fabText}>+</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
@@ -112,9 +155,11 @@ export default function MisIncidencias() {
         renderItem={renderItem}
         contentContainerStyle={styles.container}
       />
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('crearIncidencia')}>
-        <Text style={styles.fabText}>+</Text>
-      </TouchableOpacity>
+      {!isAdmin && (
+        <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('crearIncidencia')}>
+          <Text style={styles.fabText}>+</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -174,4 +219,21 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
+  buttonsContainer: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  button: {
+    backgroundColor: theme.colors.primary,
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  }
 });

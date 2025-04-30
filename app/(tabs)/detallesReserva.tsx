@@ -50,13 +50,21 @@ export default function DetallesReserva() {
   const handleCancelReservation = async () => {
     try {
       const response = await fetch(`http://localhost:3000/reservations/${id}`, {
-        method: "DELETE",
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Cancelled" }), // Actualizar el estado a "Cancelled"
       });
   
       if (response.ok) {
-        setReservation({ ...reservation, status: "Cancelled" }); // Actualizar el estado local
+        const updatedReservation = await response.json();
+        console.log("Reserva actualizada:", updatedReservation); // Depuración
+  
+        // Actualizar el estado local para reflejar el cambio
+        setReservation({ ...reservation, status: "Cancelled" });
         alert("Reserva cancelada correctamente");
       } else {
+        const errorData = await response.json();
+        console.error("Error en la respuesta del backend:", errorData);
         alert("Error al cancelar la reserva");
       }
     } catch (error) {
@@ -92,7 +100,7 @@ export default function DetallesReserva() {
           </Text>
         </View>
 
-        {/* Mostrar detalles solo si la reserva no está cancelada */}
+ 
         {reservation.status !== "Cancelled" && (
           <>
             <Text style={styles.sectionTitle}>Detalles de la Reserva:</Text>

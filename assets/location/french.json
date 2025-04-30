@@ -125,7 +125,8 @@
       "close": "✖ Fermer",
       "home": "Page d’Accueil",
       "reservations": "Mes Réservations",
-      "publications": "Mes Annonces"
+      "publications": "Mes Annonces",
+      "incidences" : "Mes incidents"
     }
   },
 

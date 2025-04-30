@@ -26,15 +26,16 @@ export default function AccountPage() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/users/getdata/${token}`);
-        
+      const email = await AsyncStorage.getItem("email");
+      console.log(email);
+      const response = await fetch(`http://localhost:3000/users/email/${email}`);
       const data = await response.json();
       console.log(data)
       if (!response.ok) {
         throw new Error(data.message || "Error al obtener los datos");
       }
-      setName(data[0].name);
-      setEmail(data[0].email)
+      setName(data.name);
+      setEmail(data.email)
     } catch (error) {
       Alert.alert("Error", (error as Error).message);
     }

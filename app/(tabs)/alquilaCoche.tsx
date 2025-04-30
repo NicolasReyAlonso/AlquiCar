@@ -96,7 +96,7 @@ export default function AlquilarCoche() {
 
     const geocodeAddress = async (address: string): Promise<{ lat: number, lon: number } | null> => {
       try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        const response = await fetch(`http://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
         const data = await response.json();
         if (data.length > 0) {
           return { lat: parseFloat(parseFloat(data[0].lat).toFixed(6)), lon: parseFloat(parseFloat(data[0].lon).toFixed(6)) };

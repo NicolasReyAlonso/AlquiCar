@@ -17,13 +17,13 @@ const misCochesPublicados = () => {
         return;
       }
 
-      const userRes = await fetch(`https://localhost:3000/users/getdata/${token}`);
+      const userRes = await fetch(`http://localhost:3000/users/getdata/${token}`);
       const userData = await userRes.json();
       const userId = userData[0].id;
 
       console.log(userId);
       
-      const response = await fetch(`https://localhost:3000/vehicles/`);
+      const response = await fetch(`http://localhost:3000/vehicles/`);
       const allVehicles = await response.json();
 
       console.log(allVehicles);
@@ -37,7 +37,7 @@ const misCochesPublicados = () => {
 
   const handleDeleteVehicle = async (vehicleId: string) => {
     try {
-      const response = await fetch(`https://localhost:3000/vehicles/${vehicleId}`, {
+      const response = await fetch(`http://localhost:3000/vehicles/${vehicleId}`, {
         method: "DELETE",
       });
 
@@ -67,7 +67,7 @@ const misCochesPublicados = () => {
               brand={vehicle.brand}
               price={`${vehicle.daily_price}€`}
               city={vehicle.city || "Ciudad desconocida"}
-              imageUrl="https://via.placeholder.com/150"
+              imageUrl="http://via.placeholder.com/150"
               onCancel={() => handleDeleteVehicle(vehicle.id)}
             />
           </View>

@@ -14,7 +14,7 @@ const Ofertas = () => {
     const fetchVehicles = async () => {
       try {
         // Asegúrate de que HTTPS está configurado correctamente en el backend
-        const response = await fetch("https://localhost:3000/vehicles");
+        const response = await fetch("http://localhost:3000/vehicles");
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -68,7 +68,7 @@ const Ofertas = () => {
           price={vehicle.daily_price ? `€${vehicle.daily_price}` : "Desconocido"}
           mileage={vehicle.mileage || "Sin información"}
           pickupLocation={vehicle.city || "Ubicación no disponible"}
-          imageUrl={vehicle.imageUrl || "https://via.placeholder.com/150"} // Imagen predeterminada
+          imageUrl={vehicle.imageUrl || "http://via.placeholder.com/150"} // Imagen predeterminada
           vehicleId={vehicle.id}
           onReserve={() =>
             router.push({

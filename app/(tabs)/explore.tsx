@@ -36,7 +36,7 @@ export default function TabTwoScreen() {
           The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
           sets up the tab navigator.
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
+        <ExternalLink href="http://docs.expo.dev/router/introduction">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
       </Collapsible>
@@ -53,7 +53,7 @@ export default function TabTwoScreen() {
           different screen densities
         </ThemedText>
         <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
+        <ExternalLink href="http://reactnative.dev/docs/images">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
       </Collapsible>
@@ -64,7 +64,7 @@ export default function TabTwoScreen() {
             custom fonts such as this one.
           </ThemedText>
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
+        <ExternalLink href="http://docs.expo.dev/versions/latest/sdk/font">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
       </Collapsible>
@@ -74,7 +74,7 @@ export default function TabTwoScreen() {
           <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
           what the user's current color scheme is, and so you can adjust UI colors accordingly.
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
+        <ExternalLink href="http://docs.expo.dev/develop/user-interface/color-themes/">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
       </Collapsible>

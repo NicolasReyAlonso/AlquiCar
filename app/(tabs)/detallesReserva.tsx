@@ -3,13 +3,12 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'rea
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
 
-
 export default function DetallesReserva() {
   const { id } = useLocalSearchParams();
   const [reservation, setReservation] = useState(null);
   const [vehicle, setVehicle] = useState(null);
+  const [owner, setOwner] = useState(null); // Estado para el propietario
   const router = useRouter();
-  
 
   useEffect(() => {
     const fetchReservationDetails = async () => {
@@ -21,12 +20,21 @@ export default function DetallesReserva() {
         setReservation(reservation);
 
         if (reservation && reservation.vehicle_id) {
-          const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reservation.vehicle_id}`); 
+          const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reservation.vehicle_id}`);
           const vehicleData = await vehicleResponse.json();
 
-          console.log("Datos del vehículo cargados:", vehicleData);
           const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
           setVehicle(vehicle);
+
+          if (vehicle && vehicle.owner_id) {
+            const ownerResponse = await fetch(`http://localhost:3000/users/${vehicle.owner_id}`,{
+              method: 'GET',
+              credentials: 'include'
+            }); // Cambiar a /users/
+            const ownerData = await ownerResponse.json();
+            console.log("Datos del propietario:", ownerData); 
+            setOwner(ownerData);
+          }
         } else {
           console.error("El campo 'vehicle_id' está undefined en la reserva cargada:", reservation);
         }
@@ -60,7 +68,6 @@ export default function DetallesReserva() {
       <Text style={styles.title}>{vehicle.brand} {vehicle.model}</Text>
       <Text style={styles.subtitle}>{vehicle.year}</Text>
 
-
       <View style={styles.detailsContainer}>
         <View style={[styles.statusContainer, { backgroundColor: statusBackgroundColor }]}>
           <Text style={[styles.statusText, { color: statusTextColor }]}>
@@ -74,7 +81,6 @@ export default function DetallesReserva() {
         <Text style={styles.detailText}>Precio Total: {`€${reservation.total_price}`}</Text>
       </View>
 
- 
       <View style={styles.detailsContainer}>
         <Text style={styles.sectionTitle}>Detalles del Vehículo:</Text>
         <Text style={styles.detailText}>Capacidad: {vehicle.capacity} pasajeros</Text>
@@ -84,6 +90,7 @@ export default function DetallesReserva() {
         <Text style={styles.detailText}>Número de Puertas: {vehicle.num_doors}</Text>
         <Text style={styles.detailText}>Depósito: {`€${vehicle.deposit}`}</Text>
         <Text style={styles.detailText}>Precio por Día: {`€${vehicle.daily_price}`}</Text>
+        <Text style={styles.detailText}>Publicado por: {owner?.name || "Desconocido"}</Text> {/* Mostrar el propietario */}
       </View>
 
       {/* Galería de fotos */}
@@ -98,17 +105,17 @@ export default function DetallesReserva() {
         )}
       </View>
 
-
       <TouchableOpacity
-  style={styles.backButton}
-  onPress={() => router.push("/misReservas")} // Navegar a MisReservas
->
-  <Text style={styles.backButtonText}>Volver</Text>
-</TouchableOpacity>
-
+        style={styles.backButton}
+        onPress={() => router.push("/misReservas")} // Navegar a MisReservas
+      >
+        <Text style={styles.backButtonText}>Volver</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

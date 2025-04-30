@@ -19,6 +19,7 @@ export default function ConfirmacionReserva() {
   const [precioCoche, setPrecioCoche] = useState(0);
   const [precioSeguro, setPrecioSeguro] = useState(0);
   const [precioTotal, setPrecioTotal] = useState(0);
+  const [fechasReservadas, setFechasReservadas] = useState<{ start_date: string; end_date: string }[]>([]);
 
   const openPickupDatePicker = () => setPickupDatePickerVisible(true);
   const closePickupDatePicker = () => setPickupDatePickerVisible(false);
@@ -45,29 +46,27 @@ export default function ConfirmacionReserva() {
       alert("Faltan campos por rellenar");
       return;
     }
-  
+
     if (!params.vehicleId) {
       alert("Error: el ID del vehículo no se recibió correctamente.");
       return;
     }
-  
+
     const nuevaReserva = {
-      vehicle_id: Number(params.vehicleId), 
+      vehicle_id: Number(params.vehicleId),
       customer_id: "234e4567-e89b-12d3-a456-426614174111",
       start_date: pickupDate.toISOString(),
       end_date: returnDate.toISOString(),
-      total_price: Number(precioTotal), 
+      total_price: Number(precioTotal),
     };
-    
-    
-  
+
     try {
       const response = await fetch("http://localhost:3000/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nuevaReserva),
       });
-  
+
       if (response.ok) {
         alert("Reserva confirmada y guardada en el backend.");
       } else {
@@ -80,10 +79,34 @@ export default function ConfirmacionReserva() {
       alert("Error de conexión al servidor.");
     }
   };
-  
-  
-  
-  
+
+  useEffect(() => {
+    const cargarFechasReservadas = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/reservations?vehicle_id=${params.vehicleId}`);
+        const data = await response.json();
+        setFechasReservadas(data);
+      } catch (error) {
+        console.error("Error al cargar las fechas reservadas:", error);
+      }
+    };
+
+    if (params.vehicleId) {
+      cargarFechasReservadas();
+    }
+  }, [params.vehicleId]);
+
+  const calcularFechasNoDisponibles = () => {
+    const noDisponibles: Date[] = [];
+    fechasReservadas.forEach(({ start_date, end_date }) => {
+      const inicio = new Date(start_date);
+      const fin = new Date(end_date);
+      for (let d = inicio; d <= fin; d.setDate(d.getDate() + 1)) {
+        noDisponibles.push(new Date(d));
+      }
+    });
+    return noDisponibles;
+  };
 
   const reserva = {
     marca: params.brand || "Desconocido",
@@ -95,11 +118,6 @@ export default function ConfirmacionReserva() {
     precioSeguroBase: 20,
     ciudad: params.pickupLocation || "Desconocido",
   };
-
-  useEffect(() => {
-    console.log("Parámetros recibidos en ConfirmacionReserva:", params); 
-  }, []);
-  
 
   useEffect(() => {
     if (pickupDate && returnDate) {
@@ -157,7 +175,10 @@ export default function ConfirmacionReserva() {
           onDismiss={closePickupDatePicker}
           date={pickupDate || undefined}
           onConfirm={onPickupDateConfirm}
-          validRange={{ startDate: new Date() }}
+          validRange={{
+            startDate: new Date(),
+            disabledDates: calcularFechasNoDisponibles(),
+          }}
         />
       </View>
       <View style={styles.dateContainer}>
@@ -181,7 +202,10 @@ export default function ConfirmacionReserva() {
           onDismiss={closeReturnDatePicker}
           date={returnDate || undefined}
           onConfirm={onReturnDateConfirm}
-          validRange={{ startDate: new Date() }}
+          validRange={{
+            startDate: new Date(),
+            disabledDates: calcularFechasNoDisponibles(),
+          }}
         />
       </View>
       <Text style={styles.subtitle}>{t("reserveVehicle.duration")}</Text>
@@ -201,6 +225,7 @@ export default function ConfirmacionReserva() {
     </ScrollView>
   );
 }
+
 
 
 const styles = StyleSheet.create({

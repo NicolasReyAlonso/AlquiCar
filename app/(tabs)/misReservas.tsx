@@ -3,12 +3,24 @@ import { View, ScrollView, Text, StyleSheet } from "react-native";
 import ReservationCard from "@/components/templates/MyReservationCard";
 import theme from "@/components/Theme";
 import { useRouter } from "expo-router";
-
-import {  } from "expo-router"; 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MisReservas = () => {
-  const router = useRouter(); 
+  const router = useRouter();
   const [reservations, setReservations] = useState([]);
+
+  const getUserId = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decodificar el JWT
+      return payload.id;
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+      return null;
+    }
+  };
 
   const handleCancelReservation = async (reservationId) => {
     try {
@@ -30,9 +42,14 @@ const MisReservas = () => {
   useEffect(() => {
     const cargarReservas = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3000/reservations/customer/234e4567-e89b-12d3-a456-426614174111"
-        );
+        const userId = await getUserId();
+        if (!userId) {
+          alert("Por favor, inicia sesión para ver tus reservas.");
+          router.push("/login");
+          return;
+        }
+
+        const response = await fetch(`http://localhost:3000/reservations/customer/${userId}`);
         const reservas = await response.json();
 
         const reservasConVehiculos = await Promise.all(
@@ -91,7 +108,6 @@ const MisReservas = () => {
     </ScrollView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

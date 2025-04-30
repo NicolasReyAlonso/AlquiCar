@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Switch, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Alert } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 
@@ -41,6 +42,19 @@ export default function ConfirmacionReserva() {
     return match ? Number(match[0]) : 0;
   };
 
+  const getUserId = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decodificar el JWT
+      return payload.id;
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+      return null;
+    }
+  };
+
   const handleConfirmReservation = async () => {
     if (!pickupDate || !returnDate) {
       alert("Faltan campos por rellenar");
@@ -52,9 +66,15 @@ export default function ConfirmacionReserva() {
       return;
     }
 
+    const userId = await getUserId(); // Obtener el ID del usuario autenticado
+    if (!userId) {
+      alert("Por favor, inicia sesión para realizar una reserva.");
+      return;
+    }
+
     const nuevaReserva = {
       vehicle_id: Number(params.vehicleId),
-      customer_id: "234e4567-e89b-12d3-a456-426614174111",
+      customer_id: userId, // Usar el ID del usuario autenticado
       start_date: pickupDate.toISOString(),
       end_date: returnDate.toISOString(),
       total_price: Number(precioTotal),
@@ -226,8 +246,6 @@ export default function ConfirmacionReserva() {
   );
 }
 
-
-
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -236,18 +254,17 @@ const styles = StyleSheet.create({
   },
   totalContainer: {
     flexDirection: "row",
-    justifyContent: "flex-end", 
-    alignItems: "center", 
+    justifyContent: "flex-end",
+    alignItems: "center",
     marginTop: 30,
   },
-total: {
-    fontSize: 28, 
+  total: {
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#FFFFFF", 
+    color: "#FFFFFF",
     textAlign: "right",
     paddingLeft: 10,
   },
-
   header: {
     fontSize: 34,
     fontWeight: "bold",
@@ -296,7 +313,6 @@ total: {
     padding: 6,
     borderRadius: 10,
     marginBottom: 20,
-    marginRight: 800,
     borderWidth: 1,
     borderColor: "#ccc",
   },
@@ -335,41 +351,7 @@ total: {
     textAlign: "center",
     marginTop: 15,
   },
-  seguro: {
-    flexDirection: 'row',
-    alignItems:'center',
-  },
   dateContainer: {
-    marginBottom: 15, // Separación entre el título y el input
-  },
-  resumenContainer: {
-    backgroundColor: "#F5F5F5",
-    padding: 15,
-    borderRadius: 10,
-    marginVertical: 15,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 4,
-  },
-  resumenTitulo: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: theme.colors.primary,
-    marginBottom: 10,
-  },
-  resumenText: {
-    fontSize: 16,
-    color: "#444",
-    marginBottom: 5,
-  },
-  resumenTotal: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#3B6ED5",
-    textAlign: "right",
-    marginTop: 10,
+    marginBottom: 15,
   },
 });
-

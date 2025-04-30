@@ -22,7 +22,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     console.log("helo");
-    const response = await fetch('https://localhost:3000/auth/login', {
+    const response = await fetch('http://localhost:3000/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,6 +30,7 @@ export default function LoginScreen() {
       body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
+    console.log(data)
 
     if (!response.ok) {
       throw new Error(data.message || 'Error en el login');

@@ -91,7 +91,34 @@ export default function RegisterScreen() {
     }
 
     console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Dirección: ${address}, Ciudad: ${city}, Teléfono: ${phone}, DNI: ${dni}, Email: ${email}, Contraseña: ${password}`);
-    // Fetch/post al backend.
+    fetch('http://localhost:3000/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        address,
+        phone,
+        dni,
+        email,
+        password,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error en el registro');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Registro exitoso:', data);
+        navigation.navigate('VerifyEmail');
+      })
+      .catch((error) => {
+        console.error('Error en el registro:', error);
+        Alert.alert('Error', 'No se pudo completar el registro. Inténtalo más tarde.');
+      });
 
     // Luego de recibir respuesta positiva:
     navigation.navigate('VerifyEmail')

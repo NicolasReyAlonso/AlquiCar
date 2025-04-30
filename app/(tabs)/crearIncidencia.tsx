@@ -31,8 +31,8 @@ const CrearIncidencia = () => {
     setDescriptionError('');
     setReservationIdError('');
 
-    if (description.trim().length < 50) {
-      setDescriptionError(t('La descripción debe tener al menos 50 caracteres'));
+    if (description.trim().length < 10) {
+      setDescriptionError(t('La descripción debe tener al menos 10 caracteres'));
       hasError = true;
     }
 

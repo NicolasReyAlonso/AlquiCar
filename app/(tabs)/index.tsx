@@ -4,19 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
-import VehicleCard from "@/components/templates/VehicleCard"; 
 
-
-
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const index = () => {
-  const router = useRouter(); // para q vaya a otra página
-
+  const router = useRouter();
   const { t } = useTranslation();
 
   const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
@@ -60,19 +56,16 @@ const index = () => {
 
       if (filteredVehicles.length === 1) {
         router.push(`/vehicleDetails?id=${filteredVehicles[0].id}`);
+      } else if (filteredVehicles.length === 0) {
+        router.push('/noResults'); 
       } else {
         setVehicles(filteredVehicles);
-      }
-
-      if (filteredVehicles.length === 0) {
-        Alert.alert('Sin resultados', 'No se encontraron vehículos para los criterios seleccionados');
       }
     } catch (error) {
       Alert.alert('Error', 'Hubo un problema al buscar los vehículos');
       console.error(error);
     }
   };
-
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -103,7 +96,6 @@ const index = () => {
                     style={styles.inputFlex}
                     value={pickupDate ? pickupDate.toLocaleDateString() : ''}
                     editable={false}
-
                   />
                   <TouchableOpacity onPress={openPickupDatePicker}>
                     <Icon name="calendar" size={24} color="gray" />
@@ -118,7 +110,6 @@ const index = () => {
                     validRange={{ startDate: new Date() }}
                   />
                 </View>
-                
               </View>
               <View style={styles.buttonGroup}>
                 <View style={styles.inputWithIcon}>
@@ -128,7 +119,6 @@ const index = () => {
                     style={styles.inputFlex}
                     value={returnDate ? returnDate.toLocaleDateString() : ''}
                     editable={false}
-
                   />
                   <TouchableOpacity onPress={openReturnDatePicker}>
                     <Icon name="calendar" size={24} color="gray" />
@@ -143,21 +133,27 @@ const index = () => {
                     validRange={{ startDate: new Date() }}
                   />
                 </View>
-
               </View>
 
               <Picker selectedValue={brand} onValueChange={(itemValue) => setBrand(itemValue)} style={styles.picker}>
-              <Picker.Item label={t('Index.card.brand')} value="" />
-              <Picker.Item label="Toyota" value="Toyota" />
-              <Picker.Item label="Citroën" value="Citroën" />
-              <Picker.Item label="Nissan" value="Nissan" />
-              <Picker.Item label="Ford" value="Ford" />
+                <Picker.Item label={t('Index.card.brand')} value="" />
+                <Picker.Item label="Toyota" value="Toyota" />
+                <Picker.Item label="Citroën" value="Citroën" />
+                <Picker.Item label="Nissan" value="Nissan" />
+                <Picker.Item label="Ford" value="Ford" />
               </Picker>
 
               <TouchableOpacity style={styles.searchButton} onPress={handleBuscar}>
-              <Text style={styles.searchButtonText}>{t('Index.buttons.search')}</Text>
+                <Text style={styles.searchButtonText}>{t('Index.buttons.search')}</Text>
               </TouchableOpacity>
-              </View>
+            </View>
+          </View>
+
+          {/* Mostrar vehículos */}
+          <View>
+            {vehicles.map(vehicle => (
+              <VehicleCard key={vehicle.id} vehicle={vehicle} />
+            ))}
           </View>
 
           <View style={styles.footerButtons}>
@@ -173,16 +169,14 @@ const index = () => {
             >
               <Text style={styles.buttonText}>{t('Index.buttons.offers')}</Text>
             </TouchableOpacity>
-
-
-
-
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
@@ -193,6 +187,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+
+  noResultsText: {
+    fontSize: 18,
+    color: 'gray',
+    textAlign: 'center',
+    marginTop: 20,
   },
   
   backgroundImage: {

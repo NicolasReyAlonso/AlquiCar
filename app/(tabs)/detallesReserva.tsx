@@ -14,14 +14,14 @@ export default function DetallesReserva() {
   useEffect(() => {
     const fetchReservationDetails = async () => {
       try {
-        const reservationResponse = await fetch(`https://localhost:3000/reservations/${id}`);
+        const reservationResponse = await fetch(`http://localhost:3000/reservations/${id}`);
         const reservationData = await reservationResponse.json();
 
         const reservation = Array.isArray(reservationData) ? reservationData[0] : reservationData;
         setReservation(reservation);
 
         if (reservation && reservation.vehicle_id) {
-          const vehicleResponse = await fetch(`https://localhost:3000/vehicles/${reservation.vehicle_id}`); 
+          const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reservation.vehicle_id}`); 
           const vehicleData = await vehicleResponse.json();
 
           console.log("Datos del vehículo cargados:", vehicleData);
@@ -56,7 +56,7 @@ export default function DetallesReserva() {
   return (
     <ScrollView style={styles.container}>
       {/* Imagen principal */}
-      <Image source={{ uri: vehicle.imageUrl || "https://via.placeholder.com/150" }} style={styles.mainImage} />
+      <Image source={{ uri: vehicle.imageUrl || "http://via.placeholder.com/150" }} style={styles.mainImage} />
       <Text style={styles.title}>{vehicle.brand} {vehicle.model}</Text>
       <Text style={styles.subtitle}>{vehicle.year}</Text>
 

@@ -47,7 +47,7 @@ export default function MisIncidencias() {
       setIsAdmin(role === 'admin');
 
       try {
-        let url = 'https://localhost:3000/incidences/';
+        let url = 'http://localhost:3000/incidences/';
         if (role !== 'admin') {
           url += `?from_id=${userId}`;
         }
@@ -66,7 +66,7 @@ export default function MisIncidencias() {
 
   const handleAccionIncidencia = async (id: number, accion: 'resolve' | 'dismiss') => {
     try {
-      let url = 'https://localhost:3000/incidences/';
+      let url = 'http://localhost:3000/incidences/';
       url += `?from_id=${id}`;
       const response = await fetch(url, {
         method: 'PATCH',

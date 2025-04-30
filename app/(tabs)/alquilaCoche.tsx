@@ -96,7 +96,7 @@ export default function AlquilarCoche() {
 
     const geocodeAddress = async (address: string): Promise<{ lat: number, lon: number } | null> => {
       try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        const response = await fetch(`http://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
         const data = await response.json();
         if (data.length > 0) {
           return { lat: parseFloat(parseFloat(data[0].lat).toFixed(6)), lon: parseFloat(parseFloat(data[0].lon).toFixed(6)) };
@@ -128,7 +128,7 @@ export default function AlquilarCoche() {
       }
 
       console.log(token);
-      const userRes = await fetch(`https://localhost:3000/users/getdata/${token}`);
+      const userRes = await fetch(`http://localhost:3000/users/getdata/${token}`);
       console.log(userRes);
       const userData = await userRes.json();
       console.log(userData)
@@ -157,7 +157,7 @@ export default function AlquilarCoche() {
       };
 
       console.log(vehicle)
-      const response = await fetch('https://localhost:3000/vehicles/', {
+      const response = await fetch('http://localhost:3000/vehicles/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

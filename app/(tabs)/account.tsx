@@ -26,7 +26,7 @@ export default function AccountPage() {
         return;
       }
 
-      const response = await fetch(`https://localhost:3000/users/getdata/${token}`);
+      const response = await fetch(`http://localhost:3000/users/getdata/${token}`);
         
       const data = await response.json();
       console.log(data)

@@ -9,7 +9,7 @@ const Prueba = () => {
     <ScrollView contentContainerStyle={{ alignItems: "center", padding: 20 }}>
       <VehicleCard
         brand="Toyota"
-        imageUrl="https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
+        imageUrl="http://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
         seats={5}
         type="Turismo"
         mileage="50,000 km"
@@ -19,7 +19,7 @@ const Prueba = () => {
       />
       <VehicleCard
         brand="Toyota"
-        imageUrl="https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
+        imageUrl="http://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
         seats={5}
         type="Turismo"
         mileage="50,000 km"
@@ -40,7 +40,7 @@ const Prueba = () => {
         price="€40/día"
         date="18/03/2025"
         status="Confirmada"
-        imageUrl="https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
+        imageUrl="http://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
         onCancel={()=> alert("Reserva cancelada")}
       />
       <MyReservationCard
@@ -48,7 +48,7 @@ const Prueba = () => {
         price="€40/día"
         date="18/03/2025"
         status="Confirmada"
-        imageUrl="https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
+        imageUrl="http://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
         onCancel={()=> alert("Reserva cancelada")}
       />
       </View>
@@ -64,14 +64,14 @@ const Prueba = () => {
         brand="Toyota"
         price="€40/día"
         city="Madrid"
-        imageUrl="https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
+        imageUrl="http://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
         onCancel={()=> alert("Vehículo eliminado")}
       />
       <MyPublishedVehicles
         brand="Toyota"
         price="€40/día"
         city="Madrid"
-        imageUrl="https://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
+        imageUrl="http://cdn-datak.motork.net/configurator-imgs/cars/es/original/TOYOTA/COROLLA/41516_HATCHBACK-5-DOORS/toyota-corolla-front-view.jpg"
         onCancel={()=> alert("Vehículo eliminado")}
       />
       </View>

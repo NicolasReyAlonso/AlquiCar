@@ -13,7 +13,7 @@ export default function VehicleDetails() {
     const fetchVehicle = async () => {
       try {
         console.log("ID del vehículo recibido:", id); 
-        const response = await fetch(`https://localhost:3000/vehicles/${id}`); 
+        const response = await fetch(`http://localhost:3000/vehicles/${id}`); 
         const data = await response.json();
         if (data && data.length > 0) {
           setVehicle(data[0]); 

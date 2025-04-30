@@ -62,7 +62,7 @@ export default function ConfirmacionReserva() {
     
   
     try {
-      const response = await fetch("https://localhost:3000/reservations", {
+      const response = await fetch("http://localhost:3000/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nuevaReserva),
@@ -91,7 +91,7 @@ export default function ConfirmacionReserva() {
     plazas: params.seats || 0,
     transmision: "Manual",
     precioPorDia: obtenerPrecioNumerico(Array.isArray(params.price) ? params.price[0] : params.price || "0"),
-    imagen: params.imageUrl || "https://via.placeholder.com/100",
+    imagen: params.imageUrl || "http://via.placeholder.com/100",
     precioSeguroBase: 20,
     ciudad: params.pickupLocation || "Desconocido",
   };

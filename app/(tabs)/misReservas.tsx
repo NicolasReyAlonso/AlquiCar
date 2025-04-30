@@ -12,7 +12,7 @@ const MisReservas = () => {
 
   const handleCancelReservation = async (reservationId) => {
     try {
-      const response = await fetch(`https://localhost:3000/reservations/${reservationId}`, {
+      const response = await fetch(`http://localhost:3000/reservations/${reservationId}`, {
         method: "DELETE",
       });
 
@@ -31,14 +31,14 @@ const MisReservas = () => {
     const cargarReservas = async () => {
       try {
         const response = await fetch(
-          "https://localhost:3000/reservations/customer/234e4567-e89b-12d3-a456-426614174111"
+          "http://localhost:3000/reservations/customer/234e4567-e89b-12d3-a456-426614174111"
         );
         const reservas = await response.json();
 
         const reservasConVehiculos = await Promise.all(
           reservas.map(async (reserva) => {
             try {
-              const vehicleResponse = await fetch(`https://localhost:3000/vehicles/${reserva.vehicle_id}`);
+              const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reserva.vehicle_id}`);
               const vehicleData = await vehicleResponse.json();
 
               const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
@@ -46,13 +46,13 @@ const MisReservas = () => {
               return {
                 ...reserva,
                 vehicleBrand: vehicle.brand || "Marca desconocida",
-                imageUrl: vehicle.imageUrl || "https://via.placeholder.com/150",
+                imageUrl: vehicle.imageUrl || "http://via.placeholder.com/150",
               };
             } catch (vehicleError) {
               return {
                 ...reserva,
                 vehicleBrand: "Marca desconocida",
-                imageUrl: "https://via.placeholder.com/150",
+                imageUrl: "http://via.placeholder.com/150",
               };
             }
           })
@@ -81,7 +81,7 @@ const MisReservas = () => {
                 reservation.end_date
               ).toLocaleDateString()}`}
               status={reservation.status === "Pending" ? "Pendiente" : "Cancelada"}
-              imageUrl={reservation.imageUrl || "https://via.placeholder.com/150"}
+              imageUrl={reservation.imageUrl || "http://via.placeholder.com/150"}
               onCancel={() => handleCancelReservation(reservation.id)}
               onPress={() => router.push({ pathname: "/detallesReserva", params: { id: reservation.id } })}
             />

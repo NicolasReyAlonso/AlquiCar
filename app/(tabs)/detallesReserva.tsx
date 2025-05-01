@@ -26,13 +26,20 @@ export default function DetallesReserva() {
           const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
           setVehicle(vehicle);
 
+          //Propietario del coche
           if (vehicle && vehicle.owner_id) {
             const ownerResponse = await fetch(`http://localhost:3000/users/${vehicle.owner_id}`, {
               method: 'GET',
-              credentials: 'include'
+              credentials: 'include',
             });
+          
+            if (!ownerResponse.ok) {
+              throw new Error(`Error al obtener el propietario: ${ownerResponse.status}`);
+            }
+          
             const ownerData = await ownerResponse.json();
-            setOwner(ownerData);
+            const owner = Array.isArray(ownerData) ? ownerData[0] : ownerData; 
+            setOwner(owner);
           }
         } else {
           console.error("El campo 'vehicle_id' está undefined en la reserva cargada:", reservation);
@@ -60,15 +67,6 @@ export default function DetallesReserva() {
         const updatedReservation = await response.json();
         setReservation({ ...reservation, status: "Cancelled" });
         alert("Reserva cancelada correctamente");
-  
-        if (reservation.vehicle_id) {
-          const fetchUpdatedDates = async () => {
-            const response = await fetch(`http://localhost:3000/reservations?vehicle_id=${reservation.vehicle_id}`);
-            const updatedDates = await response.json();
-            setFechasReservadas(updatedDates); 
-          };
-          fetchUpdatedDates();
-        }
       } else {
         const errorData = await response.json();
         console.error("Error en la respuesta del backend:", errorData);
@@ -107,7 +105,6 @@ export default function DetallesReserva() {
           </Text>
         </View>
 
- 
         {reservation.status !== "Cancelled" && (
           <>
             <Text style={styles.sectionTitle}>Detalles de la Reserva:</Text>
@@ -128,7 +125,19 @@ export default function DetallesReserva() {
         <Text style={styles.detailText}>Número de Puertas: {vehicle.num_doors}</Text>
         <Text style={styles.detailText}>Depósito: {`€${vehicle.deposit}`}</Text>
         <Text style={styles.detailText}>Precio por Día: {`€${vehicle.daily_price}`}</Text>
-        <Text style={styles.detailText}>Publicado por: {owner?.name || "Desconocido"}</Text> {/* Mostrar el propietario */}
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.sectionTitle}>Propietario del Vehículo:</Text>
+        {owner ? (
+          <>
+            <Text style={styles.detailText}>Nombre: {owner.name}</Text>
+            <Text style={styles.detailText}>Email: {owner.email}</Text>
+            <Text style={styles.detailText}>Teléfono: {owner.phone}</Text>
+          </>
+        ) : (
+          <Text style={styles.detailText}>No se pudo cargar la información del propietario.</Text>
+        )}
       </View>
 
       {/* Botón para cancelar la reserva */}

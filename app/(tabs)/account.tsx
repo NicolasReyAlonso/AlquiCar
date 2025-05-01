@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, Image, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react'; 
+import { View, Text, StyleSheet, Platform,  Button, Image, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 export default function AccountPage() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -13,8 +15,10 @@ export default function AccountPage() {
   const [userName, setName] = useState('');
   const [userEmail, setEmail] = useState('');
   const [role, setRole] = useState('');
+  const [userId, setUserId] = useState('');
   const [users, setUsers] = useState<any[]>([]);
-  const [isAdminMode, setIsAdminMode] = useState(false); // Estado para el modo admin
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [profileImageUri, setProfileImageUri] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,15 +34,24 @@ export default function AccountPage() {
           credentials: 'include',
         });
         const data = await response.json();
-        console.log("hola")
-        console.log(data)
+
         if (!response.ok) {
           throw new Error(data.message || "Error al obtener los datos");
         }
-        setName(data[0].name);
-        setEmail(data[0].email)
-        setRole(data[0].role);
 
+        setName(data[0].name);
+        setEmail(data[0].email);
+        setRole(data[0].role);
+        setUserId(data[0].id);
+        await AsyncStorage.setItem("userId", data[0].id);
+
+        const IdUser = data[0].id;
+        // Cargar foto de perfil actual si existe
+        const profileRes = await fetch(`http://localhost:3000/media/profile/${IdUser}`);
+        const profileImages = await profileRes.json();
+        if (profileImages.length > 0) {
+            setProfileImageUri(profileImages[0].data);
+        }
         if (data[0].role === 'admin') {
           const usersResponse = await fetch('http://localhost:3000/users');
           const usersData = await usersResponse.json();
@@ -94,16 +107,66 @@ export default function AccountPage() {
     setIsAdminMode(!isAdminMode);
   };
 
+  const pickImageAndUpload = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+    });
+
+    if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        handleImageUpload(uri);
+    }
+};
+
+const handleImageUpload = async (uri: string) => {
+  const fileName = uri.split('/').pop();
+  const formData = new FormData();
+  formData.append('image', {
+    uri,
+    type: 'image/jpeg', // o determina tipo dinámicamente
+    name: fileName || 'photo.jpg',
+  } as any); // usa `as any` para evitar errores de tipo en TypeScript
+
+  const endpoint = `http://localhost:3000/media/upload/${userId}`;
+  try {
+    const uploadRes = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    });
+
+    const data = await uploadRes.json();
+    console.log("Imagen subida:", data);
+    setProfileImageUri(uri); // actualizar imagen localmente
+  } catch (e) {
+    console.error("Error al subir imagen:", e);
+  }
+};
+
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>{t('Account.title')}</Text>
-      <Image source={require('@/assets/images/avatar.png')} style={styles.avatar} />
+
+      <TouchableOpacity onPress={pickImageAndUpload}>
+        <Image
+          source={profileImageUri ? { uri: profileImageUri } : require('@/assets/images/avatar.png')}
+          style={styles.avatar}
+        />
+        <Text style={{ textAlign: 'center', color: theme.colors.text, marginBottom: 10 }}>
+          {t('Account.changePhoto')}
+        </Text>
+      </TouchableOpacity>
+
       <View style={styles.infoContainer}>
         <Text style={styles.info}>{t('Account.name')}: {userName}</Text>
         <Text style={styles.info}>Email: {userEmail}</Text>
       </View>
 
-      {/* Botón para cambiar entre modo admin y usuario */}
       {role === 'admin' && (
         <TouchableOpacity 
           style={styles.toggleButton} 
@@ -115,7 +178,6 @@ export default function AccountPage() {
         </TouchableOpacity>
       )}
 
-      {/* Mostrar los usuarios solo si estamos en modo admin */}
       {isAdminMode ? (
         <View style={styles.usersContainer}>
           <Text style={styles.subTitle}>Usuarios registrados</Text>
@@ -176,7 +238,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    marginBottom: 20,
+    marginBottom: 10,
     borderWidth: 2,
     borderColor: theme.colors.secondary,
     alignSelf: 'center',
@@ -240,14 +302,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.tabColor,
     padding: 8,
     borderRadius: 5,
-  },
-  logoutButton: {
-    marginTop: 20,
-    width: '80%',
-    marginVertical: 10,
-    borderRadius: 8,
-    overflow: 'hidden',
-    justifyContent: 'center',
   },
   toggleButton: {
     position: 'absolute',

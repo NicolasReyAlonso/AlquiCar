@@ -17,11 +17,13 @@ const misCochesPublicados = () => {
         return;
       }
 
-      const email = await AsyncStorage.getItem("email");
-      const userRes = await fetch(`http://localhost:3000/users/email/${email}`);
+      const userRes = await fetch('http://localhost:3000/users/getdata/', {
+        method: 'GET',
+        credentials: 'include',
+      });
       const userData = await userRes.json();
       console.log(userData)
-      const userId = userData.id;
+      const userId = userData[0].id;
 
       console.log(userId);
       

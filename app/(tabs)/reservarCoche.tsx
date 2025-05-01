@@ -103,12 +103,15 @@ export default function ConfirmacionReserva() {
       try {
         const response = await fetch(`http://localhost:3000/reservations?vehicle_id=${params.vehicleId}`);
         const data = await response.json();
-        setFechasReservadas(data);
+  
+        // Filtrar reservas que no estén canceladas
+        const reservasActivas = data.filter((reserva) => reserva.status !== "Cancelled");
+        setFechasReservadas(reservasActivas);
       } catch (error) {
         console.error("Error al cargar las fechas reservadas:", error);
       }
     };
-
+  
     if (params.vehicleId) {
       cargarFechasReservadas();
     }
@@ -237,30 +240,36 @@ export default function ConfirmacionReserva() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: theme.colors.background,
+    backgroundColor: "#FFFFFF", // Fondo blanco
     flexGrow: 1,
   },
   totalContainer: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     marginTop: 30,
+    padding: 10,
+    backgroundColor: "#F9F9F9",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   total: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#333",
     textAlign: "right",
-    paddingLeft: 10,
   },
   header: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: "bold",
-    color: theme.colors.text,
+    color: "#3B6ED5",
     textAlign: "center",
     marginBottom: 20,
   },
@@ -284,40 +293,41 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "bold",
     color: "#333",
   },
   text: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#555",
+    marginBottom: 5,
   },
   subtitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
-    color: theme.colors.primary,
+    color: "#3B6ED5",
     marginTop: 15,
+    marginBottom: 10,
   },
   dateRow: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F9F9F9",
-    padding: 6,
+    padding: 10,
     borderRadius: 10,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#E0E0E0",
   },
   dateInput: {
-    fontSize: 18,
+    fontSize: 16,
     flex: 1,
-    padding: 6,
+    padding: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#FFF",
+    borderColor: "#E0E0E0",
+    backgroundColor: "#FFFFFF",
     marginRight: 10,
-    marginLeft: 20,
   },
   button: {
     backgroundColor: "#3B6ED5",
@@ -332,18 +342,31 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    color: "white",
+    color: "#FFFFFF",
     textTransform: "uppercase",
   },
   cancelText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#888",
     textAlign: "center",
     marginTop: 15,
   },
   dateContainer: {
     marginBottom: 15,
+  },
+  priceBreakdown: {
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: "#F9F9F9",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
   },
 });

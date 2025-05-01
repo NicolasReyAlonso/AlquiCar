@@ -1,22 +1,39 @@
 import React, { useEffect, useState } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, Text, Image, StyleSheet } from 'react-native';
 
 const Media = () => {
     const [vehicleImage, setVehicleImage] = useState(null);
     const [profileImage, setProfileImage] = useState(null);
+    const [vehicles, setVehicles] = useState([]);
 
     useEffect(() => {
         const fetchImages = async () => {
             try {
+                const email = await AsyncStorage.getItem("email");
+                const userRes = await fetch(`http://localhost:3000/users/email/${email}`);
+                const userData = await userRes.json();
+                
+                const userId = userData.id;
+                console.log(userId);
+                const response = await fetch(`http://localhost:3000/vehicles/`);
+                const allVehicles = await response.json();
+
+                
+
+                const userVehicles = allVehicles.filter(v => v.owner_id === userId);
+                setVehicles(userVehicles);
+                console.log(userVehicles[0]);
+                
                 // Imagen de vehicle
-                const vehicleRes = await fetch("http://localhost:3000/media/vehicles/4f26536a-25c4-11f0-9d8a-dee3d78c366c/2");
+                const vehicleRes = await fetch(`http://localhost:3000/media/vehicles/${userId}/${userVehicles[0].id}`);
                 const vehicleImages = await vehicleRes.json();
                 if (vehicleImages.length > 0) {
                     setVehicleImage(vehicleImages[0].data);
                 }
 
                 // Imagen de perfil (vehicle_id IS NULL)
-                const profileRes = await fetch("http://localhost:3000/media/profile/4f26536a-25c4-11f0-9d8a-dee3d78c366c");
+                const profileRes = await fetch(`http://localhost:3000/media/profile/${userId}`);
                 const profileImages = await profileRes.json();
                 if (profileImages.length > 0) {
                     setProfileImage(profileImages[0].data);

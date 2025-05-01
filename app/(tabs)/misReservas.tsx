@@ -18,14 +18,14 @@ interface Reservation {
 const MisReservas = () => {
   const router = useRouter();
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [activeTab, setActiveTab] = useState("Activas"); // Estado para la pestaña activa
+  const [activeTab, setActiveTab] = useState("Activas"); 
 
   const getUserId = async () => {
     const token = await AsyncStorage.getItem("token");
     if (!token) return null;
 
     try {
-      const payload = JSON.parse(atob(token.split(".")[1])); // Decodificar el JWT
+      const payload = JSON.parse(atob(token.split(".")[1])); 
       return payload.id;
     } catch (error) {
       console.error("Error al decodificar el token:", error);
@@ -37,15 +37,15 @@ const MisReservas = () => {
     try {
       const response = await fetch(`http://localhost:3000/reservations/${reservationId}`, {
         method: "PATCH",
+        credentials: "include", //cookies
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "Cancelled" }), // Actualizar el estado a "Cancelled"
+        body: JSON.stringify({ status: "Cancelled" }), 
       });
   
       if (response.ok) {
         const updatedReservation = await response.json();
-        console.log("Reserva actualizada:", updatedReservation); // Depuración
+        console.log("Reserva actualizada:", updatedReservation);
   
-        // Actualizar el estado local para reflejar el cambio
         setReservations(
           reservations.map((reserva) =>
             reserva.id === reservationId ? { ...reserva, status: "Cancelled" } : reserva
@@ -66,24 +66,27 @@ const MisReservas = () => {
   useEffect(() => {
     const cargarReservas = async () => {
       try {
-        const userId = await getUserId();
-        if (!userId) {
-          alert("Por favor, inicia sesión para ver tus reservas.");
-          router.push("/login");
+        const response = await fetch(`http://localhost:3000/reservations/customer`, {
+          method: "GET",
+          credentials: "include", 
+        });
+    
+        if (!response.ok) {
+          console.error("Error en la respuesta del servidor:", response.status, response.statusText);
+          alert("Hubo un problema al cargar las reservas.");
           return;
         }
-
-        const response = await fetch(`http://localhost:3000/reservations/customer/${userId}`);
+    
         const reservas = await response.json();
-
+    
         const reservasConVehiculos = await Promise.all(
           reservas.map(async (reserva: Reservation) => {
             try {
               const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reserva.vehicle_id}`);
               const vehicleData = await vehicleResponse.json();
-
+    
               const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
-
+    
               return {
                 ...reserva,
                 vehicleBrand: vehicle.brand || "Marca desconocida",
@@ -98,7 +101,7 @@ const MisReservas = () => {
             }
           })
         );
-
+    
         setReservations(reservasConVehiculos);
       } catch (error) {
         console.error("Error al cargar las reservas:", error);
@@ -108,7 +111,6 @@ const MisReservas = () => {
     cargarReservas();
   }, []);
 
-  // Filtrar reservas según la pestaña activa
   const filteredReservations =
     activeTab === "Activas"
       ? reservations.filter((reserva) => reserva.status === "Pending")
@@ -116,7 +118,6 @@ const MisReservas = () => {
 
   return (
     <View style={styles.container}>
-      {/* Pestañas */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === "Activas" && styles.activeTab]}
@@ -149,7 +150,11 @@ const MisReservas = () => {
                 ).toLocaleDateString()}`}
                 status={reservation.status === "Pending" ? "Pendiente" : "Cancelada"}
                 imageUrl={reservation.imageUrl || "http://via.placeholder.com/150"}
-                onCancel={() => handleCancelReservation(reservation.id)}
+                onCancel={
+                  reservation.status === "Pending"
+                    ? () => handleCancelReservation(reservation.id)
+                    : undefined
+                } 
                 onPress={() => router.push({ pathname: "/detallesReserva", params: { id: reservation.id } })}
               />
             </View>

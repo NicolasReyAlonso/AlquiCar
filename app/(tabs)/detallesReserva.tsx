@@ -52,6 +52,7 @@ export default function DetallesReserva() {
       const response = await fetch(`http://localhost:3000/reservations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // Incluir cookies en la solicitud
         body: JSON.stringify({ status: "Cancelled" }), // Actualizar el estado a "Cancelled"
       });
   

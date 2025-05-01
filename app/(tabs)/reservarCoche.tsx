@@ -47,7 +47,7 @@ export default function ConfirmacionReserva() {
     if (!token) return null;
 
     try {
-      const payload = JSON.parse(atob(token.split(".")[1])); // Decodificar el JWT
+      const payload = JSON.parse(atob(token.split(".")[1])); 
       return payload.id;
     } catch (error) {
       console.error("Error al decodificar el token:", error);
@@ -66,7 +66,7 @@ export default function ConfirmacionReserva() {
       return;
     }
 
-    const userId = await getUserId(); // Obtener el ID del usuario autenticado
+    const userId = await getUserId();
     if (!userId) {
       alert("Por favor, inicia sesión para realizar una reserva.");
       return;
@@ -74,7 +74,7 @@ export default function ConfirmacionReserva() {
 
     const nuevaReserva = {
       vehicle_id: Number(params.vehicleId),
-      customer_id: userId, // Usar el ID del usuario autenticado
+      customer_id: userId, 
       start_date: pickupDate.toISOString(),
       end_date: returnDate.toISOString(),
       total_price: Number(precioTotal),

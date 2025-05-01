@@ -46,16 +46,16 @@ export default function MisIncidencias() {
     try {
       let url = 'http://localhost:3000/incidences/';
       if (!isAdminUser || (isAdminUser && !viewAll)) {
-        url += `?from_id=${uid}`;
+        url += uid;
       }
 
       const incidenciasResponse = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        method: 'GET',
+        credentials: 'include'
       });
 
       const incidenciasData = await incidenciasResponse.json();
+      console.log(incidenciasData);
       setIncidencias(incidenciasData);
     } catch (error) {
       console.error('Error al obtener incidencias:', error);
@@ -73,23 +73,22 @@ export default function MisIncidencias() {
           return;
         }
 
-        const userResponse = await fetch('http://localhost:3000/users/', {
+        const userResponse = await fetch('http://localhost:3000/users/getdata/', {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: 'include'
         });
 
         const user = await userResponse.json();
         if (!userResponse.ok) {
           throw new Error(user.message || 'Error al obtener datos del usuario');
         }
+        console.log(user);
 
         const isAdminUser = user[0].role === 'admin';
         setIsAdmin(isAdminUser);
-        setUserId(user.id);
+        setUserId(user[0].id);
 
-        await fetchIncidencias(token, isAdminUser, user.id, true);
+        await fetchIncidencias(token, isAdminUser, user[0].id, true);
       } catch (error) {
         console.error('Error inicial:', error);
       }

@@ -22,35 +22,44 @@ const CrearIncidencia = () => {
   const [toId, setToId] = useState<string | null>(null);
   const [reservationId, setReservationId] = useState<number | null>(null);
   const [description, setDescription] = useState('');
+  const [status, setStatus] = useState('Pending');
   const [descriptionError, setDescriptionError] = useState('');
   const [reservationIdError, setReservationIdError] = useState('');
 
   const handleSubmit = async () => {
-    const fromId = await AsyncStorage.getItem('userId');
+    const fromId = await AsyncStorage.getItem('id');
     let hasError = false;
     setDescriptionError('');
     setReservationIdError('');
+
+    if (!fromId) {
+      Alert.alert(t('Error'), t('No se ha encontrado tu sesión. Inicia sesión nuevamente.'));
+      return;
+    }
 
     if (description.trim().length < 10) {
       setDescriptionError(t('La descripción debe tener al menos 10 caracteres'));
       hasError = true;
     }
 
-    if (type === 'USER' && !reservationId) {
-      setReservationIdError(t('Debes indicar un ID de reserva para incidencias hacia usuarios'));
+    if (type === 'USER' && (!reservationId || isNaN(reservationId))) {
+      setReservationIdError(t('Debes indicar un ID de reserva válido'));
       hasError = true;
-    } 
+    }
 
     if (hasError) return;
 
-    const body = {
+    const body: any = {
       from_id: fromId,
-      // El backend debería resolver to_id automáticamente si se proporciona reservation_id
-      to_id: type === 'USER' ? toId : null,
-      reservation_id: type === 'USER' ? reservationId : null,
-      description,
+      description: description.trim(),
       type,
+      status,
     };
+
+    if (type === 'USER') {
+      body.reservation_id = reservationId;
+      if (toId) body.to_id = toId;
+    }
 
     try {
       const response = await fetch('http://localhost:3000/incidences/', {
@@ -64,13 +73,15 @@ const CrearIncidencia = () => {
         setReservationId(null);
         setDescription('');
         setType('PLATFORM');
+        setStatus('Pending');
+        Alert.alert(t('Éxito'), t('La incidencia fue creada correctamente'));
       } else {
-        console.log("No se produjo la creación")
+        const errorData = await response.json();
+        Alert.alert(t('Error'), t('No se pudo crear la incidencia'));
       }
     } catch (error) {
-      console.error(error);
       Alert.alert(t('Error'), t('Error de red'));
-    } 
+    }
   };
 
   return (
@@ -87,8 +98,8 @@ const CrearIncidencia = () => {
             style={styles.picker}
             dropdownIconColor={theme.colors.text}
           >
-            <Picker.Item label={t('Incidencias.plataforma')} value="PLATFORM" color={'black'} />
-            <Picker.Item label={t('Incidencias.usuario')} value="USER" color={'black'} />
+            <Picker.Item label={t('Incidencias.plataforma')} value="PLATFORM" color="black" />
+            <Picker.Item label={t('Incidencias.usuario')} value="USER" color="black" />
           </Picker>
         </View>
 
@@ -100,8 +111,11 @@ const CrearIncidencia = () => {
               placeholder="Ej: 123"
               placeholderTextColor="black"
               keyboardType="numeric"
-              value={reservationId?.toString() || ''}
-              onChangeText={(text) => setReservationId(text ? parseInt(text) : null)}
+              value={reservationId !== null ? reservationId.toString() : ''}
+              onChangeText={(text) => {
+                const number = parseInt(text);
+                setReservationId(!isNaN(number) ? number : null);
+              }}
             />
             {reservationIdError ? <Text style={styles.error}>{reservationIdError}</Text> : null}
           </>

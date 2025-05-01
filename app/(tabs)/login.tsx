@@ -37,6 +37,8 @@ export default function LoginScreen() {
       throw new Error(data.message || 'Error en el login');
     }
     await AsyncStorage.setItem("token", data.token);
+    await AsyncStorage.setItem("token", data.user.role);
+    await AsyncStorage.setItem("token", data.user.id);
     await AsyncStorage.setItem("isLoggedIn", "true");
     navigation.navigate("account");
   };

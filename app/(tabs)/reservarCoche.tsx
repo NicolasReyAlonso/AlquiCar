@@ -11,14 +11,12 @@ export default function ConfirmacionReserva() {
   const params = useLocalSearchParams();
   const { t } = useTranslation();
 
-  const [seguro, setSeguro] = useState(false);
   const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
   const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [dias, setDias] = useState(1);
   const [precioCoche, setPrecioCoche] = useState(0);
-  const [precioSeguro, setPrecioSeguro] = useState(0);
   const [precioTotal, setPrecioTotal] = useState(0);
   const [fechasReservadas, setFechasReservadas] = useState<{ start_date: string; end_date: string }[]>([]);
 
@@ -88,7 +86,7 @@ export default function ConfirmacionReserva() {
       });
 
       if (response.ok) {
-        alert("Reserva confirmada y guardada en el backend.");
+        alert("Reserva confirmada.");
       } else {
         const errorData = await response.json();
         console.error("Detalles del error:", errorData);
@@ -135,7 +133,6 @@ export default function ConfirmacionReserva() {
     transmision: "Manual",
     precioPorDia: obtenerPrecioNumerico(Array.isArray(params.price) ? params.price[0] : params.price || "0"),
     imagen: params.imageUrl || "http://via.placeholder.com/100",
-    precioSeguroBase: 20,
     ciudad: params.pickupLocation || "Desconocido",
   };
 
@@ -145,13 +142,9 @@ export default function ConfirmacionReserva() {
       const newDias = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
       setDias(newDias);
       setPrecioCoche(reserva.precioPorDia * newDias);
+      setPrecioTotal(reserva.precioPorDia * newDias);
     }
   }, [pickupDate, returnDate]);
-
-  useEffect(() => {
-    setPrecioSeguro(seguro ? reserva.precioSeguroBase : 0);
-    setPrecioTotal(precioCoche + (seguro ? reserva.precioSeguroBase : 0));
-  }, [seguro, precioCoche]);
 
   const calcularFechaCancelacion = () => {
     if (!pickupDate) return "";
@@ -231,8 +224,6 @@ export default function ConfirmacionReserva() {
       <Text style={styles.subtitle}>{t("reserveVehicle.duration")}</Text>
       <Text style={styles.text}>{dias} {t("reserveVehicle.days")}</Text>
       <Text style={styles.text}>{t("reserveVehicle.vehiclePrice")}: {reserva.precioPorDia}€/día × {dias} días = {precioCoche}€</Text>
-      <Text style={styles.text}>+</Text>
-      <Text style={styles.text}>{t("reserveVehicle.insurancePrice")}: {precioSeguro}€</Text>
       <Text style={styles.text}>——————</Text>
       <View style={styles.totalContainer}>
         <Text style={styles.total}>{t("reserveVehicle.totalPrice")}</Text>
@@ -245,6 +236,7 @@ export default function ConfirmacionReserva() {
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

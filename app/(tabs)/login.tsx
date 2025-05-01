@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { useTranslation } from 'react-i18next';
+import { useFonts } from 'expo-font';
 
 const { width } = Dimensions.get('window');
 
@@ -37,8 +38,6 @@ export default function LoginScreen() {
       throw new Error(data.message || 'Error en el login');
     }
     await AsyncStorage.setItem("token", data.token);
-    await AsyncStorage.setItem("token", data.user.role);
-    await AsyncStorage.setItem("token", data.user.id);
     await AsyncStorage.setItem("isLoggedIn", "true");
     navigation.navigate("account");
   };

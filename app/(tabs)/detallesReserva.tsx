@@ -7,7 +7,7 @@ export default function DetallesReserva() {
   const { id } = useLocalSearchParams();
   const [reservation, setReservation] = useState(null);
   const [vehicle, setVehicle] = useState(null);
-  const [owner, setOwner] = useState(null); // Estado para el propietario
+  const [owner, setOwner] = useState(null); 
   const router = useRouter();
 
   useEffect(() => {
@@ -52,17 +52,23 @@ export default function DetallesReserva() {
       const response = await fetch(`http://localhost:3000/reservations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // Incluir cookies en la solicitud
-        body: JSON.stringify({ status: "Cancelled" }), // Actualizar el estado a "Cancelled"
+        credentials: "include",
+        body: JSON.stringify({ status: "Cancelled" }),
       });
   
       if (response.ok) {
         const updatedReservation = await response.json();
-        console.log("Reserva actualizada:", updatedReservation); // Depuración
-  
-        // Actualizar el estado local para reflejar el cambio
         setReservation({ ...reservation, status: "Cancelled" });
         alert("Reserva cancelada correctamente");
+  
+        if (reservation.vehicle_id) {
+          const fetchUpdatedDates = async () => {
+            const response = await fetch(`http://localhost:3000/reservations?vehicle_id=${reservation.vehicle_id}`);
+            const updatedDates = await response.json();
+            setFechasReservadas(updatedDates); 
+          };
+          fetchUpdatedDates();
+        }
       } else {
         const errorData = await response.json();
         console.error("Error en la respuesta del backend:", errorData);

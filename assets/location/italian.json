@@ -157,6 +157,12 @@
     "title": "Verifica la tua email!",
     "message": "Ti abbiamo inviato un'email di verifica. Controlla la tua casella di posta per completare la registrazione.",
     "goToLogin": "Vai al login"
+  },
+
+  "ModoAdmin": {
+    "modoAdmin": "Modalità Amministratore",
+    "modoUsuario": "Modalità Utente"
   }
+  
 
 }

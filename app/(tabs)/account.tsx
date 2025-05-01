@@ -39,7 +39,7 @@ export default function AccountPage() {
         setEmail(data[0].email)
         setRole(data[0].role);
 
-        if (data.role === 'admin') {
+        if (data[0].role === 'admin') {
           const usersResponse = await fetch('http://localhost:3000/users');
           const usersData = await usersResponse.json();
           setUsers(usersData);
@@ -110,7 +110,7 @@ export default function AccountPage() {
           onPress={handleToggleAdminMode}
         >
           <Text style={styles.buttonText}>
-            {isAdminMode ? 'Modo Usuario' : 'Modo Admin'}
+            {isAdminMode ? t('ModoAdmin.modoUsuario') : t('ModoAdmin.modoAdmin')}
           </Text>
         </TouchableOpacity>
       )}

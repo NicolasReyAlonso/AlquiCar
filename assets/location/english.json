@@ -158,5 +158,10 @@
     "title": "Verify your email!",
     "message": "We have sent you a verification email. Please check your inbox to complete the registration.",
     "goToLogin": "Go to login"
+  },
+
+  "ModoAdmin": {
+    "modoAdmin": "Administrator Mode",
+    "modoUsuario": "User Mode"
   }
 }

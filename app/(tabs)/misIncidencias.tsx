@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  ScrollView
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
@@ -38,56 +39,101 @@ export default function MisIncidencias() {
   const [incidencias, setIncidencias] = useState<Incidence[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminView, setAdminView] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const fetchIncidencias = async (token: string, isAdminUser: boolean, uid: string, viewAll: boolean) => {
+    try {
+      let url = 'http://localhost:3000/incidences/';
+      if (!isAdminUser || (isAdminUser && !viewAll)) {
+        url += `?from_id=${uid}`;
+      }
+
+      const incidenciasResponse = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const incidenciasData = await incidenciasResponse.json();
+      setIncidencias(incidenciasData);
+    } catch (error) {
+      console.error('Error al obtener incidencias:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchIncidencias = async () => {
-      const userId = await AsyncStorage.getItem('userId');
-      const role = await AsyncStorage.getItem('role'); 
-
-      setIsAdmin(role === 'admin');
-
+    const init = async () => {
       try {
-        let url = 'http://localhost:3000/incidences/';
-        if (role !== 'admin') {
-          url += `?from_id=${userId}`;
+        const token = await AsyncStorage.getItem('token');
+        if (!token) {
+          console.error('Usuario no autenticado');
+          return;
         }
-	const response = await fetch(url);
-        const data = await response.json();
-        setIncidencias(data);
+
+        const userResponse = await fetch('http://localhost:3000/users/', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const user = await userResponse.json();
+        if (!userResponse.ok) {
+          throw new Error(user.message || 'Error al obtener datos del usuario');
+        }
+
+        const isAdminUser = user[0].role === 'admin';
+        setIsAdmin(isAdminUser);
+        setUserId(user.id);
+
+        await fetchIncidencias(token, isAdminUser, user.id, true);
       } catch (error) {
-        console.error('Error al obtener incidencias:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error inicial:', error);
       }
     };
 
-    fetchIncidencias();
-  }, [isAdmin]);
+    init();
+  }, []);
 
-  const handleAccionIncidencia = async (id: number, accion: 'resolve' | 'dismiss') => {
+  const toggleAdminView = async () => {
+    const token = await AsyncStorage.getItem('token');
+    if (!token || userId === null) return;
+
+    const newView = !adminView;
+    setAdminView(newView);
+    setLoading(true);
+    await fetchIncidencias(token, true, userId, newView);
+  };
+
+  const handleAccionIncidencia = async (id: number, action: 'resolve' | 'dismiss') => {
     try {
-      let url = 'http://localhost:3000/incidences/';
-      url += `?from_id=${id}`;
-      const response = await fetch(url, {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        console.error('Token no encontrado');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/incidences/${id}/${action}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          status: accion === 'resolve' ? 'Resolved' : 'Dismissed',
-        }),
       });
-      if (response.ok) {
-        setIncidencias((prevIncidencias) =>
-          prevIncidencias.map((incidencia) =>
-            incidencia.id === id ? { ...incidencia, status: accion === 'resolve' ? 'Resolved' : 'Dismissed' } : incidencia
-          )
-        );
-      } else {
-        throw new Error('Error al actualizar la incidencia');
+
+      if (!response.ok) {
+        throw new Error(`Error al realizar la acción: ${action}`);
       }
+
+      setIncidencias((prev) =>
+        prev.map((inc) =>
+          inc.id === id ? { ...inc, status: action === 'resolve' ? 'Resolved' : 'Dismissed' } : inc
+        )
+      );
     } catch (error) {
-      console.error('Error al actualizar incidencia:', error);
+      console.error('Error en handleAccionIncidencia:', error);
     }
   };
 
@@ -97,7 +143,10 @@ export default function MisIncidencias() {
         {t('Incidencias.id')}: <Text style={styles.value}>{item.id}</Text>
       </Text>
       <Text style={styles.label}>
-        {t('Incidencias.tipo')}: <Text style={styles.value}>{item.type === 'USER' ? t('Incidencias.usuario') : t('Incidencias.platform')}</Text>
+        {t('Incidencias.tipo')}:{' '}
+        <Text style={styles.value}>
+          {item.type === 'USER' ? t('Incidencias.usuario') : t('Incidencias.platform')}
+        </Text>
       </Text>
       {item.reservation_id && (
         <Text style={styles.label}>
@@ -110,15 +159,22 @@ export default function MisIncidencias() {
         {t('Incidencias.estado')}: <Text style={styles.value}>{t(item.status)}</Text>
       </Text>
       <Text style={styles.label}>
-        {t('Incidencias.fecha')}: <Text style={styles.value}>{new Date(item.created_at).toLocaleString()}</Text>
+        {t('Incidencias.fecha')}:{' '}
+        <Text style={styles.value}>{new Date(item.created_at).toLocaleString()}</Text>
       </Text>
 
       {isAdmin && item.status === 'Pending' && (
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => handleAccionIncidencia(item.id, 'resolve')}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleAccionIncidencia(item.id, 'resolve')}
+          >
             <Text style={styles.buttonText}>{t('Incidencias.resolver')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handleAccionIncidencia(item.id, 'dismiss')}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleAccionIncidencia(item.id, 'dismiss')}
+          >
             <Text style={styles.buttonText}>{t('Incidencias.denegar')}</Text>
           </TouchableOpacity>
         </View>
@@ -134,34 +190,42 @@ export default function MisIncidencias() {
     );
   }
 
-  if (incidencias.length === 0) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.value}>{t('Incidencias.sinIncidencias')}</Text>
-        {!isAdmin && (
-          <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('crearIncidencia')}>
-            <Text style={styles.fabText}>+</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    );
-  }
-
   return (
     <View style={{ flex: 1 }}>
-      <FlatList
-        data={incidencias}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={styles.container}
-      />
-      {!isAdmin && (
-        <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('crearIncidencia')}>
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
+        {isAdmin && (
+          <TouchableOpacity style={styles.toggleButton} onPress={toggleAdminView}>
+            <Text style={styles.toggleButtonText}>
+              {adminView ? t('ModoAdmin.modoUsuario') : t('ModoAdmin.modoAdmin')}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {incidencias.length === 0 ? (
+          <View style={styles.centered}>
+            <Text style={styles.value}>{t('Incidencias.sinIncidencias')}</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={incidencias}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderItem}
+            contentContainerStyle={[styles.container, { paddingBottom: 140 }]}
+            ListFooterComponent={<View style={{ height: 60 }} />}
+          />
+        )}
+      </ScrollView>
+
+      {!(isAdmin && adminView) && (
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => navigation.navigate('crearIncidencia')}
+        >
           <Text style={styles.fabText}>+</Text>
         </TouchableOpacity>
       )}
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
@@ -213,7 +277,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-  },
+  },  
   fabText: {
     color: 'white',
     fontSize: 30,
@@ -222,12 +286,12 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: 'row',
     gap: 10,
+    marginTop: 10,
   },
   button: {
     backgroundColor: theme.colors.primary,
     padding: 10,
     borderRadius: 8,
-    marginBottom: 10,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -235,5 +299,19 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
-  }
+  },
+  toggleButton: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: theme.colors.primary,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },  
+  toggleButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

@@ -156,6 +156,11 @@
     "title": "Überprüfe deine E-Mail!",
     "message": "Wir haben dir eine Bestätigungs-E-Mail gesendet. Bitte überprüfe dein Postfach, um die Registrierung abzuschließen.",
     "goToLogin": "Zum Login"
+  },
+
+  "ModoAdmin": {
+    "modoAdmin": "Administrator-Modus",
+    "modoUsuario": "Benutzermodus"
   }
 
 

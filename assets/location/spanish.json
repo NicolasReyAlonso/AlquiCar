@@ -159,6 +159,11 @@
       "title": "¡Verifica tu correo!",
       "message": "Te hemos enviado un email de verificación. Por favor revisa tu bandeja de entrada para completar el registro.",
       "goToLogin": "Ir al login"
+    },
+
+    "ModoAdmin": {
+      "modoAdmin": "Modo Administrador",
+      "modoUsuario": "Modo Usuario"
     }
 
   }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
 
@@ -27,12 +27,11 @@ export default function DetallesReserva() {
           setVehicle(vehicle);
 
           if (vehicle && vehicle.owner_id) {
-            const ownerResponse = await fetch(`http://localhost:3000/users/${vehicle.owner_id}`,{
+            const ownerResponse = await fetch(`http://localhost:3000/users/${vehicle.owner_id}`, {
               method: 'GET',
               credentials: 'include'
-            }); // Cambiar a /users/
+            });
             const ownerData = await ownerResponse.json();
-            console.log("Datos del propietario:", ownerData); 
             setOwner(ownerData);
           }
         } else {
@@ -47,6 +46,32 @@ export default function DetallesReserva() {
       fetchReservationDetails();
     }
   }, [id]);
+
+  const handleCancelReservation = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/reservations/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Cancelled" }), // Actualizar el estado a "Cancelled"
+      });
+  
+      if (response.ok) {
+        const updatedReservation = await response.json();
+        console.log("Reserva actualizada:", updatedReservation); // Depuración
+  
+        // Actualizar el estado local para reflejar el cambio
+        setReservation({ ...reservation, status: "Cancelled" });
+        alert("Reserva cancelada correctamente");
+      } else {
+        const errorData = await response.json();
+        console.error("Error en la respuesta del backend:", errorData);
+        alert("Error al cancelar la reserva");
+      }
+    } catch (error) {
+      console.error("Error al cancelar la reserva:", error);
+      alert("Hubo un problema al cancelar la reserva.");
+    }
+  };
 
   if (!reservation || !vehicle) {
     return (
@@ -74,11 +99,17 @@ export default function DetallesReserva() {
             {reservation.status === "Cancelled" ? "Cancelada" : "Activa"}
           </Text>
         </View>
-        <Text style={styles.sectionTitle}>Detalles de la Reserva:</Text>
-        <Text style={styles.detailText}>
-          Fechas: {new Date(reservation.start_date).toLocaleDateString()} - {new Date(reservation.end_date).toLocaleDateString()}
-        </Text>
-        <Text style={styles.detailText}>Precio Total: {`€${reservation.total_price}`}</Text>
+
+ 
+        {reservation.status !== "Cancelled" && (
+          <>
+            <Text style={styles.sectionTitle}>Detalles de la Reserva:</Text>
+            <Text style={styles.detailText}>
+              Fechas: {new Date(reservation.start_date).toLocaleDateString()} - {new Date(reservation.end_date).toLocaleDateString()}
+            </Text>
+            <Text style={styles.detailText}>Precio Total: {`€${reservation.total_price}`}</Text>
+          </>
+        )}
       </View>
 
       <View style={styles.detailsContainer}>
@@ -93,17 +124,12 @@ export default function DetallesReserva() {
         <Text style={styles.detailText}>Publicado por: {owner?.name || "Desconocido"}</Text> {/* Mostrar el propietario */}
       </View>
 
-      {/* Galería de fotos */}
-      <View style={styles.galleryContainer}>
-        <Text style={styles.sectionTitle}>Galería de Fotos:</Text>
-        {vehicle.galleryImages?.length > 0 ? (
-          vehicle.galleryImages.map((image, index) => (
-            <Image key={index} source={{ uri: image }} style={styles.galleryImage} />
-          ))
-        ) : (
-          <Text style={styles.noGalleryText}>No hay fotos adicionales disponibles.</Text>
-        )}
-      </View>
+      {/* Botón para cancelar la reserva */}
+      {reservation.status !== "Cancelled" && (
+        <TouchableOpacity style={styles.cancelButton} onPress={handleCancelReservation}>
+          <Text style={styles.cancelButtonText}>Cancelar Reserva</Text>
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity
         style={styles.backButton}
@@ -114,8 +140,6 @@ export default function DetallesReserva() {
     </ScrollView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -173,20 +197,18 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 5,
   },
-  galleryContainer: {
+  cancelButton: {
+    backgroundColor: "#FF4D4D",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignSelf: "center",
     marginBottom: 20,
   },
-  galleryImage: {
-    width: "100%",
-    height: 150,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  noGalleryText: {
+  cancelButtonText: {
+    color: "#fff",
     fontSize: 16,
-    color: "#777",
-    textAlign: "center",
-    marginBottom: 15,
+    fontWeight: "bold",
   },
   backButton: {
     backgroundColor: "#3B6ED5",

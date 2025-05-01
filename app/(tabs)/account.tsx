@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'; 
-import { View, Text, StyleSheet, Platform,  Button, Image, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Button, Image, TouchableOpacity, Alert, FlatList, ScrollView, Platform} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
@@ -43,15 +43,13 @@ export default function AccountPage() {
         setEmail(data[0].email);
         setRole(data[0].role);
         setUserId(data[0].id);
-        await AsyncStorage.setItem("userId", data[0].id);
 
-        const IdUser = data[0].id;
-        // Cargar foto de perfil actual si existe
-        const profileRes = await fetch(`http://localhost:3000/media/profile/${IdUser}`);
+        const profileRes = await fetch(`http://localhost:3000/media/profile/${data[0].id}`);
         const profileImages = await profileRes.json();
         if (profileImages.length > 0) {
             setProfileImageUri(profileImages[0].data);
         }
+
         if (data[0].role === 'admin') {
           const usersResponse = await fetch('http://localhost:3000/users');
           const usersData = await usersResponse.json();
@@ -107,58 +105,70 @@ export default function AccountPage() {
     setIsAdminMode(!isAdminMode);
   };
 
-  const pickImageAndUpload = async () => {
+  const handleImagePicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
     });
-
+  
     if (!result.canceled) {
-        const uri = result.assets[0].uri;
-        handleImageUpload(uri);
+      const image = result.assets[0];
+      const uri = image.uri;
+      const fileName = uri.split('/').pop() || 'profile.jpg';
+  
+      let fileType = 'image/jpeg'; // fallback
+      if (Platform.OS !== 'web') {
+        const extension = fileName.split('.').pop();
+        fileType = `image/${extension}`;
+      }
+  
+      const formData = new FormData();
+      formData.append('image', {
+        uri,
+        name: fileName,
+        type: fileType,
+      } as any);
+  
+      try {
+        const response = await fetch(`http://localhost:3000/media/upload/${userId}`, {
+          method: 'POST',
+          body: formData,
+          headers: Platform.OS === 'web' ? {} : {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Error al subir la imagen");
+        }
+  
+        const data = await response.json();
+        console.log("Imagen subida:", data);
+  
+        // Actualizar imagen
+        const profileRes = await fetch(`http://localhost:3000/media/profile/${userId}`);
+        const profileImages = await profileRes.json();
+        if (profileImages.length > 0) {
+          setProfileImageUri(profileImages[0].data);
+        }
+      } catch (e) {
+        console.error("Error al subir imagen:", e);
+      }
     }
-};
-
-const handleImageUpload = async (uri: string) => {
-  const fileName = uri.split('/').pop();
-  const formData = new FormData();
-  formData.append('image', {
-    uri,
-    type: 'image/jpeg', // o determina tipo dinámicamente
-    name: fileName || 'photo.jpg',
-  } as any); // usa `as any` para evitar errores de tipo en TypeScript
-
-  const endpoint = `http://localhost:3000/media/upload/${userId}`;
-  try {
-    const uploadRes = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      body: formData,
-    });
-
-    const data = await uploadRes.json();
-    console.log("Imagen subida:", data);
-    setProfileImageUri(uri); // actualizar imagen localmente
-  } catch (e) {
-    console.error("Error al subir imagen:", e);
-  }
-};
-
-
+  };
+  
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>{t('Account.title')}</Text>
 
-      <TouchableOpacity onPress={pickImageAndUpload}>
+      <TouchableOpacity onPress={handleImagePicker}>
         <Image
           source={profileImageUri ? { uri: profileImageUri } : require('@/assets/images/avatar.png')}
           style={styles.avatar}
         />
         <Text style={{ textAlign: 'center', color: theme.colors.text, marginBottom: 10 }}>
-          {t('Account.changePhoto')}
+          {t('Account.changePhoto') || "Cambiar foto de perfil"}
         </Text>
       </TouchableOpacity>
 

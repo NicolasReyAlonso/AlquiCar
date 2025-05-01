@@ -24,6 +24,7 @@ export default function LoginScreen() {
     console.log("helo");
     const response = await fetch('http://localhost:3000/auth/login', {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -37,7 +38,6 @@ export default function LoginScreen() {
     }
     await AsyncStorage.setItem("token", data.token);
     await AsyncStorage.setItem("isLoggedIn", "true");
-    await AsyncStorage.setItem("email", email);
     navigation.navigate("account");
   };
 

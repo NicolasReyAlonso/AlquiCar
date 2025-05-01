@@ -127,12 +127,14 @@ export default function AlquilarCoche() {
         return;
       }
 
-      const email = await AsyncStorage.getItem("email");
-      const userRes = await fetch(`http://localhost:3000/users/email/${email}`);
+      const userRes = await fetch('http://localhost:3000/users/getdata/', {
+        method: 'GET',
+        credentials: 'include',
+      });
       console.log(userRes);
       const userData = await userRes.json();
       console.log(userData)
-      const owner_id = userData.id;
+      const owner_id = userData[0].id;
 
       const coords = await geocodeAddress(address);
       if (!coords) {

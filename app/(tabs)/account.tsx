@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'; 
-import { View, Text, StyleSheet, Button, Image, TouchableOpacity, Alert, FlatList, ScrollView, Platform} from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Image, TouchableOpacity, Alert, FlatList, ScrollView, Platform} from 'react-native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
@@ -19,6 +19,8 @@ export default function AccountPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [profileImageUri, setProfileImageUri] = useState<string | null>(null);
+  const [isEditingName, setIsEditingName] = useState(false);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -74,7 +76,7 @@ export default function AccountPage() {
   const handleCerrarSesion = async () => {
     await AsyncStorage.setItem("isLoggedIn", "false");
     navigation.navigate("index");
-    
+
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -108,6 +110,31 @@ export default function AccountPage() {
     );
   };
 
+  const handleUpdateName = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log(token);
+      const response = await fetch(`http://localhost:3000/users/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name: userName }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('No se pudo actualizar el nombre');
+      }
+  
+      alert('Nombre actualizado correctamente');
+      setIsEditingName(false); // salir del modo edición
+    } catch (error) {
+      alert('Error');
+    }
+  };
+  
+
   const handleToggleAdminMode = () => {
     setIsAdminMode(!isAdminMode);
   };
@@ -120,11 +147,12 @@ export default function AccountPage() {
     });
   
     if (!result.canceled) {
+      setProfileImageUri(result.assets[0].uri);
       const image = result.assets[0];
       const uri = image.uri;
       const fileName = uri.split('/').pop() || 'profile.jpg';
   
-      let fileType = 'image/jpeg'; // fallback
+      let fileType = 'image/jpeg';
       if (Platform.OS !== 'web') {
         const extension = fileName.split('.').pop();
         fileType = `image/${extension}`;
@@ -168,7 +196,29 @@ export default function AccountPage() {
       </TouchableOpacity>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.info}>{t('Account.name')}: {userName}</Text>
+        <View style={styles.nameRow}>
+          {isEditingName ? (
+            <>
+              <TextInput
+                style={styles.input}
+                value={userName}
+                onChangeText={setName}
+                autoFocus
+              />
+              <TouchableOpacity onPress={handleUpdateName} style={styles.saveButtonSmall}>
+                <Text style={styles.saveButtonText}>💾</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text style={styles.info}>{t('Account.name')}: {userName}</Text>
+              <TouchableOpacity onPress={() => setIsEditingName(true)} style={styles.editButtonSmall}>
+                <Text style={styles.editButtonText}>✏️</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+
         <Text style={styles.info}>Email: {userEmail}</Text>
       </View>
 
@@ -317,4 +367,43 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
   },
+
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+  },
+  editButtonSmall: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: theme.colors.secondary,
+    borderRadius: 5,
+  },
+  editButtonText: {
+    fontSize: 16,
+    color: '#fff',
+  },
+  saveButtonSmall: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: theme.colors.primary,
+    borderRadius: 5,
+  },
+  saveButtonText: {
+    fontSize: 16,
+    color: '#fff',
+  },
+  input: {
+    width: '80%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    backgroundColor: theme.colors.background,
+    fontSize: 16,
+    marginBottom: 10,
+    color: theme.colors.text,
+  }
+  
 });

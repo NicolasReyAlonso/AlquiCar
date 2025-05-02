@@ -38,7 +38,7 @@ export default function LoginScreen() {
         alert('Email o contraseña incorrectos');
         return;
       }
-  
+      console.log("token: ", data.token)
       await AsyncStorage.setItem("token", data.token);
       await AsyncStorage.setItem("isLoggedIn", "true");
       navigation.navigate("account");

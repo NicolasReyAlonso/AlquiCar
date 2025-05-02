@@ -138,9 +138,9 @@ const index = () => {
           <Picker
             selectedValue={brand}
             onValueChange={(itemValue) => setBrand(itemValue)}
-            style={styles.inputFlex} // Usa el mismo estilo que los otros campos
-            dropdownIconColor="gray" // Cambia el color del ícono desplegable
-            mode="dropdown" // Usa el modo "dropdown" para un diseño más limpio
+            style={styles.inputFlex} 
+            dropdownIconColor="gray" 
+            mode="dropdown" 
           >
             <Picker.Item label={t('Index.card.brand')} value="" />
             <Picker.Item label="Toyota" value="Toyota" />
@@ -148,6 +148,9 @@ const index = () => {
             <Picker.Item label="Nissan" value="Nissan" />
             <Picker.Item label="Ford" value="Ford" />
             <Picker.Item label="Hyundai" value="Hyundai" />
+            <Picker.Item label="BMW" value="BMW" />
+            <Picker.Item label="Audi" value="Audi" />
+            <Picker.Item label="Mercedes-Benz" value="Mercedes-Benz" />
           </Picker>
         </View>
 

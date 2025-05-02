@@ -107,7 +107,7 @@ export default function MisIncidencias() {
     await fetchIncidencias(token, true, userId, newView);
   };
 
-  const handleAccionIncidencia = async (id: number, action: 'resolve' | 'dismiss') => {
+  const handleAccionIncidencia = async (id: number, action: 'Resolved' | 'Dismissed') => {
     try {
       const token = await AsyncStorage.getItem('token');
       if (!token) {
@@ -115,11 +115,16 @@ export default function MisIncidencias() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/incidences/${id}/${action}`, {
+      const response = await fetch(`http://localhost:3000/incidences/${id}`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
+        body: JSON.stringify({
+          status: action
+        })
       });
 
       if (!response.ok) {
@@ -128,7 +133,7 @@ export default function MisIncidencias() {
 
       setIncidencias((prev) =>
         prev.map((inc) =>
-          inc.id === id ? { ...inc, status: action === 'resolve' ? 'Resolved' : 'Dismissed' } : inc
+          inc.id === id ? { ...inc, status: action === 'Resolved' ? 'Resolved' : 'Dismissed' } : inc
         )
       );
     } catch (error) {
@@ -166,13 +171,13 @@ export default function MisIncidencias() {
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handleAccionIncidencia(item.id, 'resolve')}
+            onPress={() => handleAccionIncidencia(item.id, 'Resolved')}
           >
             <Text style={styles.buttonText}>{t('Incidencias.resolver')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handleAccionIncidencia(item.id, 'dismiss')}
+            onPress={() => handleAccionIncidencia(item.id, 'Dismissed')}
           >
             <Text style={styles.buttonText}>{t('Incidencias.denegar')}</Text>
           </TouchableOpacity>

@@ -147,20 +147,26 @@ export default function AccountPage() {
     });
   
     if (!result.canceled) {
-      setProfileImageUri(result.assets[0].uri);
-      const image = result.assets[0];
-      const uri = image.uri;
-      const fileName = uri.split('/').pop() || 'profile.jpg';
-  
-      let fileType = 'image/jpeg';
-      if (Platform.OS !== 'web') {
-        const extension = fileName.split('.').pop();
-        fileType = `image/${extension}`;
-      }
+      const image = result.assets[0].uri;
       const formData = new FormData();
-      formData.append('image', uri);
+      if (Platform.OS === 'web') {
+        // Web: image ya es un File
+        formData.append('image', image);
+    } else {
+        // Mobile (expo): image es un URI, necesitamos convertirlo a Blob
+        const fileName = image.split('/').pop();
+        const match = /\.(\w+)$/.exec(fileName || '');
+        const fileType = match ? `image/${match[1]}` : 'image';
 
-      console.log(formData);
+        const response = await fetch(image);
+        const blob = await response.blob();
+
+        formData.append('image', {
+            uri: image,
+            name: fileName,
+            type: fileType,
+        });
+    }
   
       try {
         const response = await fetch(`http://localhost:3000/media/upload/${userId}`, {

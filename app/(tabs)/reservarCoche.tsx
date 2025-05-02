@@ -11,14 +11,12 @@ export default function ConfirmacionReserva() {
   const params = useLocalSearchParams();
   const { t } = useTranslation();
 
-  const [seguro, setSeguro] = useState(false);
   const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
   const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [dias, setDias] = useState(1);
   const [precioCoche, setPrecioCoche] = useState(0);
-  const [precioSeguro, setPrecioSeguro] = useState(0);
   const [precioTotal, setPrecioTotal] = useState(0);
   const [fechasReservadas, setFechasReservadas] = useState<{ start_date: string; end_date: string }[]>([]);
 
@@ -47,7 +45,7 @@ export default function ConfirmacionReserva() {
     if (!token) return null;
 
     try {
-      const payload = JSON.parse(atob(token.split(".")[1])); // Decodificar el JWT
+      const payload = JSON.parse(atob(token.split(".")[1])); 
       return payload.id;
     } catch (error) {
       console.error("Error al decodificar el token:", error);
@@ -66,7 +64,7 @@ export default function ConfirmacionReserva() {
       return;
     }
 
-    const userId = await getUserId(); // Obtener el ID del usuario autenticado
+    const userId = await getUserId();
     if (!userId) {
       alert("Por favor, inicia sesión para realizar una reserva.");
       return;
@@ -74,7 +72,7 @@ export default function ConfirmacionReserva() {
 
     const nuevaReserva = {
       vehicle_id: Number(params.vehicleId),
-      customer_id: userId, // Usar el ID del usuario autenticado
+      customer_id: userId, 
       start_date: pickupDate.toISOString(),
       end_date: returnDate.toISOString(),
       total_price: Number(precioTotal),
@@ -88,7 +86,7 @@ export default function ConfirmacionReserva() {
       });
 
       if (response.ok) {
-        alert("Reserva confirmada y guardada en el backend.");
+        alert("Reserva confirmada.");
       } else {
         const errorData = await response.json();
         console.error("Detalles del error:", errorData);
@@ -105,12 +103,15 @@ export default function ConfirmacionReserva() {
       try {
         const response = await fetch(`http://localhost:3000/reservations?vehicle_id=${params.vehicleId}`);
         const data = await response.json();
-        setFechasReservadas(data);
+  
+        // Filtrar reservas que no estén canceladas
+        const reservasActivas = data.filter((reserva) => reserva.status !== "Cancelled");
+        setFechasReservadas(reservasActivas);
       } catch (error) {
         console.error("Error al cargar las fechas reservadas:", error);
       }
     };
-
+  
     if (params.vehicleId) {
       cargarFechasReservadas();
     }
@@ -135,7 +136,6 @@ export default function ConfirmacionReserva() {
     transmision: "Manual",
     precioPorDia: obtenerPrecioNumerico(Array.isArray(params.price) ? params.price[0] : params.price || "0"),
     imagen: params.imageUrl || "http://via.placeholder.com/100",
-    precioSeguroBase: 20,
     ciudad: params.pickupLocation || "Desconocido",
   };
 
@@ -145,13 +145,9 @@ export default function ConfirmacionReserva() {
       const newDias = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
       setDias(newDias);
       setPrecioCoche(reserva.precioPorDia * newDias);
+      setPrecioTotal(reserva.precioPorDia * newDias);
     }
   }, [pickupDate, returnDate]);
-
-  useEffect(() => {
-    setPrecioSeguro(seguro ? reserva.precioSeguroBase : 0);
-    setPrecioTotal(precioCoche + (seguro ? reserva.precioSeguroBase : 0));
-  }, [seguro, precioCoche]);
 
   const calcularFechaCancelacion = () => {
     if (!pickupDate) return "";
@@ -231,8 +227,6 @@ export default function ConfirmacionReserva() {
       <Text style={styles.subtitle}>{t("reserveVehicle.duration")}</Text>
       <Text style={styles.text}>{dias} {t("reserveVehicle.days")}</Text>
       <Text style={styles.text}>{t("reserveVehicle.vehiclePrice")}: {reserva.precioPorDia}€/día × {dias} días = {precioCoche}€</Text>
-      <Text style={styles.text}>+</Text>
-      <Text style={styles.text}>{t("reserveVehicle.insurancePrice")}: {precioSeguro}€</Text>
       <Text style={styles.text}>——————</Text>
       <View style={styles.totalContainer}>
         <Text style={styles.total}>{t("reserveVehicle.totalPrice")}</Text>
@@ -249,26 +243,33 @@ export default function ConfirmacionReserva() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: theme.colors.background,
+    backgroundColor: "#FFFFFF", // Fondo blanco
     flexGrow: 1,
   },
   totalContainer: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     marginTop: 30,
+    padding: 10,
+    backgroundColor: "#F9F9F9",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   total: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#333",
     textAlign: "right",
-    paddingLeft: 10,
   },
   header: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: "bold",
-    color: theme.colors.text,
+    color: "#3B6ED5",
     textAlign: "center",
     marginBottom: 20,
   },
@@ -292,40 +293,41 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "bold",
     color: "#333",
   },
   text: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#555",
+    marginBottom: 5,
   },
   subtitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
-    color: theme.colors.primary,
+    color: "#3B6ED5",
     marginTop: 15,
+    marginBottom: 10,
   },
   dateRow: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F9F9F9",
-    padding: 6,
+    padding: 10,
     borderRadius: 10,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#E0E0E0",
   },
   dateInput: {
-    fontSize: 18,
+    fontSize: 16,
     flex: 1,
-    padding: 6,
+    padding: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#FFF",
+    borderColor: "#E0E0E0",
+    backgroundColor: "#FFFFFF",
     marginRight: 10,
-    marginLeft: 20,
   },
   button: {
     backgroundColor: "#3B6ED5",
@@ -340,18 +342,31 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    color: "white",
+    color: "#FFFFFF",
     textTransform: "uppercase",
   },
   cancelText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#888",
     textAlign: "center",
     marginTop: 15,
   },
   dateContainer: {
     marginBottom: 15,
+  },
+  priceBreakdown: {
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: "#F9F9F9",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
   },
 });

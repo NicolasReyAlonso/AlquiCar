@@ -6,22 +6,44 @@ import { useRouter } from "expo-router";
 export default function VehicleDetailsPage() {
   const { id } = useLocalSearchParams();
   const [vehicle, setVehicle] = useState(null);
+  const [owner, setOwner] = useState(null); // Estado para el propietario
   const router = useRouter();
 
   useEffect(() => {
     const fetchVehicle = async () => {
       try {
         console.log("ID del vehículo recibido:", id);
-        const response = await fetch(`http://localhost:3000/vehicles/${id}`);
+        const response = await fetch(`http://localhost:3000/vehicles/${id}`, {
+          method: "GET",
+          credentials: "include", // Usar credenciales para autenticación
+        });
         const data = await response.json();
         if (data && data.length > 0) {
-          setVehicle(data[0]);
-          console.log("Datos del vehículo asignados:", data[0]);
+          const vehicleData = data[0];
+          setVehicle(vehicleData);
+          console.log("Datos del vehículo asignados:", vehicleData);
+
+          // Obtener datos del propietario
+          if (vehicleData.owner_id) {
+            const ownerResponse = await fetch(`http://localhost:3000/users/${vehicleData.owner_id}`, {
+              method: "GET",
+              credentials: "include", // Usar credenciales para autenticación
+            });
+
+            if (!ownerResponse.ok) {
+              throw new Error(`Error al obtener el propietario: ${ownerResponse.status}`);
+            }
+
+            const ownerData = await ownerResponse.json();
+            const ownerInfo = Array.isArray(ownerData) ? ownerData[0] : ownerData; // Manejar respuesta como array
+            setOwner(ownerInfo);
+            console.log("Datos del propietario asignados:", ownerInfo);
+          }
         } else {
           console.error("No se encontraron datos del vehículo con este ID");
         }
       } catch (error) {
-        console.error("Error al obtener el vehículo:", error);
+        console.error("Error al obtener el vehículo o el propietario:", error);
       }
     };
 
@@ -66,11 +88,18 @@ export default function VehicleDetailsPage() {
         <Text style={styles.detailText}>Precio por Día: {`€${vehicle.daily_price}`}</Text>
       </View>
 
-      <View style={styles.galleryContainer}>
-        <Text style={styles.sectionTitle}>Galería de Fotos:</Text>
-        {vehicle.galleryImages?.map((image, index) => (
-          <Image key={index} source={{ uri: image }} style={styles.galleryImage} />
-        )) || <Text style={styles.noGalleryText}>No hay fotos adicionales disponibles.</Text>}
+      {/* Información del propietario */}
+      <View style={styles.detailsContainer}>
+        <Text style={styles.sectionTitle}>Propietario del Vehículo:</Text>
+        {owner ? (
+          <>
+            <Text style={styles.detailText}>Nombre: {owner.name}</Text>
+            <Text style={styles.detailText}>Email: {owner.email}</Text>
+            <Text style={styles.detailText}>Teléfono: {owner.phone}</Text>
+          </>
+        ) : (
+          <Text style={styles.detailText}>No se pudo cargar la información del propietario.</Text>
+        )}
       </View>
 
       <TouchableOpacity
@@ -100,6 +129,9 @@ export default function VehicleDetailsPage() {
     </ScrollView>
   );
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {

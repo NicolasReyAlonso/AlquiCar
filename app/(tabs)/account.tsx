@@ -118,6 +118,7 @@ export default function AccountPage() {
       const token = await AsyncStorage.getItem('token');
       console.log(token);
       const response = await fetch(`http://localhost:3000/users/${userId}`, {
+        credentials: 'include',
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

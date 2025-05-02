@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -25,9 +25,10 @@ const CrearIncidencia = () => {
   const [status, setStatus] = useState('Pending');
   const [descriptionError, setDescriptionError] = useState('');
   const [reservationIdError, setReservationIdError] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
 
   const handleSubmit = async () => {
-    const fromId = await AsyncStorage.getItem('id');
+    const fromId = userId;
     let hasError = false;
     setDescriptionError('');
     setReservationIdError('');
@@ -65,6 +66,7 @@ const CrearIncidencia = () => {
       const response = await fetch('http://localhost:3000/incidences/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(body),
       });
 
@@ -83,6 +85,34 @@ const CrearIncidencia = () => {
       Alert.alert(t('Error'), t('Error de red'));
     }
   };
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (!token) {
+          console.error('Usuario no autenticado');
+          return;
+        }
+
+        const userResponse = await fetch('http://localhost:3000/users/getdata/', {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        const user = await userResponse.json();
+        if (!userResponse.ok) {
+          throw new Error(user.message || 'Error al obtener datos del usuario');
+        }
+        setUserId(user[0].id);
+      } catch (error) {
+        console.error('Error inicial:', error);
+      }
+    };
+
+    init();
+  }, []);
+  
 
   return (
     <KeyboardAvoidingView

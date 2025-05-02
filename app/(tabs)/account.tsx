@@ -34,6 +34,9 @@ export default function AccountPage() {
         const response = await fetch('http://localhost:3000/users/getdata/', {
           method: 'GET',
           credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
         const data = await response.json();
 
@@ -145,10 +148,11 @@ export default function AccountPage() {
       allowsEditing: true,
       quality: 1,
     });
+    const formData = new FormData();
   
     if (!result.canceled) {
       const image = result.assets[0].uri;
-      const formData = new FormData();
+      
       if (Platform.OS === 'web') {
         // Web: image ya es un File
         formData.append('image', image);
@@ -165,7 +169,7 @@ export default function AccountPage() {
             uri: image,
             name: fileName,
             type: fileType,
-        });
+        } as any);
     }
   
       try {

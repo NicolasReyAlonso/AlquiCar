@@ -122,21 +122,15 @@ export default function AccountPage() {
         const extension = fileName.split('.').pop();
         fileType = `image/${extension}`;
       }
-  
       const formData = new FormData();
-      formData.append('image', {
-        uri,
-        name: fileName,
-        type: fileType,
-      } as any);
+      formData.append('image', uri);
+
+      console.log(formData);
   
       try {
         const response = await fetch(`http://localhost:3000/media/upload/${userId}`, {
           method: 'POST',
           body: formData,
-          headers: Platform.OS === 'web' ? {} : {
-            'Content-Type': 'multipart/form-data',
-          },
         });
   
         if (!response.ok) {
@@ -145,13 +139,7 @@ export default function AccountPage() {
   
         const data = await response.json();
         console.log("Imagen subida:", data);
-  
-        // Actualizar imagen
-        const profileRes = await fetch(`http://localhost:3000/media/profile/${userId}`);
-        const profileImages = await profileRes.json();
-        if (profileImages.length > 0) {
-          setProfileImageUri(profileImages[0].data);
-        }
+
       } catch (e) {
         console.error("Error al subir imagen:", e);
       }

@@ -22,7 +22,8 @@
       "reservations": "Le Mie Prenotazioni",
       "publications": "Le Mie Pubblicazioni",
       "logout": "Esci"
-    }
+    },
+    "changePhoto": "Cambia foto profilo"
   },
 
   "Login": {

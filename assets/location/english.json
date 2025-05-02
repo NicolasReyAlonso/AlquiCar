@@ -22,7 +22,8 @@
       "reservations": "My Reservations",
       "publications": "My Listings",
       "logout": "Log Out"
-    }
+    },
+    "changePhoto": "Change profile photo"
   },
 
   "Login": {

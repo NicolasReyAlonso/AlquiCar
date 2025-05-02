@@ -22,7 +22,8 @@
       "reservations": "Mes Réservations",
       "publications": "Mes Annonces",
       "logout": "Se Déconnecter"
-    }
+    },
+    "changePhoto": "Changer la photo de profil"
   },
 
   "Login": {

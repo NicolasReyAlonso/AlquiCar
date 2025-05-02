@@ -24,12 +24,12 @@ const Media = () => {
                 const userVehicles = allVehicles.filter(v => v.owner_id === uid);
 
                 if (userVehicles.length > 0) {
-                    console.log(userVehicles);
-                    const vid = userVehicles[0].id;
+                    const vid = userVehicles[0].id;       
                     setVehicleId(vid);
 
                     const vImgRes = await fetch(`http://localhost:3000/media/vehicles/${uid}/${vid}`);
                     const vehicleImages = await vImgRes.json();
+                    console.log(vehicleImages);
                     if (vehicleImages.length > 0) {
                         setVehicleImage(vehicleImages[0].data);
                     }
@@ -50,6 +50,7 @@ const Media = () => {
     }, []);
 
     const pickImageAndUpload = async (type = 'profile') => {
+        console.log(type);
         if (Platform.OS !== 'web') {
             // Si no es web, usar expo-image-picker
             const result = await ImagePicker.launchImageLibraryAsync({
@@ -77,7 +78,7 @@ const Media = () => {
 
     const handleImageUpload = async (image, type) => {
         const formData = new FormData();
-    
+        
         if (Platform.OS === 'web') {
             // Web: image ya es un File
             formData.append('image', image);
@@ -96,12 +97,13 @@ const Media = () => {
                 type: fileType,
             });
         }
-    
-        const endpoint =
-            type === 'profile'
-                ? `http://localhost:3000/media/upload/${userId}`
-                : `http://localhost:3000/media/upload/${userId}/${vehicleId}`;
-    
+        let endpoint;
+        if ( type === 'profile' ) {
+            endpoint = `http://localhost:3000/media/upload/${userId}`;
+        } else {
+            endpoint = `http://localhost:3000/media/upload/${userId}/${vehicleId}`;
+        }
+        console.log(vehicleId);
         try {
             const res = await fetch(endpoint, {
                 method: 'POST',

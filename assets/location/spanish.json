@@ -149,6 +149,8 @@
       "formatoFecha" : "DD/MM/AAAA",
       "problema": "Describe el problema",
       "enviar": "Enviar",
+      "resolver": "Resolver",
+      "denegar": "Denegar",
       "botones": {
         "guardar": "Guardar",
         "cancelar": "Cancelar"

@@ -162,7 +162,7 @@ export default function MisIncidencias() {
         <Text style={styles.value}>{new Date(item.created_at).toLocaleString()}</Text>
       </Text>
 
-      {isAdmin && item.status === 'Pending' && (
+      {isAdmin && (item.status === 'Pending' || item.status === 'In Review') && (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.button}

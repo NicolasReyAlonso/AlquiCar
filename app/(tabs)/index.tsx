@@ -135,21 +135,21 @@ const index = () => {
                 </View>
               </View>
               <View style={styles.inputWithIcon}>
-  <Picker
-    selectedValue={brand}
-    onValueChange={(itemValue) => setBrand(itemValue)}
-    style={styles.inputFlex} // Usa el mismo estilo que los otros campos
-    dropdownIconColor="gray" // Cambia el color del ícono desplegable
-    mode="dropdown" // Usa el modo "dropdown" para un diseño más limpio
-  >
-    <Picker.Item label={t('Index.card.brand')} value="" />
-    <Picker.Item label="Toyota" value="Toyota" />
-    <Picker.Item label="Citroën" value="Citroën" />
-    <Picker.Item label="Nissan" value="Nissan" />
-    <Picker.Item label="Ford" value="Ford" />
-    <Picker.Item label="Hyundai" value="Hyundai" />
-  </Picker>
-</View>
+          <Picker
+            selectedValue={brand}
+            onValueChange={(itemValue) => setBrand(itemValue)}
+            style={styles.inputFlex} // Usa el mismo estilo que los otros campos
+            dropdownIconColor="gray" // Cambia el color del ícono desplegable
+            mode="dropdown" // Usa el modo "dropdown" para un diseño más limpio
+          >
+            <Picker.Item label={t('Index.card.brand')} value="" />
+            <Picker.Item label="Toyota" value="Toyota" />
+            <Picker.Item label="Citroën" value="Citroën" />
+            <Picker.Item label="Nissan" value="Nissan" />
+            <Picker.Item label="Ford" value="Ford" />
+            <Picker.Item label="Hyundai" value="Hyundai" />
+          </Picker>
+        </View>
 
               <TouchableOpacity style={styles.searchButton} onPress={handleBuscar}>
                 <Text style={styles.searchButtonText}>{t('Index.buttons.search')}</Text>

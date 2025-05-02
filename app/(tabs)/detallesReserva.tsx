@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
+import { DatePickerModal } from 'react-native-paper-dates';
 
 export default function DetallesReserva() {
   const { id } = useLocalSearchParams();
@@ -9,6 +10,12 @@ export default function DetallesReserva() {
   const [vehicle, setVehicle] = useState(null);
   const [owner, setOwner] = useState(null); 
   const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false); 
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [totalPrice, setTotalPrice] = useState('');
+  const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
+  const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
 
   useEffect(() => {
     const fetchReservationDetails = async () => {
@@ -19,6 +26,12 @@ export default function DetallesReserva() {
         const reservation = Array.isArray(reservationData) ? reservationData[0] : reservationData;
         setReservation(reservation);
 
+        if (reservation) {
+          setStartDate(reservation.start_date);
+          setEndDate(reservation.end_date);
+          setTotalPrice(reservation.total_price.toString());
+        }
+
         if (reservation && reservation.vehicle_id) {
           const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reservation.vehicle_id}`);
           const vehicleData = await vehicleResponse.json();
@@ -26,7 +39,7 @@ export default function DetallesReserva() {
           const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
           setVehicle(vehicle);
 
-          //Propietario del coche
+          // Propietario del coche
           if (vehicle && vehicle.owner_id) {
             const ownerResponse = await fetch(`http://localhost:3000/users/${vehicle.owner_id}`, {
               method: 'GET',
@@ -78,6 +91,61 @@ export default function DetallesReserva() {
     }
   };
 
+const handleUpdateReservation = async () => {
+  try {
+    const response = await fetch(`http://localhost:3000/reservations/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        start_date: new Date(startDate).toISOString(), 
+        end_date: new Date(endDate).toISOString(),
+        total_price: parseFloat(totalPrice),
+      }),
+    });
+
+    if (response.ok) {
+      const updatedReservation = await response.json();
+      setReservation(updatedReservation);
+      setIsEditing(false); 
+      alert("Reserva actualizada correctamente");
+    } else {
+      const errorData = await response.json();
+      console.error("Error en la respuesta del backend:", errorData);
+      alert("Error al actualizar la reserva");
+    }
+  } catch (error) {
+    console.error("Error al actualizar la reserva:", error);
+    alert("Hubo un problema al actualizar la reserva.");
+  }
+};
+
+  const calcularPrecio = (start, end) => {
+    if (!vehicle || !start || !end) return;
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diffTime = endDate.getTime() - startDate.getTime();
+    const days = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+    const price = days * vehicle.daily_price;
+    setTotalPrice(price.toString());
+  };
+
+  const onPickupDateConfirm = (params) => {
+    if (params.date) {
+      setStartDate(params.date.toISOString());
+      calcularPrecio(params.date.toISOString(), endDate);
+    }
+    setPickupDatePickerVisible(false);
+  };
+
+  const onReturnDateConfirm = (params) => {
+    if (params.date) {
+      setEndDate(params.date.toISOString());
+      calcularPrecio(startDate, params.date.toISOString());
+    }
+    setReturnDatePickerVisible(false);
+  };
+
   if (!reservation || !vehicle) {
     return (
       <View style={styles.loadingContainer}>
@@ -97,25 +165,65 @@ export default function DetallesReserva() {
       <Image source={{ uri: vehicle.imageUrl || "http://via.placeholder.com/150" }} style={styles.mainImage} />
       <Text style={styles.title}>{vehicle.brand} {vehicle.model}</Text>
       <Text style={styles.subtitle}>{vehicle.year}</Text>
-
+  
+      {/* Estado de la reserva */}
       <View style={styles.detailsContainer}>
         <View style={[styles.statusContainer, { backgroundColor: statusBackgroundColor }]}>
           <Text style={[styles.statusText, { color: statusTextColor }]}>
             {reservation.status === "Cancelled" ? "Cancelada" : "Activa"}
           </Text>
         </View>
-
-        {reservation.status !== "Cancelled" && (
+  
+        {isEditing ? (
+          <>
+            <Text style={styles.sectionTitle}>Editar Reserva:</Text>
+            <TouchableOpacity onPress={() => setPickupDatePickerVisible(true)}>
+              <Text style={styles.detailText}>Fecha de inicio: {new Date(startDate).toLocaleDateString()}</Text>
+            </TouchableOpacity>
+            <DatePickerModal
+              locale="es"
+              mode="single"
+              visible={pickupDatePickerVisible}
+              onDismiss={() => setPickupDatePickerVisible(false)}
+              date={new Date(startDate)}
+              onConfirm={onPickupDateConfirm}
+            />
+            <TouchableOpacity onPress={() => setReturnDatePickerVisible(true)}>
+              <Text style={styles.detailText}>Fecha de fin: {new Date(endDate).toLocaleDateString()}</Text>
+            </TouchableOpacity>
+            <DatePickerModal
+              locale="es"
+              mode="single"
+              visible={returnDatePickerVisible}
+              onDismiss={() => setReturnDatePickerVisible(false)}
+              date={new Date(endDate)}
+              onConfirm={onReturnDateConfirm}
+            />
+            <Text style={styles.detailText}>Precio Total: €{totalPrice}</Text>
+            <TouchableOpacity style={styles.saveButton} onPress={handleUpdateReservation}>
+              <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => setIsEditing(false)}>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
           <>
             <Text style={styles.sectionTitle}>Detalles de la Reserva:</Text>
             <Text style={styles.detailText}>
               Fechas: {new Date(reservation.start_date).toLocaleDateString()} - {new Date(reservation.end_date).toLocaleDateString()}
             </Text>
-            <Text style={styles.detailText}>Precio Total: {`€${reservation.total_price}`}</Text>
+            <Text style={styles.detailText}>Precio Total: €{reservation.total_price}</Text>
+            {reservation.status !== "Cancelled" && (
+              <TouchableOpacity style={styles.editButton} onPress={() => setIsEditing(true)}>
+                <Text style={styles.editButtonText}>Editar Reserva</Text>
+              </TouchableOpacity>
+            )}
           </>
         )}
       </View>
-
+  
+      {/* Detalles del vehículo */}
       <View style={styles.detailsContainer}>
         <Text style={styles.sectionTitle}>Detalles del Vehículo:</Text>
         <Text style={styles.detailText}>Capacidad: {vehicle.capacity} pasajeros</Text>
@@ -123,10 +231,11 @@ export default function DetallesReserva() {
         <Text style={styles.detailText}>Transmisión: {vehicle.transmission}</Text>
         <Text style={styles.detailText}>Combustible: {vehicle.fuel_type}</Text>
         <Text style={styles.detailText}>Número de Puertas: {vehicle.num_doors}</Text>
-        <Text style={styles.detailText}>Depósito: {`€${vehicle.deposit}`}</Text>
-        <Text style={styles.detailText}>Precio por Día: {`€${vehicle.daily_price}`}</Text>
+        <Text style={styles.detailText}>Depósito: €{vehicle.deposit}</Text>
+        <Text style={styles.detailText}>Precio por Día: €{vehicle.daily_price}</Text>
       </View>
-
+  
+      {/* Datos personales del propietario */}
       <View style={styles.detailsContainer}>
         <Text style={styles.sectionTitle}>Propietario del Vehículo:</Text>
         {owner ? (
@@ -139,14 +248,15 @@ export default function DetallesReserva() {
           <Text style={styles.detailText}>No se pudo cargar la información del propietario.</Text>
         )}
       </View>
-
+  
       {/* Botón para cancelar la reserva */}
       {reservation.status !== "Cancelled" && (
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancelReservation}>
           <Text style={styles.cancelButtonText}>Cancelar Reserva</Text>
         </TouchableOpacity>
       )}
-
+  
+      {/* Botón para volver */}
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => router.push("/misReservas")} // Navegar a MisReservas
@@ -156,6 +266,7 @@ export default function DetallesReserva() {
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -246,5 +357,37 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 18,
     color: "gray",
+  },
+  input: {
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginBottom: 15,
+  },
+  editButton: {
+    backgroundColor: "#3B6ED5",
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginTop: 10,
+  },
+  editButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  saveButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginTop: 10,
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });

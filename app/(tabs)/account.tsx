@@ -23,6 +23,20 @@ export default function AccountPage() {
 
 
   useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/media/profile/${userId}`);
+        const data = await response.json();
+  
+        if (data.length > 0) {
+          setProfileImageUri(data[0].data);
+        }
+      } catch (error) {
+        console.error("Error al cargar imagen de perfil:", error);
+      }
+    };
+  
+    
     const fetchUserData = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
@@ -34,6 +48,9 @@ export default function AccountPage() {
         const response = await fetch('http://localhost:3000/users/getdata/', {
           method: 'GET',
           credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
         const data = await response.json();
 
@@ -63,6 +80,7 @@ export default function AccountPage() {
     };
 
     fetchUserData();
+    fetchProfileImage();
   }, []);
 
   const handleReservas = () => {
@@ -109,12 +127,54 @@ export default function AccountPage() {
       ],
     );
   };
-
+  const handleImageUpload = async (imageUri: string, imageName: string) => {
+    const formData = new FormData();
+  
+    if (Platform.OS === "web") {
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+  
+      formData.append("image", blob, imageName);
+    } else {
+      const match = /\.(\w+)$/.exec(imageUri);
+      const fileType = match ? `image/${match[1]}` : `image`;
+  
+      formData.append("image", {
+        uri: imageUri,
+        name: imageName,
+        type: fileType,
+      } as any);
+    }
+  
+    try {
+      const uploadRes = await fetch(`http://localhost:3000/media/upload/${userId}`, {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!uploadRes.ok) throw new Error("Error al subir imagen");
+  
+      const uploadData = await uploadRes.json();
+      console.log("Imagen subida:", uploadData);
+  
+      // Actualizar imagen de perfil
+      const newImgRes = await fetch(`http://localhost:3000/media/profile/${userId}`);
+      const newImgData = await newImgRes.json();
+  
+      if (newImgData.length > 0) {
+        setProfileImageUri(newImgData[0].data);
+      }
+    } catch (error) {
+      console.error("Error al subir imagen:", error);
+    }
+  };
+  
   const handleUpdateName = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
       console.log(token);
       const response = await fetch(`http://localhost:3000/users/${userId}`, {
+        credentials: 'include',
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -140,52 +200,33 @@ export default function AccountPage() {
   };
 
   const handleImagePicker = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
+    if (Platform.OS === "web") {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
   
-    if (!result.canceled) {
-      const image = result.assets[0].uri;
-      const formData = new FormData();
-      if (Platform.OS === 'web') {
-        // Web: image ya es un File
-        formData.append('image', image);
+      input.onchange = (e: any) => {
+        const file = e.target.files[0];
+        const uri = URL.createObjectURL(file);
+        handleImageUpload(uri, file.name);
+      };
+  
+      input.click();
     } else {
-        // Mobile (expo): image es un URI, necesitamos convertirlo a Blob
-        const fileName = image.split('/').pop();
-        const match = /\.(\w+)$/.exec(fileName || '');
-        const fileType = match ? `image/${match[1]}` : 'image';
-
-        const response = await fetch(image);
-        const blob = await response.blob();
-
-        formData.append('image', {
-            uri: image,
-            name: fileName,
-            type: fileType,
-        });
-    }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
   
-      try {
-        const response = await fetch(`http://localhost:3000/media/upload/${userId}`, {
-          method: 'POST',
-          body: formData,
-        });
-  
-        if (!response.ok) {
-          throw new Error("Error al subir la imagen");
-        }
-  
-        const data = await response.json();
-        console.log("Imagen subida:", data);
-
-      } catch (e) {
-        console.error("Error al subir imagen:", e);
+      if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        const fileName = uri.split("/").pop() || "image.jpg";
+        handleImageUpload(uri, fileName);
       }
     }
   };
+  
   
   return (
     <ScrollView style={styles.container}>

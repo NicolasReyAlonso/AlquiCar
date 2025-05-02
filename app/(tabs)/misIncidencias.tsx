@@ -51,7 +51,8 @@ export default function MisIncidencias() {
 
       const incidenciasResponse = await fetch(url, {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', }
       });
 
       const incidenciasData = await incidenciasResponse.json();
@@ -75,15 +76,16 @@ export default function MisIncidencias() {
 
         const userResponse = await fetch('http://localhost:3000/users/getdata/', {
           method: 'GET',
-          credentials: 'include'
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${token}'
+           },
         });
 
         const user = await userResponse.json();
         if (!userResponse.ok) {
           throw new Error(user.message || 'Error al obtener datos del usuario');
         }
-        console.log(user);
-
         const isAdminUser = user[0].role === 'admin';
         setIsAdmin(isAdminUser);
         setUserId(user[0].id);
@@ -149,7 +151,7 @@ export default function MisIncidencias() {
       <Text style={styles.label}>
         {t('Incidencias.tipo')}:{' '}
         <Text style={styles.value}>
-          {item.type === 'USER' ? t('Incidencias.usuario') : t('Incidencias.platform')}
+          {item.type === 'USER' ? t('Incidencias.usuario') : t('Incidencias.plataforma')}
         </Text>
       </Text>
       {item.reservation_id && (

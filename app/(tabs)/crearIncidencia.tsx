@@ -59,9 +59,17 @@ const CrearIncidencia = () => {
 
     if (type === 'USER') {
       body.reservation_id = reservationId;
-      if (toId) body.to_id = toId;
+      const response = await fetch(`http://localhost:3000/reservations/${reservationId}`, {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        const reserva = await response.json();
+        setToId(reserva[0].customer_id);
+        body.to_id = reserva[0].customer_id
+       }
     }
-
     try {
       const response = await fetch('http://localhost:3000/incidences/', {
         method: 'POST',

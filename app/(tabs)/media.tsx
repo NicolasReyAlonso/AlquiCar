@@ -24,6 +24,7 @@ const Media = () => {
                 const userVehicles = allVehicles.filter(v => v.owner_id === uid);
 
                 if (userVehicles.length > 0) {
+                    console.log(userVehicles);
                     const vid = userVehicles[0].id;
                     setVehicleId(vid);
 
@@ -76,25 +77,45 @@ const Media = () => {
 
     const handleImageUpload = async (image, type) => {
         const formData = new FormData();
-        formData.append('image', image);
-
+    
+        if (Platform.OS === 'web') {
+            // Web: image ya es un File
+            formData.append('image', image);
+        } else {
+            // Mobile (expo): image es un URI, necesitamos convertirlo a Blob
+            const fileName = image.split('/').pop();
+            const match = /\.(\w+)$/.exec(fileName || '');
+            const fileType = match ? `image/${match[1]}` : 'image';
+    
+            const response = await fetch(image);
+            const blob = await response.blob();
+    
+            formData.append('image', {
+                uri: image,
+                name: fileName,
+                type: fileType,
+            });
+        }
+    
         const endpoint =
             type === 'profile'
                 ? `http://localhost:3000/media/upload/${userId}`
                 : `http://localhost:3000/media/upload/${userId}/${vehicleId}`;
-
+    
         try {
-            const uploadRes = await fetch(endpoint, {
+            const res = await fetch(endpoint, {
                 method: 'POST',
                 body: formData,
             });
-
-            const data = await uploadRes.json();
+    
+            const data = await res.json();
             console.log("Imagen subida:", data);
         } catch (e) {
             console.error("Error al subir imagen:", e);
         }
     };
+    
+    
 
     return (
         <View style={styles.container}>
@@ -108,13 +129,17 @@ const Media = () => {
 
             {/* Input hidden for Web */}
             {Platform.OS === 'web' && (
-                <input
-                    id="fileInput"
-                    type="file"
-                    style={{ display: 'none' }}
-                    onChange={(event) => handleFileChange(event, 'profile')}
-                />
-            )}
+    <input
+        id="fileInput"
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={(event) => {
+            const file = event.target.files[0];
+            if (file) handleImageUpload(file, 'profile'); // o 'vehicle'
+        }}
+    />
+)}
         </View>
     );
 };

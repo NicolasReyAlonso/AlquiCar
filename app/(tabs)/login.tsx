@@ -22,25 +22,32 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    console.log("helo");
-    const response = await fetch('http://localhost:3000/auth/login', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await response.json();
-    console.log(data)
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Error en el login');
+    try {
+      const response = await fetch('http://localhost:3000/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        alert('Email o contraseña incorrectos');
+        return;
+      }
+  
+      await AsyncStorage.setItem("token", data.token);
+      await AsyncStorage.setItem("isLoggedIn", "true");
+      navigation.navigate("account");
+    } catch (error) {
+      alert('No se pudo conectar con el servidor. Inténtalo más tarde.');
+      console.error('Login error:', error);
     }
-    await AsyncStorage.setItem("token", data.token);
-    await AsyncStorage.setItem("isLoggedIn", "true");
-    navigation.navigate("account");
   };
+  
 
   const handleRegister = () => {
     navigation.navigate("registrarse");

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'; 
 import { View, Text, StyleSheet, Button, Image, TouchableOpacity, Alert, FlatList, ScrollView, Platform} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -74,6 +74,13 @@ export default function AccountPage() {
   const handleCerrarSesion = async () => {
     await AsyncStorage.setItem("isLoggedIn", "false");
     navigation.navigate("index");
+    
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'index' }],
+      })
+    );
   };
 
   const handleViewUser = (userId: string) => {

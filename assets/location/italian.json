@@ -147,6 +147,8 @@
   "formatoFecha": "GG/MM/AAAA",
   "problema": "Descrivi il problema",
   "enviar": "Invia",
+  "resolver": "Risolvere",
+  "denegar": "Negare",
   "botones": {
     "guardar": "Salva",
     "cancelar": "Annulla"

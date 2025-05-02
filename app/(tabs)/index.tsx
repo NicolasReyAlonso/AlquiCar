@@ -134,14 +134,22 @@ const index = () => {
                   />
                 </View>
               </View>
-
-              <Picker selectedValue={brand} onValueChange={(itemValue) => setBrand(itemValue)} style={styles.picker}>
-                <Picker.Item label={t('Index.card.brand')} value="" />
-                <Picker.Item label="Toyota" value="Toyota" />
-                <Picker.Item label="Citroën" value="Citroën" />
-                <Picker.Item label="Nissan" value="Nissan" />
-                <Picker.Item label="Ford" value="Ford" />
-              </Picker>
+              <View style={styles.inputWithIcon}>
+  <Picker
+    selectedValue={brand}
+    onValueChange={(itemValue) => setBrand(itemValue)}
+    style={styles.inputFlex} // Usa el mismo estilo que los otros campos
+    dropdownIconColor="gray" // Cambia el color del ícono desplegable
+    mode="dropdown" // Usa el modo "dropdown" para un diseño más limpio
+  >
+    <Picker.Item label={t('Index.card.brand')} value="" />
+    <Picker.Item label="Toyota" value="Toyota" />
+    <Picker.Item label="Citroën" value="Citroën" />
+    <Picker.Item label="Nissan" value="Nissan" />
+    <Picker.Item label="Ford" value="Ford" />
+    <Picker.Item label="Hyundai" value="Hyundai" />
+  </Picker>
+</View>
 
               <TouchableOpacity style={styles.searchButton} onPress={handleBuscar}>
                 <Text style={styles.searchButtonText}>{t('Index.buttons.search')}</Text>
@@ -196,11 +204,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   
-  backgroundImage: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-  },
+backgroundImage: {
+  width: "100%",
+  height: "100%",
+  position: "absolute",
+  backgroundColor: "#EDF2F7", // Fondo claro si no hay imagen
+},
+
+
   textContainer: {
     display:'flex',
     marginTop: width < 500 ? 100 : 200, 
@@ -222,12 +233,17 @@ const styles = StyleSheet.create({
   },
   grayBox: {
     backgroundColor: theme.colors.secondary,
-    padding: width < 500 ? 20 : 30, 
-    borderRadius: 10,
-    width: width < 500 ? 300 : 400, 
-    height: 300, 
-    
+    padding: width < 500 ? 20 : 30,
+    borderRadius: 15,
+    width: width < 500 ? 320 : 400,
+    height: 300,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
+  
   input: {
     backgroundColor: 'white',
     padding: 10,
@@ -237,25 +253,23 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.regular,
     color: theme.lightTemplate.textColor
   },
-  inputFlex: {
-    display: 'flex',
-    flex: 1,
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
-    
-    fontFamily: theme.fonts.regular,
-    color: theme.lightTemplate.textColor
-  },
   inputWithIcon: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'white', // Fondo blanco
     borderRadius: 5,
-    paddingHorizontal: 5,
     flex: 1,
-    fontFamily: theme.fonts.regular,
-    color: theme.lightTemplate.textColor
+    fontFamily: theme.fonts.regular, // Fuente consistente
+    color: theme.lightTemplate.textColor,
+  },
+  inputFlex: {
+    display: 'flex',
+    flex: 1,
+    backgroundColor: 'white', // Fondo blanco
+    padding: 10,
+    borderRadius: 5,
+    fontFamily: theme.fonts.regular, // Fuente consistente
+    color: theme.lightTemplate.textColor, // Color del texto
   },
   smallInput: {
     display: 'flex',
@@ -266,19 +280,45 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
   },
+
   searchButton: {
-    backgroundColor: '#4472C4',
-    padding: 15,
-    borderRadius: 5,
-    marginTop: width < 500 ? 5 : 10, 
-    alignItems: 'center',
+    backgroundColor: "#4472C4",
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: width < 500 ? 10 : 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
   },
   searchButtonText: {
-    color: 'white',
-    fontSize: width < 500 ? 14 : 16, 
-    fontWeight: 'bold',
+    color: "#FFF",
+    fontSize: width < 500 ? 16 : 18,
+    fontWeight: "700",
+    textAlign: "center",
     fontFamily: theme.fonts.bold,
   },
+  button: {
+    backgroundColor: "#4472C4",
+    padding: width < 500 ? 12 : 18,
+    borderRadius: 12,
+    flex: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: width < 500 ? 16 : 18,
+    textAlign: "center",
+    fontWeight: "700",
+    fontFamily: theme.fonts.bold,
+  },
+  
   footerButtons: {
     marginTop: width < 500 ? 150 : 300, 
     flexDirection: width < 500 ? 'column' : 'row', 
@@ -286,18 +326,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: width < 600 ? 10 : 20,
     gap: width < 500 ? 15 : 10,  //para q se separen los botones
   },
-  button: {
-    backgroundColor: '#4472C4',
-    padding: width < 500 ? 10 : 20, 
-    borderRadius: 10,
-    flex: 1,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: width < 500 ? 14 : 16,
-    textAlign: 'center',
-    fontFamily: theme.fonts.bold,
-  },
+
+
 });
 
 export default index;

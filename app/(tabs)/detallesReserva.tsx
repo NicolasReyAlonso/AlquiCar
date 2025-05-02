@@ -7,7 +7,7 @@ export default function DetallesReserva() {
   const { id } = useLocalSearchParams();
   const [reservation, setReservation] = useState(null);
   const [vehicle, setVehicle] = useState(null);
-  const [owner, setOwner] = useState(null); // Estado para el propietario
+  const [owner, setOwner] = useState(null); 
   const router = useRouter();
 
   useEffect(() => {
@@ -26,13 +26,20 @@ export default function DetallesReserva() {
           const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
           setVehicle(vehicle);
 
+          //Propietario del coche
           if (vehicle && vehicle.owner_id) {
             const ownerResponse = await fetch(`http://localhost:3000/users/${vehicle.owner_id}`, {
               method: 'GET',
-              credentials: 'include'
+              credentials: 'include',
             });
+          
+            if (!ownerResponse.ok) {
+              throw new Error(`Error al obtener el propietario: ${ownerResponse.status}`);
+            }
+          
             const ownerData = await ownerResponse.json();
-            setOwner(ownerData);
+            const owner = Array.isArray(ownerData) ? ownerData[0] : ownerData; 
+            setOwner(owner);
           }
         } else {
           console.error("El campo 'vehicle_id' está undefined en la reserva cargada:", reservation);
@@ -52,14 +59,12 @@ export default function DetallesReserva() {
       const response = await fetch(`http://localhost:3000/reservations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "Cancelled" }), // Actualizar el estado a "Cancelled"
+        credentials: "include",
+        body: JSON.stringify({ status: "Cancelled" }),
       });
   
       if (response.ok) {
         const updatedReservation = await response.json();
-        console.log("Reserva actualizada:", updatedReservation); // Depuración
-  
-        // Actualizar el estado local para reflejar el cambio
         setReservation({ ...reservation, status: "Cancelled" });
         alert("Reserva cancelada correctamente");
       } else {
@@ -100,7 +105,6 @@ export default function DetallesReserva() {
           </Text>
         </View>
 
- 
         {reservation.status !== "Cancelled" && (
           <>
             <Text style={styles.sectionTitle}>Detalles de la Reserva:</Text>
@@ -121,7 +125,19 @@ export default function DetallesReserva() {
         <Text style={styles.detailText}>Número de Puertas: {vehicle.num_doors}</Text>
         <Text style={styles.detailText}>Depósito: {`€${vehicle.deposit}`}</Text>
         <Text style={styles.detailText}>Precio por Día: {`€${vehicle.daily_price}`}</Text>
-        <Text style={styles.detailText}>Publicado por: {owner?.name || "Desconocido"}</Text> {/* Mostrar el propietario */}
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.sectionTitle}>Propietario del Vehículo:</Text>
+        {owner ? (
+          <>
+            <Text style={styles.detailText}>Nombre: {owner.name}</Text>
+            <Text style={styles.detailText}>Email: {owner.email}</Text>
+            <Text style={styles.detailText}>Teléfono: {owner.phone}</Text>
+          </>
+        ) : (
+          <Text style={styles.detailText}>No se pudo cargar la información del propietario.</Text>
+        )}
       </View>
 
       {/* Botón para cancelar la reserva */}

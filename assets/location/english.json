@@ -147,6 +147,8 @@
     "categoria" : "Category",
     "formatoFecha" : "DD/MM/YYYY",
     "problema": "Explain the problem",
+    "resolver": "Resolve",
+    "denegar": "Deny",
     "enviar": "Send",
     "botones": {
       "guardar": "Save",

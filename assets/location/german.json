@@ -146,6 +146,8 @@
   "formatoFecha": "TT/MM/JJJJ",
   "problema": "Beschreibe das Problem",
   "enviar": "Senden",
+  "resolver": "Beschließen",
+  "denegar": "Leugnen",
   "botones": {
     "guardar": "Speichern",
     "cancelar": "Abbrechen"

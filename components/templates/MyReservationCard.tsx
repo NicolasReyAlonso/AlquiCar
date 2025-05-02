@@ -11,7 +11,7 @@ interface MyReservationCardProps {
   status: string;
   imageUrl?: string;
   onCancel: () => void;
-  onPress: () => void; // Nueva propiedad para manejar el evento onPress
+  onPress: () => void; 
 }
 
 const ReservationCard: React.FC<MyReservationCardProps> = ({
@@ -21,7 +21,7 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
   status,
   imageUrl,
   onCancel,
-  onPress, // Recibe onPress desde el componente padre
+  onPress,
 }) => {
   const { width } = useWindowDimensions();
   const isDesktop = width > 576;
@@ -31,7 +31,7 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
   return (
     <TouchableOpacity
       style={isDesktop ? styles.containerDesktop : styles.containerMobile}
-      onPress={onPress} // Llama a onPress cuando el usuario toca la tarjeta
+      onPress={onPress}
     >
       <View style={isDesktop ? styles.cardDesktop : styles.cardMobile}>
         <Image source={{ uri: imageUrl }} style={isDesktop ? styles.imageDesktop : styles.imageMobile} />
@@ -53,17 +53,19 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
           >
             {status}
           </Text>
-          <TouchableOpacity
-            style={isDesktop ? styles.buttonDesktop : styles.buttonMobile}
-            onPress={(e) => {
-              e.stopPropagation(); // Evita que onPress de la tarjeta también se ejecute
-              onCancel();
-            }}
-          >
-            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>
-              {t('MyReservationCard.buttons.cancel')}
-            </Text>
-          </TouchableOpacity>
+          {status === "Pendiente" && (
+            <TouchableOpacity
+              style={isDesktop ? styles.buttonDesktop : styles.buttonMobile}
+              onPress={(e) => {
+                e.stopPropagation(); 
+                onCancel();
+              }}
+            >
+              <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>
+                {t('MyReservationCard.buttons.cancel')}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </TouchableOpacity>

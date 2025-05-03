@@ -48,9 +48,9 @@ export default function AccountPage() {
         const response = await fetch('http://localhost:3000/users/getdata/', {
           method: 'GET',
           credentials: 'include',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers: { 'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${token}'
+           },
         });
         const data = await response.json();
 
@@ -70,8 +70,12 @@ export default function AccountPage() {
         }
 
         if (data[0].role === 'admin') {
-          const usersResponse = await fetch('http://localhost:3000/users');
+          const usersResponse = await fetch('http://localhost:3000/users', {
+            method: 'GET',
+            credentials: 'include',
+          });
           const usersData = await usersResponse.json();
+          console.log(usersData);
           setUsers(usersData);
         }
       } catch (error) {
@@ -116,7 +120,10 @@ export default function AccountPage() {
         {
           text: 'Eliminar',
           onPress: async () => {
-            const response = await fetch(`http://localhost:3000/users/${userId}`, { method: 'DELETE' });
+            const response = await fetch(`http://localhost:3000/users/${userId}`, { 
+              method: 'DELETE',
+              credentials: 'include', 
+            });
             if (response.ok) {
               setUsers(users.filter(user => user.id !== userId));
             } else {

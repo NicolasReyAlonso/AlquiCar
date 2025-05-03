@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from '@/components/Theme';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
@@ -36,9 +37,10 @@ type RootStackParamList = {
 export default function MisIncidencias() {
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [incidencias, setIncidencias] = useState<Incidence[]>([]);
+  const [incidencias, setIncidencias] = useState<Incidence[] | null>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [sinIncidencias, setSinIncidencias] = useState(false);
   const [adminView, setAdminView] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -46,7 +48,7 @@ export default function MisIncidencias() {
     try {
       let url = 'http://localhost:3000/incidences/';
       if (!isAdminUser || (isAdminUser && !viewAll)) {
-        url += uid;
+        url += 'my-incidences';
       }
 
       const incidenciasResponse = await fetch(url, {
@@ -56,8 +58,11 @@ export default function MisIncidencias() {
       });
 
       const incidenciasData = await incidenciasResponse.json();
-      console.log(incidenciasData);
-      setIncidencias(incidenciasData);
+      if(!incidenciasData.error){
+        setIncidencias(incidenciasData);
+      }else{
+        setIncidencias(null);
+      }
     } catch (error) {
       console.error('Error al obtener incidencias:', error);
     } finally {
@@ -65,7 +70,7 @@ export default function MisIncidencias() {
     }
   };
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const init = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
@@ -97,7 +102,7 @@ export default function MisIncidencias() {
     };
 
     init();
-  }, []);
+  }, );
 
   const toggleAdminView = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -134,13 +139,15 @@ export default function MisIncidencias() {
       }
 
       setIncidencias((prev) =>
-        prev.map((inc) =>
+        prev ? prev.map((inc) =>
           inc.id === id ? { ...inc, status: action === 'Resolved' ? 'Resolved' : 'Dismissed' } : inc
-        )
+        ) : prev
       );
+            
     } catch (error) {
       console.error('Error en handleAccionIncidencia:', error);
     }
+
   };
 
   const renderItem = ({ item }: { item: Incidence }) => (
@@ -169,7 +176,7 @@ export default function MisIncidencias() {
         <Text style={styles.value}>{new Date(item.created_at).toLocaleString()}</Text>
       </Text>
 
-      {isAdmin && (item.status === 'Pending' || item.status === 'In Review') && (
+      {isAdmin && adminView && (item.status === 'Pending' || item.status === 'In Review') && (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.button}
@@ -206,7 +213,7 @@ export default function MisIncidencias() {
             </Text>
           </TouchableOpacity>
         )}
-        {incidencias.length === 0 ? (
+        {!incidencias ? (
           <View style={styles.centered}>
             <Text style={styles.value}>{t('Incidencias.sinIncidencias')}</Text>
           </View>

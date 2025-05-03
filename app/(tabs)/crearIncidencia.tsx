@@ -14,6 +14,8 @@ import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import theme from '@/components/Theme';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const CrearIncidencia = () => {
   const { t } = useTranslation();
@@ -26,6 +28,7 @@ const CrearIncidencia = () => {
   const [descriptionError, setDescriptionError] = useState('');
   const [reservationIdError, setReservationIdError] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleSubmit = async () => {
     const fromId = userId;
@@ -85,6 +88,7 @@ const CrearIncidencia = () => {
         setType('PLATFORM');
         setStatus('Pending');
         Alert.alert(t('Éxito'), t('La incidencia fue creada correctamente'));
+        navigation.navigate('misIncidencias')
       } else {
         const errorData = await response.json();
         Alert.alert(t('Error'), t('No se pudo crear la incidencia'));

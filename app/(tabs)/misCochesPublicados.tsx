@@ -32,7 +32,17 @@ const misCochesPublicados = () => {
 
       console.log(allVehicles);
 
-      const userVehicles = allVehicles.filter(v => v.owner_id === userId);
+      const userVehicles = await Promise.all(
+        allVehicles
+          .filter(v => v.owner_id === userId)
+          .map(async (vehicle) => {
+            const vImgRes = await fetch(`http://localhost:3000/media/vehicles/${userId}/${vehicle.id}`);
+            const images = await vImgRes.json();
+            const imageUrl = images.length > 0 ? images[0].data : null;
+            return { ...vehicle, imageUrl };
+          })
+      );
+      console.log(userVehicles)
       setVehicles(userVehicles);
     } catch (error) {
       console.error("Error al cargar los vehículos:", error);
@@ -71,7 +81,7 @@ const misCochesPublicados = () => {
               brand={vehicle.brand}
               price={`${vehicle.daily_price}€`}
               city={vehicle.city || "Ciudad desconocida"}
-              imageUrl="http://via.placeholder.com/150"
+              imageUrl={vehicle.imageUrl}
               onCancel={() => handleDeleteVehicle(vehicle.id)}
             />
           </View>

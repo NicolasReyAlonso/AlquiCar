@@ -1,12 +1,14 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image, Platform} from 'react-native'
 import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system';
 
 const carModels = {
   Toyota: ['Corolla', 'Yaris', 'Camry'],
@@ -46,6 +48,7 @@ const types = ['Sedan', 'SUV', 'Truck', 'Sports', 'Hatchback', 'Convertible'];
 const transmissions = ['Manual', 'Automatic'];
 const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
 
+
 export default function AlquilarCoche() {
   const { t } = useTranslation();
   const scrollRef = useRef<ScrollView>(null);
@@ -61,25 +64,9 @@ export default function AlquilarCoche() {
   const [numDoors, setNumDoors] = useState('');
   const [price, setPrice] = useState('');
   const [deposit, setDeposit] = useState('');
-  const [image, setImage] = useState<string | null>(null);
-
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permiso requerido', 'Necesitamos acceso a tu galería para subir una imagen.');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets.length > 0) {
-      setImage(result.assets[0].uri);
-    }
-  };
+  const [vehicleImageUri, setVehicleImageUri] = useState<string | null>(null);
+  const [vehicleFileName, setVehicleFileName] = useState<string | null>(null);
+  const [vehicleId, setVehicleId] = useState(null);
 
   const handleSubmit = async () => {
     if (!brand || !model || !year || !address || !type || !transmission || !fuelType || !capacity || !numDoors || !price) {
@@ -93,6 +80,7 @@ export default function AlquilarCoche() {
     const numericNumDoors = Number(numDoors);
     const numericPrice = Number(price);
     const numericDeposit = Number(deposit || 0);
+    const userId = await AsyncStorage.getItem("userId")
 
     const geocodeAddress = async (address: string): Promise<{ lat: number, lon: number } | null> => {
       try {
@@ -142,6 +130,7 @@ export default function AlquilarCoche() {
         return;
       }
 
+
       const vehicle = {
         owner_id,
         brand,
@@ -167,11 +156,58 @@ export default function AlquilarCoche() {
         },
         body: JSON.stringify(vehicle),
       });
+      console.log("resppppuesta: ", response);
+      const vehicleData = await response.json();
+      console.log("iddddddddddd: ", vehicleData.id);
 
       if (!response.ok) {
         const responseText = await response.text();
         console.log('Respuesta del servidor:', responseText);
       }
+
+      setVehicleId(vehicleData.id);
+
+      const handleImageUpload = async (imageUri: string, imageName: string) => {
+        const formData = new FormData();
+      
+        if (Platform.OS === "web") {
+          const response = await fetch(imageUri);
+          const blob = await response.blob();
+      
+          formData.append("image", blob, imageName);
+        } else {
+          const match = /\.(\w+)$/.exec(imageUri);
+          const fileType = match ? `image/${match[1]}` : `image`;
+      
+          formData.append("image", {
+            uri: imageUri,
+            name: imageName,
+            type: fileType,
+          } as any);
+        }
+      
+        try {
+          const userId = await AsyncStorage.getItem("userId");
+          const vid = vehicleId;
+
+          const uploadRes = await fetch(`http://localhost:3000/media/upload/${userId}/${vid}`, {
+            method: "POST",
+            body: formData,
+          });
+      
+          if (!uploadRes.ok) throw new Error("Error al subir imagen");
+      
+          const uploadData = await uploadRes.json();
+          console.log("Imagen subida:", uploadData);
+    
+        } catch (error) {
+          console.error("Error al subir imagen:", error);
+        }
+      };
+
+      handleImageUpload(String(vehicleImageUri), String(vehicleFileName));
+
+    
 
       alert('Vehículo publicado correctamente');
       setYear('');
@@ -180,12 +216,43 @@ export default function AlquilarCoche() {
       setNumDoors('');
       setPrice('');
       setDeposit('');
-      setImage(null);
       scrollRef.current?.scrollTo({ y: 0, animated: true });
-      navigation.navigate("misCochesPublicados");
+
+      //navigation.navigate("misCochesPublicados");
+      
     } catch (err: any) {
       console.log(err);
       alert('Error');
+    }
+  };
+
+  const handleImagePicker = async () => {
+    if (Platform.OS === "web") {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+  
+      input.onchange = (e: any) => {
+        const file = e.target.files[0];
+        const uri = URL.createObjectURL(file);
+        setVehicleImageUri(uri);
+        setVehicleFileName(file.name);
+      };
+  
+      input.click();
+    } else {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        const fileName = uri.split("/").pop() || "image.jpg";
+        setVehicleImageUri(uri);
+        setVehicleFileName(fileName);
+      }
     }
   };
 
@@ -235,12 +302,12 @@ export default function AlquilarCoche() {
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.price')} value={price} onChangeText={setPrice} keyboardType="numeric" />
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.deposit')} value={deposit} onChangeText={setDeposit} keyboardType="numeric" />
 
-        <TouchableOpacity style={styles.buttonAd} onPress={pickImage}>
+        <TouchableOpacity style={styles.buttonAd} onPress={handleImagePicker}>
           <Text style={styles.buttonTextAd}>{t('RentYourVehicle.buttons.image')}</Text>
         </TouchableOpacity>
 
-        {image && (
-          <Image source={{ uri: image }} style={{ width: '100%', height: 300, borderRadius: 10, marginVertical: 10 }} />
+        { vehicleImageUri && (
+          <Image source={{ uri: vehicleImageUri }} style={{ width: '100%', height: 300, borderRadius: 10, marginVertical: 10 }} />
         )}
 
         <TouchableOpacity style={styles.buttonPub} onPress={handleSubmit}>

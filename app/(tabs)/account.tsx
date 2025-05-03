@@ -27,7 +27,7 @@ export default function AccountPage() {
       try {
         const response = await fetch(`http://localhost:3000/media/profile/${userId}`);
         const data = await response.json();
-  
+
         if (data.length > 0) {
           setProfileImageUri(data[0].data);
         }
@@ -62,6 +62,8 @@ export default function AccountPage() {
         setEmail(data[0].email);
         setRole(data[0].role);
         setUserId(data[0].id);
+        
+        await AsyncStorage.setItem("userId", data[0].id);
 
         const profileRes = await fetch(`http://localhost:3000/media/profile/${data[0].id}`);
         const profileImages = await profileRes.json();

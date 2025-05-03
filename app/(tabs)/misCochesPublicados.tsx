@@ -8,6 +8,7 @@ const { width } = Dimensions.get('window');
 
 const misCochesPublicados = () => {
   const [vehicles, setVehicles] = useState([]);
+  const [addresses, setAddresses] = useState<{ [id: number]: string }>({});
 
   const cargarVehiculos = async () => {
     try {

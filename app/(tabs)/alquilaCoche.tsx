@@ -158,14 +158,14 @@ export default function AlquilarCoche() {
       });
       console.log("resppppuesta: ", response);
       const vehicleData = await response.json();
-      console.log("iddddddddddd: ", vehicleData.id);
+      console.log("iddddddddddd: ", vehicleData.vehicle[0].id);
 
       if (!response.ok) {
         const responseText = await response.text();
         console.log('Respuesta del servidor:', responseText);
       }
 
-      setVehicleId(vehicleData.id);
+      setVehicleId(vehicleData.vehicle[0].id);
 
       const handleImageUpload = async (imageUri: string, imageName: string) => {
         const formData = new FormData();

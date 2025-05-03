@@ -108,7 +108,7 @@ export default function AccountPage() {
   };
 
   const handleViewUser = (userId: string) => {
-    navigation.navigate('account', { userId });
+    navigation.navigate('verUsuario', { userId: userId });
   };
 
   const handleDeleteUser = async (userId: string) => {

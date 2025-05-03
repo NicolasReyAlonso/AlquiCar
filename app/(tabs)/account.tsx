@@ -75,8 +75,8 @@ export default function AccountPage() {
             credentials: 'include',
           });
           const usersData = await usersResponse.json();
-          console.log(usersData);
-          setUsers(usersData);
+          const filteredUsers = usersData.filter((user: { id: string }) => user.id !== data[0].id);
+          setUsers(filteredUsers);
         }
       } catch (error) {
         Alert.alert("Error", (error as Error).message);
@@ -111,29 +111,26 @@ export default function AccountPage() {
     navigation.navigate('account', { userId });
   };
 
-  const handleDeleteUser = (userId: string) => {
-    Alert.alert(
-      'Confirmación',
-      '¿Estás seguro de que deseas eliminar este usuario?',
-      [
-        { text: 'Cancelar' },
-        {
-          text: 'Eliminar',
-          onPress: async () => {
-            const response = await fetch(`http://localhost:3000/users/${userId}`, { 
-              method: 'DELETE',
-              credentials: 'include', 
-            });
-            if (response.ok) {
-              setUsers(users.filter(user => user.id !== userId));
-            } else {
-              Alert.alert('Error', 'No se pudo eliminar el usuario');
-            }
-          },
-        },
-      ],
-    );
+  const handleDeleteUser = async (userId: string) => {
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
+    if (confirmDelete) {
+      try {
+        const response = await fetch(`http://localhost:3000/users/${userId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+  
+        if (response.ok) {
+          setUsers(users.filter(user => user.id !== userId));
+        } else {
+          window.alert('Error: No se pudo eliminar el usuario');
+        }
+      } catch (error) {
+        window.alert('Error: Algo salió mal al intentar eliminar el usuario');
+      }
+    }
   };
+  
   const handleImageUpload = async (imageUri: string, imageName: string) => {
     const formData = new FormData();
   
@@ -390,17 +387,20 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 15,
+    color: 'white',
+    textAlign: 'center',
   },
   userCard: {
     padding: 10,
     marginBottom: 10,
-    width: '90%',
+    width: '100%',
     borderRadius: 8,
     alignItems: 'center',
   },
   userText: {
     fontSize: 18,
     color: theme.colors.text,
+    textAlign: 'center',
   },
   userActions: {
     flexDirection: 'row',

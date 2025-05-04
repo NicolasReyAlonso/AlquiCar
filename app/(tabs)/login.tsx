@@ -41,9 +41,7 @@ export default function LoginScreen() {
       console.log("token: ", data.token)
       await AsyncStorage.setItem("token", data.token);
       await AsyncStorage.setItem("isLoggedIn", "true");
-      await AsyncStorage.setItem("user", data.user);
-      
-      console.log(data)
+      await AsyncStorage.setItem("user", JSON.stringify(data.user));
       navigation.navigate("account");
     } catch (error) {
       alert('No se pudo conectar con el servidor. Inténtalo más tarde.');

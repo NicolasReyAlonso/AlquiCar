@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Text, Dimensions, StyleSheet, Alert } from "react-native";
+import { View, ScrollView, Text, Dimensions, StyleSheet } from "react-native";
 import MyPublishedVehicles from "@/components/templates/MyPublishedVehicles";
 import theme from "@/components/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,6 +11,7 @@ const misCochesPublicados = () => {
   const [addresses, setAddresses] = useState<{ [id: number]: string }>({});
   const [reservations, setReservations] = useState([]);
   const [notifiedReservations, setNotifiedReservations] = useState([]);
+  const [notifications, setNotifications] = useState<string[]>([]);
 
   const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
     try {
@@ -58,6 +59,7 @@ const misCochesPublicados = () => {
           })
       );
       setVehicles(userVehicles);
+      console.log("Vehículos cargados:", userVehicles);
     } catch (error) {
       console.error("Error al cargar los vehículos:", error);
     }
@@ -84,30 +86,41 @@ const misCochesPublicados = () => {
     try {
       const response = await fetch(`http://localhost:3000/reservations/`);
       const allReservations = await response.json();
-
+      console.log("Todas las reservas:", allReservations);
+  
       // Filtrar reservas para los vehículos del usuario
       const userReservations = allReservations.filter(reservation =>
         vehicles.some(vehicle => vehicle.id === reservation.vehicle_id)
       );
-
+      console.log("Reservas para mis vehículos:", userReservations);
+  
       // Detectar nuevas reservas
       const newReservations = userReservations.filter(
         reservation => !notifiedReservations.includes(reservation.id)
       );
-
+      console.log("Nuevas reservas detectadas:", newReservations);
+  
       if (newReservations.length > 0) {
         newReservations.forEach(reservation => {
-          Alert.alert(
-            "Nueva Reserva",
-            `Tu vehículo con ID ${reservation.vehicle_id} ha sido reservado.`,
-            [{ text: "OK" }]
-          );
+          // Buscar el vehículo correspondiente para obtener su nombre
+          const vehicle = vehicles.find(v => v.id === reservation.vehicle_id);
+          const vehicleName = vehicle ? vehicle.brand : "Vehículo desconocido";
+  
+          // Agregar la notificación con el nombre del vehículo
+          setNotifications(prev => [
+            ...prev,
+            `Tu vehículo "${vehicleName}" ha sido reservado.`,
+          ]);
         });
-
+  
         // Actualizar las reservas notificadas
-        setNotifiedReservations(prev => [...prev, ...newReservations.map(r => r.id)]);
+        setNotifiedReservations(prev => {
+          const updated = Array.from(new Set([...prev, ...newReservations.map(r => r.id)]));
+          console.log("Reservas notificadas actualizadas:", updated);
+          return updated;
+        });
       }
-
+  
       setReservations(userReservations);
     } catch (error) {
       console.error("Error al verificar las reservas:", error);
@@ -120,14 +133,27 @@ const misCochesPublicados = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      console.log("Verificando reservas...");
       checkReservations();
-    }, 30000); // Verificar cada 30 segundos
-
+    }, 2000); // Verificar cada 30 segundos
+  
     return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
   }, [vehicles, notifiedReservations]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* Mostrar notificaciones */}
+      {notifications.length > 0 && (
+        <View style={styles.notificationsContainer}>
+          {notifications.map((notification, index) => (
+            <Text key={index} style={styles.notificationText}>
+              {notification}
+            </Text>
+          ))}
+        </View>
+      )}
+
+      {/* Mostrar vehículos */}
       {vehicles.length === 0 ? (
         <Text style={styles.emptyText}>No has publicado ningún vehículo aún.</Text>
       ) : (
@@ -154,6 +180,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 20,
     backgroundColor: theme.colors.background,
+  },
+  notificationsContainer: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  notificationText: {
+    color: "black",
+    fontSize: 16,
+    marginBottom: 5,
   },
   cardWrapper: {
     width: width < 500 ? "100%" : "48%",

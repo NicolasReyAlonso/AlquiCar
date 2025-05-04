@@ -19,11 +19,27 @@ const Ofertas = () => {
 
         if (Array.isArray(data)) {
           console.log("Datos de vehículos recibidos:", data); // Depuración
-          setVehicles(data);
-        } else {
-          console.error("La respuesta no es un array:", data);
-          setError("No se pudieron cargar los vehículos.");
-        }
+          // Obtener imágenes para cada vehículo
+          const vehiclesWithImages = await Promise.all(
+            data.map(async (vehicle) => {
+              let imageUrl = "http://via.placeholder.com/150"; // predeterminada
+
+              try {
+                const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+                const images = await imgRes.json();
+                if (images.length > 0 && images[0].data) {
+                  imageUrl = images[0].data;
+                }
+              } catch (imgError) {
+                console.warn(`No se pudo cargar la imagen del vehículo ${vehicle.id}`, imgError);
+              }
+
+              return { ...vehicle, imageUrl };
+            })
+          );
+
+        setVehicles(vehiclesWithImages);
+      }
       } catch (err) {
         console.error("Error al cargar vehículos:", err);
         setError("Hubo un problema al conectar con el servidor.");
@@ -32,8 +48,8 @@ const Ofertas = () => {
       }
     };
 
-    fetchVehicles();
-  }, []);
+  fetchVehicles();
+}, []);
 
   if (loading) {
     return (

@@ -405,5 +405,44 @@ const styles = StyleSheet.create({
     height: 40,
     marginRight: 10,  // Espaciado antes de otros elementos
   },
+  filterMenu: {
+    position: "absolute",
+    top: 60,
+    right: 15,
+    backgroundColor: "#4472C4",
+    padding: 15,
+    borderRadius: 8,
+    zIndex: 1000,
+  },
+  filterTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 10,
+  },
+  filterLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+    marginTop: 10,
+  },
+  filterOption: {
+    fontSize: 14,
+    color: "#FFD700",
+    marginVertical: 5,
+  },
+  applyButton: {
+    backgroundColor: "#4472C4",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 15,
+    alignItems: "center",
+  },
+  applyButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
 
 });

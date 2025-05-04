@@ -75,7 +75,8 @@
     "day": "Tag",
     "date": "Datum",
     "buttons": {
-      "cancel": "Reservierung stornieren"
+      "cancel": "Reservierung stornieren",
+      "chat": "Kontakt mit dem Eigentümer"
     }
   },
 

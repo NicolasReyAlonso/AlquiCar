@@ -12,7 +12,7 @@ interface MyReservationCardProps {
   status: string;
   imageUrl?: string;
   onCancel: () => void;
-  onPress: () => void;
+  onPress: () => void; 
 }
 
 const ReservationCard: React.FC<MyReservationCardProps> = ({
@@ -23,6 +23,7 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
   imageUrl,
   onCancel,
   onPress,
+  onChatPress
 }) => {
   const { width } = useWindowDimensions();
   const isDesktop = width > 576;
@@ -81,8 +82,20 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
               <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>
                 {t('MyReservationCard.buttons.cancel')}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity>  
           )}
+
+          <TouchableOpacity
+            style={isDesktop ? styles.buttonDesktop : styles.buttonMobile}
+            onPress={(e) => {
+              e.stopPropagation();
+              onChatPress();
+            }}
+          >
+            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>
+              {t('MyReservationCard.buttons.chat') || "Chatear con el dueño"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Text, Dimensions, StyleSheet } from "react-native";
+import { View, ScrollView, Text, Dimensions, StyleSheet, Alert } from "react-native";
 import MyPublishedVehicles from "@/components/templates/MyPublishedVehicles";
 import theme from "@/components/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,6 +9,8 @@ const { width } = Dimensions.get('window');
 const misCochesPublicados = () => {
   const [vehicles, setVehicles] = useState([]);
   const [addresses, setAddresses] = useState<{ [id: number]: string }>({});
+  const [reservations, setReservations] = useState([]);
+  const [notifiedReservations, setNotifiedReservations] = useState([]);
 
   const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
     try {
@@ -34,15 +36,10 @@ const misCochesPublicados = () => {
         credentials: 'include',
       });
       const userData = await userRes.json();
-      console.log(userData)
       const userId = userData[0].id;
 
-      console.log(userId);
-      
       const response = await fetch(`http://localhost:3000/vehicles/`);
       const allVehicles = await response.json();
-
-      console.log(allVehicles);
 
       const userVehicles = await Promise.all(
         allVehicles
@@ -57,10 +54,9 @@ const misCochesPublicados = () => {
               address = await convertirCoordenadasADireccion(vehicle.latitude, vehicle.longitude);
             }
 
-            return { ...vehicle, imageUrl, address};
+            return { ...vehicle, imageUrl, address };
           })
       );
-      console.log(userVehicles)
       setVehicles(userVehicles);
     } catch (error) {
       console.error("Error al cargar los vehículos:", error);
@@ -84,9 +80,51 @@ const misCochesPublicados = () => {
     }
   };
 
+  const checkReservations = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/reservations/`);
+      const allReservations = await response.json();
+
+      // Filtrar reservas para los vehículos del usuario
+      const userReservations = allReservations.filter(reservation =>
+        vehicles.some(vehicle => vehicle.id === reservation.vehicle_id)
+      );
+
+      // Detectar nuevas reservas
+      const newReservations = userReservations.filter(
+        reservation => !notifiedReservations.includes(reservation.id)
+      );
+
+      if (newReservations.length > 0) {
+        newReservations.forEach(reservation => {
+          Alert.alert(
+            "Nueva Reserva",
+            `Tu vehículo con ID ${reservation.vehicle_id} ha sido reservado.`,
+            [{ text: "OK" }]
+          );
+        });
+
+        // Actualizar las reservas notificadas
+        setNotifiedReservations(prev => [...prev, ...newReservations.map(r => r.id)]);
+      }
+
+      setReservations(userReservations);
+    } catch (error) {
+      console.error("Error al verificar las reservas:", error);
+    }
+  };
+
   useEffect(() => {
     cargarVehiculos();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkReservations();
+    }, 30000); // Verificar cada 30 segundos
+
+    return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
+  }, [vehicles, notifiedReservations]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

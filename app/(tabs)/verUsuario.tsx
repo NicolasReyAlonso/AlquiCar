@@ -1,43 +1,42 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
 
 const UserProfileScreen = () => {
-    interface Vehicle {
-        id: string;
-        brand: string;
-        model: string;
-        user_id: string;
-        registration_date: string;
-        daily_price: number;
-      }
-    
-      interface Reservation {
-        id: string;
-        from_id: string;
-        to_id: string;
-        brand: string;
-        status: string;
-        start_date: string;
-        end_date: string;
-      }
-    
-      interface Incidence {
-        id: string;
-        from_id: string;
-        to_id: string;
-        description: string;
-        created_at: string;
-      }
-      
+  interface Vehicle {
+    id: string;
+    brand: string;
+    model: string;
+    owner_id: string;
+    registration_date: string;
+    daily_price: number;
+  }
+
+  interface Reservation {
+    id: string;
+    customer_id: string;
+    to_id: string;
+    total_price: number;
+    status: string;
+    start_date: string;
+    end_date: string;
+  }
+
+  interface Incidence {
+    id: string;
+    from_id: string;
+    to_id: string;
+    description: string;
+    created_at: string;
+  }
+
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-    const [reservations, setReservations] = useState<Reservation[]>([]);
-    const [incidences, setIncidences] = useState<Incidence[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [incidences, setIncidences] = useState<Incidence[]>([]);
 
 
   const fetchUserData = async () => {
@@ -71,7 +70,7 @@ const UserProfileScreen = () => {
         },
       });
       const allVehicles = await vehicleResponse.json();
-      const userVehicles = allVehicles.filter((id: any) => id.user_id === userId);
+      const userVehicles = allVehicles.filter((id: any) => id.owner_id === userId);
       setVehicles(userVehicles);
 
       // Reservas del usuario
@@ -84,7 +83,7 @@ const UserProfileScreen = () => {
         },
       });
       const allReservations = await reservationsResponse.json();
-      const userReservations = allReservations.filter((id: any) => id.from_id === userId);
+      const userReservations = allReservations.filter((id: any) => id.customer_id === userId);
       setReservations(userReservations);
 
       // Incidencias del usuario
@@ -107,11 +106,11 @@ const UserProfileScreen = () => {
     }
   };
 
-  useFocusEffect(() => {
+  useEffect(() => {
     if (userId) {
       fetchUserData();
     }
-  });
+  }, [userId]);
 
   if (loading || !userData) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -127,6 +126,7 @@ const UserProfileScreen = () => {
         renderItem={({ item }) => (
           <Text style={styles.itemText}>
             Marca: {item.brand}{"\n"}
+            Model: {item.model}{"\n"}
             Día de registro: {new Date(item.registration_date).toLocaleDateString()}{"\n"}
             Precio al día: {item.daily_price}€
           </Text>
@@ -140,7 +140,7 @@ const UserProfileScreen = () => {
         data={reservations}
         renderItem={({ item }) => (
           <Text style={styles.itemText}>
-            Marca: {item.brand}{"\n"}
+            Precio total: {item.total_price}{"\n"}
             Estado: {item.status}{"\n"}
             Fecha de inicio: {new Date(item.start_date).toLocaleDateString()}{"\n"}
             Fecha de fin: {new Date(item.end_date).toLocaleDateString()}

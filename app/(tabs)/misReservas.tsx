@@ -14,6 +14,8 @@ interface Reservation {
   total_price: number;
   start_date: string;
   end_date: string;
+  vehicle_id: number;
+  ownerId?: string;
 }
 
 const MisReservas = () => {
@@ -83,16 +85,25 @@ const MisReservas = () => {
     
         const reservasConVehiculos = await Promise.all(
           reservas.map(async (reserva: Reservation) => {
+            let imageUrl = "http://via.placeholder.com/150";
             try {
               const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reserva.vehicle_id}`);
               const vehicleData = await vehicleResponse.json();
     
               const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
+
+              const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+              const images = await imgRes.json();
+              if (images.length > 0 && images[0].data) {
+                imageUrl = images[0].data;
+              }
     
               return {
                 ...reserva,
+                vehicle_id: reserva.vehicle_id,
                 vehicleBrand: vehicle.brand || "Marca desconocida",
-                imageUrl: vehicle.imageUrl || "http://via.placeholder.com/150",
+                imageUrl,
+                ownerId: vehicle.owner_id || null
               };
             } catch (vehicleError) {
               return {
@@ -123,6 +134,7 @@ const MisReservas = () => {
     : reservations.filter((reserva) => reserva.status.toLowerCase() === "cancelled");
     
   return (
+    
     <View style={styles.container}>
       <View style={styles.tabContainer}>
         <TouchableOpacity
@@ -162,6 +174,8 @@ const MisReservas = () => {
                     : undefined
                 } 
                 onPress={() => router.push({ pathname: "/detallesReserva", params: { id: reservation.id } })}
+                onChatPress={() => router.push({ pathname: "/chat", params: { contactId: reservation.ownerId } })}
+
               />
             </View>
           ))

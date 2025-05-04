@@ -76,7 +76,8 @@
     "day": "jour",
     "date": "Date",
     "buttons": {
-      "cancel": "Annuler la Réservation"
+      "cancel": "Annuler la Réservation",
+      "chat": "Contacter le propriétaire"
     }
   },
 

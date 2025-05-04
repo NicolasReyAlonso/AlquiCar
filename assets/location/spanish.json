@@ -78,7 +78,8 @@
       "day": "día",
       "date": "Fecha",
       "buttons": {
-        "cancel": "Cancelar Reserva"
+        "cancel": "Cancelar Reserva",
+        "chat": "Contactar al propietario"
       }
     },
   

@@ -112,10 +112,13 @@ const MisReservas = () => {
   }, []);
 
   const filteredReservations =
-    activeTab === "Activas"
-      ? reservations.filter((reserva) => reserva.status.toLowerCase() !== "cancelled")
-      : reservations.filter((reserva) => reserva.status.toLowerCase() === "cancelled");
-
+  activeTab === "Activas"
+    ? reservations.filter(
+        (reserva) =>
+          reserva.status.toLowerCase() === "pending" || reserva.status.toLowerCase() === "confirmed"
+      )
+    : reservations.filter((reserva) => reserva.status.toLowerCase() === "cancelled");
+    
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>

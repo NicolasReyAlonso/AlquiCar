@@ -119,6 +119,18 @@ export default function Layout({ children }: LayoutProps) {
         </SafeAreaView>
 
         {isFilterMenuOpen && (
+          <>
+          <Pressable
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 999,
+            }}
+            onPress={() => setIsFilterMenuOpen(false)}
+          />
           <View style={styles.filterMenu}>
             <Text style={styles.filterTitle}>{t('layout.filter')}</Text>
 
@@ -184,6 +196,7 @@ export default function Layout({ children }: LayoutProps) {
               <Text style={styles.filterOption}>Sedan</Text>
             </TouchableOpacity>
           </View>
+          </>
         )}
 
 
@@ -269,6 +282,18 @@ export default function Layout({ children }: LayoutProps) {
           </View>
         )}
         {isLangMenuOpen && (
+          <>
+          <Pressable
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 999,
+            }}
+            onPress={() => setIsLangMenuOpen(false)}
+          />
           <View style={styles.languageMenu}>
             <TouchableOpacity onPress={() => changeLanguage('es')}>
               <Text style={styles.languageOption}>🇪🇸 Español</Text>
@@ -286,6 +311,7 @@ export default function Layout({ children }: LayoutProps) {
               <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
             </TouchableOpacity>
           </View>
+          </>
         )}
 
         {isMenuOpen && (

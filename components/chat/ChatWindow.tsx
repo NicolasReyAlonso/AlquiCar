@@ -18,8 +18,8 @@ interface ChatWindowProps {
 }
 
 
-export default function ChatWindow({ chat, socket, updateContacts}: ChatWindowProps) {
-    const [message, setMessage] = useState('');
+export default function ChatWindow({ chat, socket, updateContacts }: ChatWindowProps) {
+    const [messageInput, setMessageInput] = useState('');
     const [messages, setMessages] = useState<MessageInterface[]>([]);
     const [user, setUser] = useState<UserInterface | null>(null);
     const [scrollToEndAnimation, setScrollToEndAnimation] = useState(false);
@@ -37,11 +37,11 @@ export default function ChatWindow({ chat, socket, updateContacts}: ChatWindowPr
 
 
     const handleSendMessage = () => {
-        if (message.length < 0) return;
+        if (messageInput.length < 0) return;
         if (!user) return;
-        
+
         const newMessage = {
-            content: message,
+            content: messageInput,
             from_id: user.id,
             sender_name: user.name,
             to_id: chat.contact_id,
@@ -50,9 +50,10 @@ export default function ChatWindow({ chat, socket, updateContacts}: ChatWindowPr
         }
 
         const nuevo = [...messages, newMessage];
+        console.log("Nuevo", nuevo);
 
         setMessages(nuevo);
-        setMessage('');
+        setMessageInput('');
 
         socket.emit("send message", {
             newMessage,
@@ -81,14 +82,13 @@ export default function ChatWindow({ chat, socket, updateContacts}: ChatWindowPr
             <ScrollView
                 ref={scrollViewRef}
                 style={chatWindowStyles.chatMessages}
-                onContentSizeChange={(width, height) => {
-                    console.log("Content size changed", width, height);
-                   scrollViewRef.current?.scrollToEnd({ animated: scrollToEndAnimation });
+                onContentSizeChange={() => {
+                    scrollViewRef.current?.scrollToEnd({ animated: scrollToEndAnimation });
                 }}>
-                
 
                 {
-                    user && messages.map((message, index) => (
+                    user && messages.map((message, index) => {
+                        return (
                         <View
                             key={index}
                             style={[
@@ -104,7 +104,7 @@ export default function ChatWindow({ chat, socket, updateContacts}: ChatWindowPr
                             <Text style={chatWindowStyles.messageContent}>{message.content}</Text>
                             <Text style={chatWindowStyles.messageTime}>{formatDate(message.created_at)}</Text>
                         </View>
-                    ))
+                    )})
                 }
             </ScrollView>
 
@@ -112,8 +112,8 @@ export default function ChatWindow({ chat, socket, updateContacts}: ChatWindowPr
                 <TextInput
                     style={chatWindowStyles.inputField}
                     placeholder="Escribe un mensaje"
-                    onChangeText={(text) => setMessage(text)}
-                    value={message}
+                    onChangeText={(text) => setMessageInput(text)}
+                    value={messageInput}
                 />
                 <TouchableOpacity style={chatWindowStyles.sendButton} onPress={() => handleSendMessage()}>
                     <Text style={chatWindowStyles.sendButtonText}>Enviar</Text>

@@ -7,7 +7,7 @@ import { Stack } from 'expo-router';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
-import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import theme from '../components/Theme';
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
 import i18n from '../assets/location/i18n';
@@ -18,7 +18,7 @@ interface LayoutProps {
 }
 
 type RootStackParamList = {
-  Home: 'index'; 
+  Home: 'index';
   Register: undefined;
 };
 
@@ -78,10 +78,10 @@ export default function Layout({ children }: LayoutProps) {
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
-            <Image 
-              source={require('@/assets/images/logo2.png')} 
-              style={styles.logo} 
-            />
+              <Image
+                source={require('@/assets/images/logo2.png')}
+                style={styles.logo}
+              />
               <TouchableOpacity
                 style={styles.touchableButton}
                 onPress={() => setIsLangMenuOpen(!isLangMenuOpen)}
@@ -107,14 +107,14 @@ export default function Layout({ children }: LayoutProps) {
               <Text style={styles.languageOption}>🇬🇧 English</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => changeLanguage('fr')}>
-               <Text style={styles.languageOption}>🇫🇷 Français</Text>
-             </TouchableOpacity>
-             <TouchableOpacity onPress={() => changeLanguage('de')}>
-               <Text style={styles.languageOption}>🇩🇪 Deutsch</Text>
-             </TouchableOpacity>
-             <TouchableOpacity onPress={() => changeLanguage('it')}>
-               <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
-             </TouchableOpacity>
+              <Text style={styles.languageOption}>🇫🇷 Français</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeLanguage('de')}>
+              <Text style={styles.languageOption}>🇩🇪 Deutsch</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeLanguage('it')}>
+              <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -135,6 +135,12 @@ export default function Layout({ children }: LayoutProps) {
               <FontAwesome5 name="exclamation-circle" size={24} color={color} />
               <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('chat')}>
+            <FontAwesome5 name="comments" size={24} color={color} solid />
+            <Text style={styles.menuItemText}>{t('layout.menuButtons.chat')}</Text>
+            </TouchableOpacity>
+
           </View>
         )}
 
@@ -226,5 +232,5 @@ const styles = StyleSheet.create({
     height: 40,
     marginRight: 10,  // Espaciado antes de otros elementos
   },
-  
+
 });

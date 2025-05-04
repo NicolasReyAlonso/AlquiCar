@@ -58,6 +58,7 @@ export default function MisIncidencias() {
       });
 
       const incidenciasData = await incidenciasResponse.json();
+      console.log(incidenciasData);
       if(!incidenciasData.error){
         setIncidencias(incidenciasData);
       }else{
@@ -70,7 +71,7 @@ export default function MisIncidencias() {
     }
   };
 
-  useFocusEffect(() => {
+  useEffect(() => {
     const init = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
@@ -102,7 +103,7 @@ export default function MisIncidencias() {
     };
 
     init();
-  }, );
+  }, []);
 
   const toggleAdminView = async () => {
     const token = await AsyncStorage.getItem('token');

@@ -13,6 +13,8 @@ interface Reservation {
   total_price: number;
   start_date: string;
   end_date: string;
+  vehicle_id: number;
+  ownerId?: string;
 }
 
 const MisReservas = () => {
@@ -96,8 +98,10 @@ const MisReservas = () => {
     
               return {
                 ...reserva,
+                vehicle_id: reserva.vehicle_id,
                 vehicleBrand: vehicle.brand || "Marca desconocida",
                 imageUrl,
+                ownerId: vehicle.owner_id || null
               };
             } catch (vehicleError) {
               return {
@@ -127,6 +131,7 @@ const MisReservas = () => {
     : reservations.filter((reserva) => reserva.status.toLowerCase() === "cancelled");
     
   return (
+    
     <View style={styles.container}>
       <View style={styles.tabContainer}>
         <TouchableOpacity
@@ -166,6 +171,8 @@ const MisReservas = () => {
                     : undefined
                 } 
                 onPress={() => router.push({ pathname: "/detallesReserva", params: { id: reservation.id } })}
+                onChatPress={() => router.push({ pathname: "/chat", params: { contactId: reservation.ownerId } })}
+
               />
             </View>
           ))

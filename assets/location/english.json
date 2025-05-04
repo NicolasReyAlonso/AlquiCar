@@ -78,7 +78,8 @@
     "day": "day",
     "date": "Date",
     "buttons": {
-      "cancel": "Cancel Reservation"
+      "cancel": "Cancel Reservation",
+      "chat": "Contact Owner"
     }
   },
 

@@ -7,6 +7,8 @@ import { ChatInterface } from "../../interfaces/Chat";
 import mainChatStyles from "../../css/MainChat.styles";
 import { MessageInterface } from "@/interfaces/Message";
 import ChatWindow from "@/components/chat/ChatWindow";
+import { useLocalSearchParams } from "expo-router";
+
 
 
 
@@ -15,6 +17,7 @@ export default function Chat() {
     const [contacts, setContacts] = useState<ChatInterface[]>([]);
     const [selectedContact, setSelectedChat] = useState<ChatInterface | null>(null);
     const selectedContactRef = useRef<ChatInterface | null>(null);
+    const { contactId } = useLocalSearchParams();
 
     useEffect(() => {
 
@@ -43,7 +46,10 @@ export default function Chat() {
         socketResponse.on('disconnect', () => {
             console.log('Desconectado del servidor de WebSocket');
         });
-        socketResponse.on('get chats', (contacts) => { setContacts(contacts.chats); console.log("Contacts", contacts); });
+        socketResponse.on('get chats', (contacts) => { 
+            setContacts(contacts.chats); 
+            
+        });
         socketResponse.on('new message', (message) => {
             //addMessage(message[0]);
             updateContacts(message[0].to_id, message);
@@ -51,6 +57,15 @@ export default function Chat() {
         })
 
     }
+
+    useEffect(() => {
+        if (!contactId || contacts.length === 0) return;
+      
+        const foundChat = contacts.find((chat: ChatInterface) => chat.contact_id === contactId);
+        if (foundChat) {
+          setSelectedChat(foundChat);
+        }
+      }, [contactId, contacts]);
 
 
     const updateContacts = (id: string, messages: MessageInterface[]) => {

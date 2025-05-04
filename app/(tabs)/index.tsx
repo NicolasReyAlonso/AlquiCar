@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import VehicleCard from '@/components/templates/VehicleCard';
 
 const { width } = Dimensions.get('window');
 
@@ -51,11 +52,15 @@ const index = () => {
       }
   
       const response = await fetch('http://localhost:3000/vehicles/');
+      if (!response.ok) {
+        throw new Error('Error en la respuesta del servidor');
+      }
       const allVehicles = await response.json();
   
       const filteredVehicles = allVehicles.filter(vehicle => {
         const isCityMatch = city === "" || vehicle.city?.toLowerCase().includes(city.toLowerCase());
-        const isBrandMatch = brand === "" || vehicle.brand.trim().toLowerCase() === brand.trim().toLowerCase();
+        const isBrandMatch = brand === "" || (vehicle.brand?.trim().toLowerCase() || "") === brand.trim().toLowerCase();
+
         return isCityMatch && isBrandMatch;
       });
   

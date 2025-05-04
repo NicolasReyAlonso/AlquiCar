@@ -16,6 +16,7 @@ export default function DetallesReserva() {
   const [totalPrice, setTotalPrice] = useState('');
   const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
   const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
+  const [changedStatus, setChangedStatus] = useState(false);
 
   useEffect(() => {
     const fetchReservationDetails = async () => {
@@ -79,6 +80,7 @@ export default function DetallesReserva() {
       if (response.ok) {
         const updatedReservation = await response.json();
         setReservation({ ...reservation, status: "Cancelled" });
+        setChangedStatus(true);
         alert("Reserva cancelada correctamente");
       } else {
         const errorData = await response.json();
@@ -259,7 +261,11 @@ const handleUpdateReservation = async () => {
       {/* Botón para volver */}
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => router.push("/misReservas")} // Navegar a MisReservas
+        onPress={() => {
+        
+          changedStatus ? router.push({pathname:"/misReservas", params: { id: reservation.id, status: reservation.status}}) : router.push("/misReservas")
+        
+        }} // Navegar a MisReservas
       >
         <Text style={styles.backButtonText}>Volver</Text>
       </TouchableOpacity>

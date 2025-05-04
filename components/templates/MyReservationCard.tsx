@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } 
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 interface MyReservationCardProps {
   brand: string;
@@ -11,7 +12,7 @@ interface MyReservationCardProps {
   status: string;
   imageUrl?: string;
   onCancel: () => void;
-  onPress: () => void; 
+  onPress: () => void;
 }
 
 const ReservationCard: React.FC<MyReservationCardProps> = ({
@@ -27,6 +28,22 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
   const isDesktop = width > 576;
   const styles = getStyles(width, isDesktop);
   const { t } = useTranslation();
+
+  const getStatusStyle = () => {
+    switch (status) {
+      case "Confirmed":
+        return styles.confirmed;
+      case "Pending":
+        return styles.pending;
+      case "Cancelled":
+        return styles.cancelled;
+      default:
+        return null;
+    }
+  };
+
+
+
 
   return (
     <TouchableOpacity
@@ -48,7 +65,7 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
           <Text
             style={[
               isDesktop ? styles.statusDesktop : styles.statusMobile,
-              status === 'Confirmada' ? styles.confirmed : styles.pending,
+              getStatusStyle(),
             ]}
           >
             {status}
@@ -57,7 +74,7 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
             <TouchableOpacity
               style={isDesktop ? styles.buttonDesktop : styles.buttonMobile}
               onPress={(e) => {
-                e.stopPropagation(); 
+                e.stopPropagation();
                 onCancel();
               }}
             >
@@ -191,6 +208,9 @@ const getStyles = (width: number, isDesktop: boolean) =>
       color: "green",
     },
     pending: {
+      color: "yellow",
+    },
+    cancelled: {
       color: "red",
     },
     buttonDesktop: {

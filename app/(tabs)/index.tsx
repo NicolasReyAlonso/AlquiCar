@@ -45,15 +45,20 @@ const index = () => {
 
   const handleBuscar = async () => {
     try {
+      if (!city && !brand) {
+        Alert.alert('Error', 'Por favor, ingresa al menos un filtro para buscar.');
+        return;
+      }
+  
       const response = await fetch('http://localhost:3000/vehicles/');
       const allVehicles = await response.json();
-
+  
       const filteredVehicles = allVehicles.filter(vehicle => {
         const isCityMatch = city === "" || vehicle.city?.toLowerCase().includes(city.toLowerCase());
         const isBrandMatch = brand === "" || vehicle.brand.trim().toLowerCase() === brand.trim().toLowerCase();
         return isCityMatch && isBrandMatch;
       });
-
+  
       if (filteredVehicles.length === 1) {
         router.push(`/vehicleDetails?id=${filteredVehicles[0].id}`);
       } else if (filteredVehicles.length === 0) {

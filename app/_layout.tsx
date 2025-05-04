@@ -209,24 +209,25 @@ export default function Layout({ children }: LayoutProps) {
           <Picker.Item label="Volkswagen" value="Volkswagen" />
           <Picker.Item label="Audi" value="Audi" />
         </Picker>
-{/* Filtro por Tipo */}
-<Text style={styles.filterLabel}>Tipo:</Text>
-<Picker
-  selectedValue={filters.type}
-  onValueChange={(itemValue) => setFilters({ ...filters, type: itemValue })}
-  style={styles.picker}
->
-  <Picker.Item label="Todos" value="" />
-  <Picker.Item label="Sedan" value="Sedan" />
-  <Picker.Item label="SUV" value="SUV" />
-  <Picker.Item label="Hatchback" value="Hatchback" />
-  <Picker.Item label="Truck" value="Truck" />
-  <Picker.Item label="Sports" value="Sports" />
-  <Picker.Item label="Convertible" value="Convertible" />
-  <Picker.Item label="Coupe" value="Coupe" />
-  <Picker.Item label="Van" value="Van" />
-  <Picker.Item label="Wagon" value="Wagon" />
-</Picker>
+        
+        {/* Filtro por Tipo */}
+        <Text style={styles.filterLabel}>Tipo:</Text>
+        <Picker
+          selectedValue={filters.type}
+          onValueChange={(itemValue) => setFilters({ ...filters, type: itemValue })}
+          style={styles.picker}
+        >
+          <Picker.Item label="Todos" value="" />
+          <Picker.Item label="Sedan" value="Sedan" />
+          <Picker.Item label="SUV" value="SUV" />
+          <Picker.Item label="Hatchback" value="Hatchback" />
+          <Picker.Item label="Truck" value="Truck" />
+          <Picker.Item label="Sports" value="Sports" />
+          <Picker.Item label="Convertible" value="Convertible" />
+          <Picker.Item label="Coupe" value="Coupe" />
+          <Picker.Item label="Van" value="Van" />
+          <Picker.Item label="Wagon" value="Wagon" />
+        </Picker>
 
         {/* Filtro por Transmisión */}
         <Text style={styles.filterLabel}>Transmisión:</Text>

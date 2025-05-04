@@ -330,19 +330,19 @@ export default function Layout({ children }: LayoutProps) {
             <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
               <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('index')}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => {setIsMenuOpen(false); navigation.navigate('index')}}>
               <FontAwesome name="home" size={24} color={color} />
               <Text style={styles.menuItemText}>{t('layout.menuButtons.home')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misReservas')}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => {setIsMenuOpen(false); navigation.navigate('misReservas')}}>
               <FontAwesome5 name="shopping-cart" size={24} color={color} />
               <Text style={styles.menuItemText}>{t('layout.menuButtons.reservations')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misIncidencias')}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => {setIsMenuOpen(false); navigation.navigate('misIncidencias')}}>
               <FontAwesome5 name="exclamation-circle" size={24} color={color} />
               <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('chat')}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => {setIsMenuOpen(false); navigation.navigate('chat')}}>
               <FontAwesome5 name="comments" size={24} color={color} solid/>
               <Text style={styles.menuItemText}>{t('layout.menuButtons.chat')}</Text>
             </TouchableOpacity>

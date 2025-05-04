@@ -188,9 +188,8 @@ export default function AlquilarCoche() {
       
         try {
           const userId = await AsyncStorage.getItem("userId");
-          const vid = vehicleId;
-
-          const uploadRes = await fetch(`http://localhost:3000/media/upload/${userId}/${vid}`, {
+          console.log("vehicle id, vehicleId");
+          const uploadRes = await fetch(`http://localhost:3000/media/upload/${userId}/${vehicleId}`, {
             method: "POST",
             body: formData,
           });

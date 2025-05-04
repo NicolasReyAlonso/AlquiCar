@@ -128,7 +128,19 @@
       "reservations": "Mes Réservations",
       "publications": "Mes Annonces",
       "incidences" : "Mes incidents"
-    }
+    },
+    "filter": "Filtrer par",
+    "brand": "Marque",
+    "type": "Type",
+    "tramission": "Transmission",
+    "auto": "Automatique",
+    "manual": "Manuelle",
+    "fuel_type": "Type de carburant",
+    "apply": "Appliquer les filtres",
+    "gasolina": "Essence",
+    "eléctrico": "Électrique",
+    "todas": "Toutes",
+    "todos": "Tous"
   },
 
   "Incidencias": {
@@ -165,6 +177,13 @@
   "ModoAdmin": {
     "modoAdmin": "Mode Administrateur",
     "modoUsuario": "Mode Utilisateur"
+  },
+
+  "ResultadosFiltrados": {
+    "title": "Résultats Filtrés",
+    "notFound": "Aucun résultat trouvé.",
+    "type": "Type",
+    "price": "Prix journalier"
   }
 
 }

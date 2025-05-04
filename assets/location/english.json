@@ -130,7 +130,19 @@
       "reservations": "My Reservations",
       "publications": "My Listings",
       "incidences" : "My Issues"
-    }
+    },
+    "filter": "Filter by",
+    "brand": "Brand",
+    "type": "Type",
+    "tramission": "Transmission",
+    "auto": "Automatic",
+    "manual": "Manual",
+    "fuel_type": "Fuel type",
+    "apply": "Apply filters",
+    "gasolina": "Petrol",
+    "eléctrico": "Electric",
+    "todas": "All",
+    "todos": "All"
   },
   "Incidencias": {
     "titulo": "Issue Title",
@@ -166,5 +178,12 @@
   "ModoAdmin": {
     "modoAdmin": "Administrator Mode",
     "modoUsuario": "User Mode"
+  },
+
+  "ResultadosFiltrados": {
+    "title": "Filtered Results",
+    "notFound": "No results found.",
+    "type": "Type",
+    "price": "Daily price"
   }
 }

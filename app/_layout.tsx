@@ -119,10 +119,10 @@ export default function Layout({ children }: LayoutProps) {
 
     {isFilterMenuOpen && (
       <View style={styles.filterMenu}>
-        <Text style={styles.filterTitle}>Filtrar por:</Text>
+        <Text style={styles.filterTitle}>{t('layout.filter')}</Text>
 
         {/* Filtro por Marca */}
-        <Text style={styles.filterLabel}>Marca:</Text>
+        <Text style={styles.filterLabel}>{t('layout.brand')}</Text>
         <TouchableOpacity
           onPress={() => {
             setFilters({ ...filters, brand: "Hyundai" });
@@ -163,7 +163,7 @@ export default function Layout({ children }: LayoutProps) {
         </TouchableOpacity>
 
         {/* Filtro por Tipo */}
-        <Text style={styles.filterLabel}>Tipo:</Text>
+        <Text style={styles.filterLabel}>{t('layout.type')}:</Text>
         <TouchableOpacity
           onPress={() => {
             setFilters({ ...filters, type: "SUV" });
@@ -188,16 +188,16 @@ export default function Layout({ children }: LayoutProps) {
 
     {isFilterMenuOpen && (
       <View style={styles.filterMenu}>
-        <Text style={styles.filterTitle}>Filtrar por:</Text>
+        <Text style={styles.filterTitle}>{t('layout.filter')}:</Text>
 
         {/* Filtro por Marca */}
-        <Text style={styles.filterLabel}>Marca:</Text>
+        <Text style={styles.filterLabel}>{t('layout.brand')}:</Text>
         <Picker
           selectedValue={filters.brand}
           onValueChange={(itemValue) => setFilters({ ...filters, brand: itemValue })}
           style={styles.picker}
         >
-          <Picker.Item label="Todas" value="" />
+          <Picker.Item label={t('layout.todas')} value="" />
           <Picker.Item label="Hyundai" value="Hyundai" />
           <Picker.Item label="Citroën" value="Citroën" />
           <Picker.Item label="Nissan" value="Nissan" />
@@ -211,13 +211,13 @@ export default function Layout({ children }: LayoutProps) {
         </Picker>
         
         {/* Filtro por Tipo */}
-        <Text style={styles.filterLabel}>Tipo:</Text>
+        <Text style={styles.filterLabel}>{t('layout.type')}:</Text>
         <Picker
           selectedValue={filters.type}
           onValueChange={(itemValue) => setFilters({ ...filters, type: itemValue })}
           style={styles.picker}
         >
-          <Picker.Item label="Todos" value="" />
+          <Picker.Item label={t('layout.todos')} value="" />
           <Picker.Item label="Sedan" value="Sedan" />
           <Picker.Item label="SUV" value="SUV" />
           <Picker.Item label="Hatchback" value="Hatchback" />
@@ -230,28 +230,28 @@ export default function Layout({ children }: LayoutProps) {
         </Picker>
 
         {/* Filtro por Transmisión */}
-        <Text style={styles.filterLabel}>Transmisión:</Text>
+        <Text style={styles.filterLabel}>{t('layout.tramission')}:</Text>
         <Picker
           selectedValue={filters.transmission}
           onValueChange={(itemValue) => setFilters({ ...filters, transmission: itemValue })}
           style={styles.picker}
         >
-          <Picker.Item label="Todas" value="" />
-          <Picker.Item label="Automática" value="Automatic" />
-          <Picker.Item label="Manual" value="Manual" />
+          <Picker.Item label={t('layout.todas')} value="" />
+          <Picker.Item label={t('layout.auto')} value="Automatic" />
+          <Picker.Item label={t('layout.manual')} value="Manual" />
         </Picker>
 
         {/* Filtro por Tipo de Combustible */}
-        <Text style={styles.filterLabel}>Tipo de Combustible:</Text>
+        <Text style={styles.filterLabel}>{t('layout.fuel_type')}:</Text>
         <Picker
           selectedValue={filters.fuel_type}
           onValueChange={(itemValue) => setFilters({ ...filters, fuel_type: itemValue })}
           style={styles.picker}
         >
-          <Picker.Item label="Todos" value="" />
-          <Picker.Item label="Gasolina" value="Gasoline" />
+          <Picker.Item label={t('layout.todos')} value="" />
+          <Picker.Item label={t('layout.gasolina')} value="Gasoline" />
           <Picker.Item label="Diésel" value="Diesel" />
-          <Picker.Item label="Eléctrico" value="Electric" />
+          <Picker.Item label={t('layout.eléctrico')} value="Electric" />
         </Picker>
 
         {/* Botón para aplicar los filtros */}
@@ -263,7 +263,7 @@ export default function Layout({ children }: LayoutProps) {
             navigation.navigate("resultadosFiltrados", { filters: JSON.stringify(filters) });
           }}
         >
-          <Text style={styles.applyButtonText}>Aplicar Filtros</Text>
+          <Text style={styles.applyButtonText}>{t('layout.apply')}</Text>
         </TouchableOpacity>
       </View>
     )}

@@ -127,7 +127,19 @@
       "reservations": "Meine Reservierungen",
       "publications": "Meine Inserate",
       "incidences" : "Meine Vorfälle"
-    }
+    },
+    "filter": "Filtern nach",
+    "brand": "Marke",
+    "type": "Typ",
+    "tramission": "Getriebe",
+    "auto": "Automatik",
+    "manual": "Manuell",
+    "fuel_type": "Kraftstoffart",
+    "apply": "Filter anwenden",
+    "gasolina": "Benzin",
+    "eléctrico": "Elektrisch",
+    "todas": "Alle",
+    "todos": "Alle"
   },
 
   "Incidencias": {
@@ -164,7 +176,12 @@
   "ModoAdmin": {
     "modoAdmin": "Administrator-Modus",
     "modoUsuario": "Benutzermodus"
+  },
+
+  "ResultadosFiltrados": {
+    "title": "Gefilterte Ergebnisse",
+    "notFound": "Keine Ergebnisse gefunden.",
+    "type": "Typ",
+    "price": "Tagespreis"
   }
-
-
 }

@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import { useTranslation } from 'react-i18next';
+
 
 const ResultadosFiltrados = () => {
   const { filters } = useLocalSearchParams(); // Recibe los filtros como parámetros
+  const { t } = useTranslation();
 
   // Memoriza los filtros para evitar bucles infinitos
   const parsedFilters = useMemo(() => {
@@ -41,15 +44,15 @@ const ResultadosFiltrados = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Resultados Filtrados</Text>
+      <Text style={styles.title}>{t('ResultadosFiltrados.title')}</Text>
       {filteredResults.length === 0 ? (
-        <Text style={styles.noResults}>No se encontraron resultados.</Text>
+        <Text style={styles.noResults}>{t('ResultadosFiltrados.notFound')}</Text>
       ) : (
         filteredResults.map((result) => (
           <View key={result.id} style={styles.resultCard}>
             <Text style={styles.resultText}>{result.brand} - {result.model}</Text>
-            <Text style={styles.resultText}>Tipo: {result.type}</Text>
-            <Text style={styles.resultText}>Precio Diario: €{result.daily_price}</Text>
+            <Text style={styles.resultText}>{t('ResultadosFiltrados.type')}: {result.type}</Text>
+            <Text style={styles.resultText}>{t('ResultadosFiltrados.price')}: €{result.daily_price}</Text>
           </View>
         ))
       )}

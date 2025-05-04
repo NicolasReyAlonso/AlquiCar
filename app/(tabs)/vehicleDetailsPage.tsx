@@ -2,13 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Para obtener el userId del usuario actual
 
 export default function VehicleDetailsPage() {
   const { id } = useLocalSearchParams();
   const [vehicle, setVehicle] = useState(null);
   const [owner, setOwner] = useState(null); // Estado para el propietario
   const [direccion, setDireccion] = useState("Dirección desconocida");
+  const [userId, setUserId] = useState(null); // Estado para el userId del usuario actual
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const storedUserId = await AsyncStorage.getItem("userId");
+      setUserId(storedUserId);
+    };
+
+    fetchUserId();
+  }, []);
 
   useEffect(() => {
     const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
@@ -133,34 +144,36 @@ export default function VehicleDetailsPage() {
         )}
       </View>
 
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() =>
-          router.push({
-            pathname: "reservarCoche",
-            params: {
-              vehicleId: vehicle.id,
-              brand: vehicle.brand,
-              model: vehicle.model,
-              year: vehicle.year,
-              seats: vehicle.capacity,
-              type: vehicle.type,
-              transmission: vehicle.transmission,
-              fuelType: vehicle.fuel_type,
-              numDoors: vehicle.num_doors,
-              deposit: vehicle.deposit,
-              price: vehicle.daily_price,
-              imageUrl: vehicle.imageUrl,
-            },
-          })
-        }
-      >
-        <Text style={styles.backButtonText}>Reservar</Text>
-      </TouchableOpacity>
+      {/* Botón de reservar (solo si el vehículo no pertenece al usuario actual) */}
+      {vehicle.owner_id !== userId && (
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() =>
+            router.push({
+              pathname: "reservarCoche",
+              params: {
+                vehicleId: vehicle.id,
+                brand: vehicle.brand,
+                model: vehicle.model,
+                year: vehicle.year,
+                seats: vehicle.capacity,
+                type: vehicle.type,
+                transmission: vehicle.transmission,
+                fuelType: vehicle.fuel_type,
+                numDoors: vehicle.num_doors,
+                deposit: vehicle.deposit,
+                price: vehicle.daily_price,
+                imageUrl: vehicle.imageUrl,
+              },
+            })
+          }
+        >
+          <Text style={styles.backButtonText}>Reservar</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 }
-
 
 
 

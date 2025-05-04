@@ -32,6 +32,19 @@ export default function VehicleDetailsPage() {
         const data = await response.json();
         if (data && data.length > 0) {
           const vehicleData = data[0];
+
+          let imageUrl = "http://via.placeholder.com/150";
+          try {
+            const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicleData.owner_id}/${vehicleData.id}`);
+            const images = await imgRes.json();
+            if (images.length > 0 && images[0].data) {
+              imageUrl = images[0].data;
+            }
+          } catch (imgError) {
+            console.warn(`No se pudo cargar la imagen del vehículo ${vehicleData.id}`, imgError);
+          }
+          vehicleData.imageUrl = imageUrl;
+
           setVehicle(vehicleData);
           console.log("Datos del vehículo asignados:", vehicleData);
 

@@ -81,16 +81,23 @@ const MisReservas = () => {
     
         const reservasConVehiculos = await Promise.all(
           reservas.map(async (reserva: Reservation) => {
+            let imageUrl = "http://via.placeholder.com/150";
             try {
               const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reserva.vehicle_id}`);
               const vehicleData = await vehicleResponse.json();
     
               const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
+
+              const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+              const images = await imgRes.json();
+              if (images.length > 0 && images[0].data) {
+                imageUrl = images[0].data;
+              }
     
               return {
                 ...reserva,
                 vehicleBrand: vehicle.brand || "Marca desconocida",
-                imageUrl: vehicle.imageUrl || "http://via.placeholder.com/150",
+                imageUrl,
               };
             } catch (vehicleError) {
               return {

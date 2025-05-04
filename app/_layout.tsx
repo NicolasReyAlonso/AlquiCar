@@ -135,6 +135,11 @@ export default function Layout({ children }: LayoutProps) {
               <FontAwesome5 name="exclamation-circle" size={24} color={color} />
               <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misIncidencias')}>
+              <FontAwesome5 name="exclamation-circle" size={24} color={color} />
+              <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
+            </TouchableOpacity>
+            
           </View>
         )}
 

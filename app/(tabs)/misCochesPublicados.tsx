@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Text, Dimensions, StyleSheet } from "react-native";
+import { View, ScrollView, Text, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import MyPublishedVehicles from "@/components/templates/MyPublishedVehicles";
 import theme from "@/components/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 const { width } = Dimensions.get('window');
 
 const misCochesPublicados = () => {
+  const router = useRouter();
   const [vehicles, setVehicles] = useState([]);
   const [addresses, setAddresses] = useState<{ [id: number]: string }>({});
   const [reservations, setReservations] = useState([]);
@@ -59,7 +61,6 @@ const misCochesPublicados = () => {
           })
       );
       setVehicles(userVehicles);
-      console.log("Vehículos cargados:", userVehicles);
     } catch (error) {
       console.error("Error al cargar los vehículos:", error);
     }
@@ -86,46 +87,61 @@ const misCochesPublicados = () => {
     try {
       const response = await fetch(`http://localhost:3000/reservations/`);
       const allReservations = await response.json();
-      console.log("Todas las reservas:", allReservations);
   
-      // Filtrar reservas para los vehículos del usuario
       const userReservations = allReservations.filter(reservation =>
         vehicles.some(vehicle => vehicle.id === reservation.vehicle_id)
       );
-      console.log("Reservas para mis vehículos:", userReservations);
   
-      // Detectar nuevas reservas
-      const newReservations = userReservations.filter(
-        reservation => !notifiedReservations.includes(reservation.id)
-      );
-      console.log("Nuevas reservas detectadas:", newReservations);
+      const newNotifications = [];
   
-      if (newReservations.length > 0) {
-        newReservations.forEach(reservation => {
-          // Buscar el vehículo correspondiente para obtener su nombre
-          const vehicle = vehicles.find(v => v.id === reservation.vehicle_id);
-          const vehicleName = vehicle ? vehicle.brand : "Vehículo desconocido";
+      userReservations.forEach(reservation => {
+        const vehicle = vehicles.find(v => v.id === reservation.vehicle_id);
+        const vehicleName = vehicle ? vehicle.brand : "Vehículo desconocido";
   
-          // Agregar la notificación con el nombre del vehículo
-          setNotifications(prev => [
-            ...prev,
-            `Tu vehículo "${vehicleName}" ha sido reservado.`,
-          ]);
-        });
+        // Buscar la reserva anterior en la lista de notificadas
+        const previousReservation = notifiedReservations.find(r => r.id === reservation.id);
   
-        // Actualizar las reservas notificadas
-        setNotifiedReservations(prev => {
-          const updated = Array.from(new Set([...prev, ...newReservations.map(r => r.id)]));
-          console.log("Reservas notificadas actualizadas:", updated);
-          return updated;
-        });
+        if (!previousReservation) {
+          // Nueva reserva
+          newNotifications.push(`Tu vehículo "${vehicleName}" ha sido reservado.`);
+        } else {
+          // Detectar cambios en estado
+          if (previousReservation.status !== reservation.status) {
+            const statusMessage = reservation.status === "Cancelled"
+              ? `La reserva de tu vehículo "${vehicleName}" ha sido cancelada.`
+              : `El estado de la reserva de "${vehicleName}" ha cambiado a ${reservation.status}.`;
+            newNotifications.push(statusMessage);
+          }
+  
+          // Detectar cambios en fechas
+          if (previousReservation.start_date !== reservation.start_date || previousReservation.end_date !== reservation.end_date) {
+            newNotifications.push(`Las fechas de la reserva de "${vehicleName}" han sido modificadas.`);
+          }
+  
+          // Detectar cambios en precio
+          if (previousReservation.total_price !== reservation.total_price) {
+            newNotifications.push(`El precio de la reserva de "${vehicleName}" ha cambiado a €${reservation.total_price}.`);
+          }
+        }
+      });
+  
+      console.log("Nueva notificación generada:", newNotifications); // Verificar qué cambios se están detectando
+  
+      if (newNotifications.length > 0) {
+        setNotifications(prev => [...prev, ...newNotifications]);
       }
   
+      // Solo actualizar `notifiedReservations` después de verificar los cambios
+      setNotifiedReservations(userReservations);
       setReservations(userReservations);
+  
     } catch (error) {
       console.error("Error al verificar las reservas:", error);
     }
   };
+  
+  
+  
 
   useEffect(() => {
     cargarVehiculos();
@@ -133,23 +149,43 @@ const misCochesPublicados = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("Verificando reservas...");
       checkReservations();
-    }, 2000); // Verificar cada 30 segundos
+    }, 1000); // Verificar cada 30 segundos
   
     return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
-  }, [vehicles, notifiedReservations]);
+  }, [vehicles]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Mostrar notificaciones */}
       {notifications.length > 0 && (
         <View style={styles.notificationsContainer}>
-          {notifications.map((notification, index) => (
-            <Text key={index} style={styles.notificationText}>
-              {notification}
-            </Text>
-          ))}
+          {reservations.map((reservation, index) => {
+            const vehicle = vehicles.find(v => v.id === reservation.vehicle_id);
+            const vehicleName = vehicle ? vehicle.brand : "Vehículo desconocido";
+
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  router.push({
+                    pathname: "/(tabs)/reservaPropia",
+                    params: {
+                      vehicleName,
+                      customerId: reservation.customer_id,
+                      startDate: reservation.start_date,
+                      endDate: reservation.end_date,
+                      totalPrice: reservation.total_price,
+                    },
+                  });
+                }}
+              >
+                <Text style={styles.notificationText}>
+                  {`Tu vehículo "${vehicleName}" ha sido reservado.`}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       )}
 
@@ -182,16 +218,26 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   notificationsContainer: {
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 10,
     marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
   },
   notificationText: {
-    color: "black",
     fontSize: 16,
-    marginBottom: 5,
+    fontWeight: "600",
+    color: "#333",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
+  
+
   cardWrapper: {
     width: width < 500 ? "100%" : "48%",
     marginBottom: 15,

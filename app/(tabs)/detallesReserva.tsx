@@ -37,18 +37,6 @@ export default function DetallesReserva() {
           const vehicleData = await vehicleResponse.json();
 
           const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
-
-          let imageUrl = "http://via.placeholder.com/150";
-          try {
-            const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
-            const images = await imgRes.json();
-            if (images.length > 0 && images[0].data) {
-              imageUrl = images[0].data;
-            }
-          } catch (imgError) {
-            console.warn(`No se pudo cargar la imagen del vehículo ${vehicleData.id}`, imgError);
-          }
-          vehicle.imageUrl = imageUrl;
           setVehicle(vehicle);
 
           // Propietario del coche

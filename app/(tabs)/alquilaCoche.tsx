@@ -51,6 +51,7 @@ const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
 
 export default function AlquilarCoche() {
   const { t } = useTranslation();
+  const navigation = useNavigation();
   const scrollRef = useRef<ScrollView>(null);
 
   const [brand, setBrand] = useState<keyof typeof carModels>('Toyota');
@@ -108,7 +109,7 @@ export default function AlquilarCoche() {
       return;
     }
 
-    try {
+      try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
         Alert.alert("Error", "Usuario no autenticado");
@@ -129,7 +130,43 @@ export default function AlquilarCoche() {
         alert('No se pudo encontrar la ubicación para esa dirección');
         return;
       }
-
+      
+      const handleImageUpload = async (imageUri: string, imageName: string, id: string) => {
+        const formData = new FormData();
+      
+        if (Platform.OS === "web") {
+          const response = await fetch(imageUri);
+          const blob = await response.blob();
+      
+          formData.append("image", blob, imageName);
+        } else {
+          const match = /\.(\w+)$/.exec(imageUri);
+          const fileType = match ? `image/${match[1]}` : `image`;
+      
+          formData.append("image", {
+            uri: imageUri,
+            name: imageName,
+            type: fileType,
+          } as any);
+        }
+      
+        try {
+          const userId = await AsyncStorage.getItem("userId");
+          console.log("vehicle id, vehicleId");
+          const uploadRes = await fetch(`http://localhost:3000/media/upload/${userId}/${id}`, {
+            method: "POST",
+            body: formData,
+          });
+      
+          if (!uploadRes.ok) throw new Error("Error al subir imagen");
+      
+          const uploadData = await uploadRes.json();
+          console.log("Imagen subida:", uploadData);
+    
+        } catch (error) {
+          console.error("Error al subir imagen:", error);
+        }
+      };
 
       const vehicle = {
         owner_id,
@@ -165,46 +202,10 @@ export default function AlquilarCoche() {
         console.log('Respuesta del servidor:', responseText);
       }
 
-      setVehicleId(vehicleData.vehicle[0].id);
+      await handleImageUpload(String(vehicleImageUri), String(vehicleFileName), vehicleData.vehicle[0].id);
 
-      const handleImageUpload = async (imageUri: string, imageName: string) => {
-        const formData = new FormData();
       
-        if (Platform.OS === "web") {
-          const response = await fetch(imageUri);
-          const blob = await response.blob();
-      
-          formData.append("image", blob, imageName);
-        } else {
-          const match = /\.(\w+)$/.exec(imageUri);
-          const fileType = match ? `image/${match[1]}` : `image`;
-      
-          formData.append("image", {
-            uri: imageUri,
-            name: imageName,
-            type: fileType,
-          } as any);
-        }
-      
-        try {
-          const userId = await AsyncStorage.getItem("userId");
-          console.log("vehicle id, vehicleId");
-          const uploadRes = await fetch(`http://localhost:3000/media/upload/${userId}/${vehicleId}`, {
-            method: "POST",
-            body: formData,
-          });
-      
-          if (!uploadRes.ok) throw new Error("Error al subir imagen");
-      
-          const uploadData = await uploadRes.json();
-          console.log("Imagen subida:", uploadData);
-    
-        } catch (error) {
-          console.error("Error al subir imagen:", error);
-        }
-      };
 
-      handleImageUpload(String(vehicleImageUri), String(vehicleFileName));
 
     
 

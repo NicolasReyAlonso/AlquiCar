@@ -42,6 +42,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem("token", data.token);
       await AsyncStorage.setItem("isLoggedIn", "true");
       await AsyncStorage.setItem("user", data.user);
+      
       console.log(data)
       navigation.navigate("account");
     } catch (error) {

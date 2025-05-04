@@ -13,6 +13,7 @@ import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/n
 import i18n from '../assets/location/i18n';
 import { useTranslation } from 'react-i18next';
 import { Picker } from "@react-native-picker/picker";
+import { Pressable } from 'react-native';
 
 
 interface LayoutProps {
@@ -288,6 +289,17 @@ export default function Layout({ children }: LayoutProps) {
         )}
 
         {isMenuOpen && (
+          <>
+          <Pressable
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999 
+          }} onPress={() => setIsMenuOpen(false)}
+        />
           <View style={styles.menu}>
             <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
               <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
@@ -309,6 +321,7 @@ export default function Layout({ children }: LayoutProps) {
               <Text style={styles.menuItemText}>{t('layout.menuButtons.chat')}</Text>
             </TouchableOpacity>
           </View>
+          </>
         )}
 
         <Stack screenOptions={{ headerShown: false }}>

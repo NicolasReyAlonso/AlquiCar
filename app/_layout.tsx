@@ -12,6 +12,8 @@ import theme from '../components/Theme';
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
 import i18n from '../assets/location/i18n';
 import { useTranslation } from 'react-i18next';
+import { Picker } from "@react-native-picker/picker"; 
+
 
 interface LayoutProps {
   children: ReactNode;
@@ -36,6 +38,13 @@ export default function Layout({ children }: LayoutProps) {
   const color = colorScheme === 'dark' ? 'white' : 'black';
   const [appIsReady, setAppIsReady] = useState(false);
   const { t } = useTranslation();
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    brand: "",
+    type: "",
+    transmission: "",
+    fuel_type: "",
+  });
 
   useEffect(() => {
     const init = async () => {
@@ -94,58 +103,217 @@ export default function Layout({ children }: LayoutProps) {
               <TouchableOpacity style={styles.touchableButton} onPress={() => setIsMenuOpen(!isMenuOpen)}>
                 <Text style={styles.touchableButtonText}>{t('layout.Menu')}</Text>
               </TouchableOpacity>
-            </View>
+
+
+              {/* Botón para abrir el menú de filtros */}
+              <TouchableOpacity
+                style={styles.touchableButton}
+                onPress={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
+              >
+                <Ionicons name="filter-outline" size={26} color="white" />
+              </TouchableOpacity>
+              </View>
+                          
           </View>
         </SafeAreaView>
 
-        {isLangMenuOpen && (
-          <View style={styles.languageMenu}>
-            <TouchableOpacity onPress={() => changeLanguage('es')}>
-              <Text style={styles.languageOption}>🇪🇸 Español</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeLanguage('en')}>
-              <Text style={styles.languageOption}>🇬🇧 English</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeLanguage('fr')}>
-               <Text style={styles.languageOption}>🇫🇷 Français</Text>
-             </TouchableOpacity>
-             <TouchableOpacity onPress={() => changeLanguage('de')}>
-               <Text style={styles.languageOption}>🇩🇪 Deutsch</Text>
-             </TouchableOpacity>
-             <TouchableOpacity onPress={() => changeLanguage('it')}>
-               <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
-             </TouchableOpacity>
-          </View>
-        )}
+    {isFilterMenuOpen && (
+      <View style={styles.filterMenu}>
+        <Text style={styles.filterTitle}>Filtrar por:</Text>
 
-        {isMenuOpen && (
-          <View style={styles.menu}>
-            <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
-              <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('index')}>
-              <FontAwesome name="home" size={24} color={color} />
-              <Text style={styles.menuItemText}>{t('layout.menuButtons.home')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misReservas')}>
-              <FontAwesome5 name="shopping-cart" size={24} color={color} />
-              <Text style={styles.menuItemText}>{t('layout.menuButtons.reservations')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misIncidencias')}>
-              <FontAwesome5 name="exclamation-circle" size={24} color={color} />
-              <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        {/* Filtro por Marca */}
+        <Text style={styles.filterLabel}>Marca:</Text>
+        <TouchableOpacity
+          onPress={() => {
+            setFilters({ ...filters, brand: "Hyundai" });
+            setIsFilterMenuOpen(false);
+            navigation.navigate("resultadosFiltrados", { filters: { ...filters, brand: "Hyundai" } });
+          }}
+        >
+          <Text style={styles.filterOption}>Hyundai</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setFilters({ ...filters, brand: "BMW" });
+            setIsFilterMenuOpen(false);
+            navigation.navigate("resultadosFiltrados", { filters: { ...filters, brand: "BMW" } });
+          }}
+        >
+          <Text style={styles.filterOption}>BMW</Text>
+        </TouchableOpacity>
 
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </SafeAreaProvider>
-  );
+        <TouchableOpacity
+          onPress={() => {
+            setFilters({ ...filters, brand: "Citroën" });
+            setIsFilterMenuOpen(false);
+            navigation.navigate("resultadosFiltrados", { filters: { ...filters, brand: "Citroën" } });
+          }}
+        >
+          <Text style={styles.filterOption}>Citroën</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            setFilters({ ...filters, brand: "Nissan" });
+            setIsFilterMenuOpen(false);
+            navigation.navigate("resultadosFiltrados", { filters: { ...filters, brand: "Nissan" } });
+          }}
+        >
+          <Text style={styles.filterOption}>Nissan</Text>
+        </TouchableOpacity>
+
+        {/* Filtro por Tipo */}
+        <Text style={styles.filterLabel}>Tipo:</Text>
+        <TouchableOpacity
+          onPress={() => {
+            setFilters({ ...filters, type: "SUV" });
+            setIsFilterMenuOpen(false);
+            navigation.navigate("resultadosFiltrados", { filters: { ...filters, type: "SUV" } });
+          }}
+        >
+          <Text style={styles.filterOption}>SUV</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setFilters({ ...filters, type: "Sedan" });
+            setIsFilterMenuOpen(false);
+            navigation.navigate("resultadosFiltrados", { filters: { ...filters, type: "Sedan" } });
+          }}
+        >
+          <Text style={styles.filterOption}>Sedan</Text>
+        </TouchableOpacity>
+      </View>
+    )}
+
+
+    {isFilterMenuOpen && (
+      <View style={styles.filterMenu}>
+        <Text style={styles.filterTitle}>Filtrar por:</Text>
+
+        {/* Filtro por Marca */}
+        <Text style={styles.filterLabel}>Marca:</Text>
+        <Picker
+          selectedValue={filters.brand}
+          onValueChange={(itemValue) => setFilters({ ...filters, brand: itemValue })}
+          style={styles.picker}
+        >
+          <Picker.Item label="Todas" value="" />
+          <Picker.Item label="Hyundai" value="Hyundai" />
+          <Picker.Item label="Citroën" value="Citroën" />
+          <Picker.Item label="Nissan" value="Nissan" />
+          <Picker.Item label="BMW" value="BMW" />
+          <Picker.Item label="Toyota" value="Toyota" />
+          <Picker.Item label="Ford" value="Ford" />
+          <Picker.Item label="Tesla" value="Tesla" />
+          <Picker.Item label="Mercedes-Benz" value="Mercedes-Benz" />
+          <Picker.Item label="Volkswagen" value="Volkswagen" />
+          <Picker.Item label="Audi" value="Audi" />
+        </Picker>
+{/* Filtro por Tipo */}
+<Text style={styles.filterLabel}>Tipo:</Text>
+<Picker
+  selectedValue={filters.type}
+  onValueChange={(itemValue) => setFilters({ ...filters, type: itemValue })}
+  style={styles.picker}
+>
+  <Picker.Item label="Todos" value="" />
+  <Picker.Item label="Sedan" value="Sedan" />
+  <Picker.Item label="SUV" value="SUV" />
+  <Picker.Item label="Hatchback" value="Hatchback" />
+  <Picker.Item label="Truck" value="Truck" />
+  <Picker.Item label="Sports" value="Sports" />
+  <Picker.Item label="Convertible" value="Convertible" />
+  <Picker.Item label="Coupe" value="Coupe" />
+  <Picker.Item label="Van" value="Van" />
+  <Picker.Item label="Wagon" value="Wagon" />
+</Picker>
+
+        {/* Filtro por Transmisión */}
+        <Text style={styles.filterLabel}>Transmisión:</Text>
+        <Picker
+          selectedValue={filters.transmission}
+          onValueChange={(itemValue) => setFilters({ ...filters, transmission: itemValue })}
+          style={styles.picker}
+        >
+          <Picker.Item label="Todas" value="" />
+          <Picker.Item label="Automática" value="Automatic" />
+          <Picker.Item label="Manual" value="Manual" />
+        </Picker>
+
+        {/* Filtro por Tipo de Combustible */}
+        <Text style={styles.filterLabel}>Tipo de Combustible:</Text>
+        <Picker
+          selectedValue={filters.fuel_type}
+          onValueChange={(itemValue) => setFilters({ ...filters, fuel_type: itemValue })}
+          style={styles.picker}
+        >
+          <Picker.Item label="Todos" value="" />
+          <Picker.Item label="Gasolina" value="Gasoline" />
+          <Picker.Item label="Diésel" value="Diesel" />
+          <Picker.Item label="Eléctrico" value="Electric" />
+        </Picker>
+
+        {/* Botón para aplicar los filtros */}
+        <TouchableOpacity
+          style={styles.applyButton}
+          onPress={() => {
+            console.log("Filtros aplicados:", filters);
+            setIsFilterMenuOpen(false);
+            navigation.navigate("resultadosFiltrados", { filters: JSON.stringify(filters) });
+          }}
+        >
+          <Text style={styles.applyButtonText}>Aplicar Filtros</Text>
+        </TouchableOpacity>
+      </View>
+    )}
+            {isLangMenuOpen && (
+              <View style={styles.languageMenu}>
+                <TouchableOpacity onPress={() => changeLanguage('es')}>
+                  <Text style={styles.languageOption}>🇪🇸 Español</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => changeLanguage('en')}>
+                  <Text style={styles.languageOption}>🇬🇧 English</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => changeLanguage('fr')}>
+                  <Text style={styles.languageOption}>🇫🇷 Français</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => changeLanguage('de')}>
+                  <Text style={styles.languageOption}>🇩🇪 Deutsch</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => changeLanguage('it')}>
+                  <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {isMenuOpen && (
+              <View style={styles.menu}>
+                <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
+                  <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('index')}>
+                  <FontAwesome name="home" size={24} color={color} />
+                  <Text style={styles.menuItemText}>{t('layout.menuButtons.home')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misReservas')}>
+                  <FontAwesome5 name="shopping-cart" size={24} color={color} />
+                  <Text style={styles.menuItemText}>{t('layout.menuButtons.reservations')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misIncidencias')}>
+                  <FontAwesome5 name="exclamation-circle" size={24} color={color} />
+                  <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </SafeAreaProvider>
+      );
 }
 
 const styles = StyleSheet.create({
@@ -205,6 +373,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     zIndex: 1000,
   },
+  picker: {
+    height: 50,
+    marginBottom: 20,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+  },
   languageOption: {
     fontSize: 18,
     color: 'white',
@@ -225,6 +399,44 @@ const styles = StyleSheet.create({
     width: 60,  // Ajusta el tamaño según tu diseño
     height: 40,
     marginRight: 10,  // Espaciado antes de otros elementos
+  },
+  filterMenu: {
+    position: "absolute",
+    top: 60,
+    right: 15,
+    backgroundColor: "#4472C4",
+    padding: 15,
+    borderRadius: 8,
+    zIndex: 1000,
+  },
+  filterTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 10,
+  },
+  filterLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+    marginTop: 10,
+  },
+  filterOption: {
+    fontSize: 14,
+    color: "#FFD700",
+    marginVertical: 5,
+  },
+  applyButton: {
+    backgroundColor: "#4472C4",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 15,
+    alignItems: "center",
+  },
+  applyButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   
 });

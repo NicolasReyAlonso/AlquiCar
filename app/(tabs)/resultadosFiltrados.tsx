@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { useTranslation } from 'react-i18next';
-
+import { ScrollView, StyleSheet, Text } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
+import VehicleCard from "@/components/templates/VehicleCard"; // Importa el componente VehicleCard
 
 const ResultadosFiltrados = () => {
   const { filters } = useLocalSearchParams(); // Recibe los filtros como parámetros
   const { t } = useTranslation();
+  const router = useRouter(); // Para navegar a la pantalla de detalles
 
   // Memoriza los filtros para evitar bucles infinitos
   const parsedFilters = useMemo(() => {
@@ -44,16 +45,29 @@ const ResultadosFiltrados = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>{t('ResultadosFiltrados.title')}</Text>
+      <Text style={styles.title}>{t("ResultadosFiltrados.title")}</Text>
       {filteredResults.length === 0 ? (
-        <Text style={styles.noResults}>{t('ResultadosFiltrados.notFound')}</Text>
+        <Text style={styles.noResults}>{t("ResultadosFiltrados.notFound")}</Text>
       ) : (
         filteredResults.map((result) => (
-          <View key={result.id} style={styles.resultCard}>
-            <Text style={styles.resultText}>{result.brand} - {result.model}</Text>
-            <Text style={styles.resultText}>{t('ResultadosFiltrados.type')}: {result.type}</Text>
-            <Text style={styles.resultText}>{t('ResultadosFiltrados.price')}: €{result.daily_price}</Text>
-          </View>
+          <VehicleCard
+            key={result.id}
+            brand={result.brand}
+            model={result.model}
+            year={result.year}
+            seats={result.capacity}
+            type={result.type}
+            transmission={result.transmission}
+            fuelType={result.fuel_type}
+            numDoors={result.num_doors}
+            deposit={result.deposit}
+            mileage={result.mileage || "N/A"}
+            pickupLocation={result.pickup_location || "N/A"}
+            vehicleId={result.id}
+            price={`${result.daily_price}€`}
+            imageUrl={result.imageUrl || "http://via.placeholder.com/150"}
+            onReserve={() => console.log("Reserva para el vehículo con ID:", result.id)}
+          />
         ))
       )}
     </ScrollView>
@@ -76,21 +90,6 @@ const styles = StyleSheet.create({
     color: "gray",
     textAlign: "center",
     marginTop: 20,
-  },
-  resultCard: {
-    padding: 15,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  resultText: {
-    fontSize: 16,
-    color: "#333",
   },
 });
 

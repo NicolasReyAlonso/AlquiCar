@@ -127,7 +127,8 @@
       "home": "Page d’Accueil",
       "reservations": "Mes Réservations",
       "publications": "Mes Annonces",
-      "incidences" : "Mes incidents"
+      "incidences" : "Mes incidents",
+      "chat": "Bavarder"
     },
     "filter": "Filtrer par",
     "brand": "Marque",

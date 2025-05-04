@@ -129,7 +129,8 @@
       "home": "Home Page",
       "reservations": "My Reservations",
       "publications": "My Listings",
-      "incidences" : "My Issues"
+      "incidences" : "My Issues",
+      "chat": "Chat"
     },
     "filter": "Filter by",
     "brand": "Brand",

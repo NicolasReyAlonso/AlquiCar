@@ -45,33 +45,10 @@ export default function Chat() {
         });
         socketResponse.on('get chats', (contacts) => { setContacts(contacts.chats); console.log("Contacts", contacts); });
         socketResponse.on('new message', (message) => {
-            addMessage(message[0]);
+            //addMessage(message[0]);
+            updateContacts(message[0].to_id, message);
 
         })
-
-    }
-
-    const addMessage = (message: MessageInterface) => {
-        setContacts((prevContacts) => {
-            return prevContacts.map(contact => {
-                if (contact.contact_id === message.from_id) {
-                    return {
-                        ...contact,
-                        messages: [...contact.messages, message],
-                    };
-                }
-                return contact;
-            });
-        });
-
-        console.log("Message", selectedContact?.contact_id);
-        if (message.from_id === selectedContactRef.current?.contact_id) {
-            const newSelectedContact = {
-                ...selectedContactRef.current,
-                messages: [...selectedContactRef.current!.messages, message],
-            };
-            setSelectedChat(newSelectedContact);
-        }
 
     }
 

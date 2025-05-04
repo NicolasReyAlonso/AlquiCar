@@ -52,12 +52,12 @@ export default function Chat() {
         });
         socketResponse.on('new message', (message) => {
             //addMessage(message[0]);
-            updateContacts(message[0].to_id, message);
-
+            updateContacts(message[0].from_id, message);
         })
 
     }
 
+    /*
     useEffect(() => {
         if (!contactId || contacts.length === 0) return;
       
@@ -65,12 +65,13 @@ export default function Chat() {
         if (foundChat) {
           setSelectedChat(foundChat);
         }
-      }, [contactId, contacts]);
+      }, [contactId, contacts]);*/
 
 
     const updateContacts = (id: string, messages: MessageInterface[]) => {
         setContacts((prevContacts) => {
             return prevContacts.map(contact => {
+                console.log("Contact", contact.contact_id === id, contact.contact_id, id);
                 if (contact.contact_id === id) {
                     return {
                         ...contact,
@@ -81,7 +82,7 @@ export default function Chat() {
             });
         });
 
-        if (selectedContactRef.current?.contact_id) {
+        if (selectedContactRef.current?.contact_id === id) {
             const newSelectedContact = {
                 ...selectedContactRef.current,
                 messages: [...selectedContactRef.current!.messages, ...messages],

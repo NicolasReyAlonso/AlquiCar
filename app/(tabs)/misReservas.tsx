@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from "react-native";
 import ReservationCard from "@/components/templates/MyReservationCard";
 import theme from "@/components/Theme";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { use } from "i18next";
 
 interface Reservation {
   id: number;
@@ -21,6 +22,7 @@ const MisReservas = () => {
   const router = useRouter();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [activeTab, setActiveTab] = useState("Activas"); 
+  const {id, status} = useLocalSearchParams(); 
 
   const getUserId = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -120,7 +122,8 @@ const MisReservas = () => {
     };
 
     cargarReservas();
-  }, []);
+  }, [id]);
+
 
   const filteredReservations =
   activeTab === "Activas"
@@ -163,7 +166,7 @@ const MisReservas = () => {
                 date={`${new Date(reservation.start_date).toLocaleDateString()} - ${new Date(
                   reservation.end_date
                 ).toLocaleDateString()}`}
-                status={reservation.status === "Pending" ? "Pendiente" : "Cancelada"}
+                status={reservation.status}
                 imageUrl={reservation.imageUrl || "http://via.placeholder.com/150"}
                 onCancel={
                   reservation.status === "Pending"

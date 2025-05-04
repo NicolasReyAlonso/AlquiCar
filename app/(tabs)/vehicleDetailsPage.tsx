@@ -7,9 +7,21 @@ export default function VehicleDetailsPage() {
   const { id } = useLocalSearchParams();
   const [vehicle, setVehicle] = useState(null);
   const [owner, setOwner] = useState(null); // Estado para el propietario
+  const [direccion, setDireccion] = useState("Dirección desconocida");
   const router = useRouter();
 
   useEffect(() => {
+    const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+        const data = await res.json();
+        return data.display_name || "Dirección desconocida";
+      } catch (error) {
+        console.error("Error al convertir coordenadas:", error);
+        return "Dirección desconocida";
+      }
+    };
+
     const fetchVehicle = async () => {
       try {
         console.log("ID del vehículo recibido:", id);
@@ -22,6 +34,11 @@ export default function VehicleDetailsPage() {
           const vehicleData = data[0];
           setVehicle(vehicleData);
           console.log("Datos del vehículo asignados:", vehicleData);
+
+          if (vehicleData.latitude && vehicleData.longitude) {
+            const direccionObtenida = await convertirCoordenadasADireccion(vehicleData.latitude, vehicleData.longitude);
+            setDireccion(direccionObtenida);
+          }
 
           // Obtener datos del propietario
           if (vehicleData.owner_id) {
@@ -84,6 +101,7 @@ export default function VehicleDetailsPage() {
         <Text style={styles.detailText}>Transmisión: {vehicle.transmission}</Text>
         <Text style={styles.detailText}>Combustible: {vehicle.fuel_type}</Text>
         <Text style={styles.detailText}>Número de Puertas: {vehicle.num_doors}</Text>
+        <Text style={styles.detailText}>Dirección: {direccion}</Text>
         <Text style={styles.detailText}>Depósito: {`€${vehicle.deposit}`}</Text>
         <Text style={styles.detailText}>Precio por Día: {`€${vehicle.daily_price}`}</Text>
       </View>

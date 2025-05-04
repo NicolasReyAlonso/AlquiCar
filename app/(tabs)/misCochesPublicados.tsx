@@ -10,6 +10,17 @@ const misCochesPublicados = () => {
   const [vehicles, setVehicles] = useState([]);
   const [addresses, setAddresses] = useState<{ [id: number]: string }>({});
 
+  const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+      const data = await res.json();
+      return data.display_name || "Dirección desconocida";
+    } catch (error) {
+      console.error("Error al convertir coordenadas:", error);
+      return "Dirección desconocida";
+    }
+  };
+
   const cargarVehiculos = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -40,7 +51,13 @@ const misCochesPublicados = () => {
             const vImgRes = await fetch(`http://localhost:3000/media/vehicles/${userId}/${vehicle.id}`);
             const images = await vImgRes.json();
             const imageUrl = images.length > 0 ? images[0].data : null;
-            return { ...vehicle, imageUrl };
+
+            let address = "Dirección desconocida";
+            if (vehicle.latitude && vehicle.longitude) {
+              address = await convertirCoordenadasADireccion(vehicle.latitude, vehicle.longitude);
+            }
+
+            return { ...vehicle, imageUrl, address};
           })
       );
       console.log(userVehicles)
@@ -81,7 +98,7 @@ const misCochesPublicados = () => {
             <MyPublishedVehicles
               brand={vehicle.brand}
               price={`${vehicle.daily_price}€`}
-              city={vehicle.city || "Ciudad desconocida"}
+              city={vehicle.address || "Dirección desconocida"}
               imageUrl={vehicle.imageUrl}
               onCancel={() => handleDeleteVehicle(vehicle.id)}
             />

@@ -217,7 +217,7 @@ export default function AlquilarCoche() {
       setDeposit('');
       scrollRef.current?.scrollTo({ y: 0, animated: true });
 
-      //navigation.navigate("misCochesPublicados");
+      navigation.navigate("misCochesPublicados");
       
     } catch (err: any) {
       console.log(err);

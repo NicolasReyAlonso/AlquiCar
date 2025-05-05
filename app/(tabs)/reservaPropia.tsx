@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ReservaDetalles = () => {
   const params = useLocalSearchParams();
-  const [customerName, setCustomerName] = useState("Cargando...");
+  const [customer, setCustomer] = useState(null); // Estado para el cliente
   const [reservation, setReservation] = useState(null);
 
   useEffect(() => {
@@ -16,29 +17,43 @@ const ReservaDetalles = () => {
         const data = await response.json();
         console.log("Datos de la reserva:", data);
 
-        setReservation(data);
+        const reservationDetails = Array.isArray(data) ? data[0] : data;
+        setReservation(reservationDetails);
 
-        if (data.customer_id) {
-          console.log("Customer ID recibido:", data.customer_id);
-          const customerResponse = await fetch(`http://localhost:3000/users/${data.customer_id}`, {
-            method: "GET",
-            credentials: "include",
-          });
+        const customerId = reservationDetails.customer_id;
+        if (!customerId) {
+          console.warn("⚠️ Customer ID es inválido o vacío.");
+          setCustomer({ name: "Desconocido" });
+          return;
+        }
 
-          if (!customerResponse.ok) {
-            throw new Error(`Error al obtener el cliente: ${customerResponse.status}`);
-          }
+        console.log("Customer ID recibido:", customerId);
 
-          const customerData = await customerResponse.json();
-          console.log("Datos del cliente:", customerData);
+        const token = await AsyncStorage.getItem("token");
+        const customerResponse = await fetch(`http://localhost:3000/users/${customerId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
 
-          setCustomerName(customerData.name || "Desconocido");
+        if (!customerResponse.ok) {
+          throw new Error(`Error al obtener el cliente: ${customerResponse.status}`);
+        }
+
+        const customerData = await customerResponse.json();
+        console.log("Datos del cliente recibidos:", customerData);
+
+        if (Array.isArray(customerData) && customerData.length > 0) {
+          setCustomer(customerData[0]); // Guardar el objeto completo del cliente
         } else {
-          setCustomerName("Desconocido");
+          setCustomer(customerData);
         }
       } catch (error) {
-        console.error("Error al obtener los detalles de la reserva:", error);
-        setCustomerName("Desconocido");
+        console.error("❌ Error al obtener los detalles de la reserva:", error);
+        setCustomer({ name: "Desconocido" });
       }
     };
 
@@ -51,7 +66,7 @@ const ReservaDetalles = () => {
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>Detalles de la Reserva</Text>
-        
+
         <View style={[styles.statusBox, reservation?.status === "Cancelled" ? styles.cancelled : styles.active]}>
           <Text style={styles.statusText}>
             {reservation?.status === "Cancelled" ? "Cancelada" : "Activa"}
@@ -59,11 +74,21 @@ const ReservaDetalles = () => {
         </View>
 
         <Text style={styles.detail}><Text style={styles.label}>Vehículo:</Text> {params.vehicleName}</Text>
-        <Text style={styles.detail}><Text style={styles.label}>Cliente:</Text> {customerName}</Text>
         <Text style={styles.detail}><Text style={styles.label}>Fecha de inicio:</Text> {new Date(params.startDate).toLocaleDateString()}</Text>
         <Text style={styles.detail}><Text style={styles.label}>Fecha de fin:</Text> {new Date(params.endDate).toLocaleDateString()}</Text>
         <Text style={styles.detail}><Text style={styles.label}>Precio total:</Text> {params.totalPrice}€</Text>
       </View>
+
+      {/* 🟢 Sección nueva para los datos del cliente */}
+      {customer && (
+        <View style={styles.card}>
+          <Text style={styles.title}>Datos del Cliente</Text>
+          <Text style={styles.detail}><Text style={styles.label}>Nombre:</Text> {customer.name || "Desconocido"}</Text>
+          <Text style={styles.detail}><Text style={styles.label}>Email:</Text> {customer.email || "No disponible"}</Text>
+          <Text style={styles.detail}><Text style={styles.label}>Teléfono:</Text> {customer.phone || "No disponible"}</Text>
+          <Text style={styles.detail}><Text style={styles.label}>Dirección:</Text> {customer.address || "No disponible"}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -86,6 +111,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 3,
+    marginBottom: 15,
   },
   title: {
     fontSize: 24,

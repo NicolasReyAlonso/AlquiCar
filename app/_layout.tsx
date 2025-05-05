@@ -250,30 +250,72 @@ export default function Layout({ children }: LayoutProps) {
           </>
         )}
 
-        {/* Resto del código (menús de idioma y navegación) */}
-        {isLangMenuOpen && (
+{isLangMenuOpen && (
           <>
-            <Pressable style={styles.overlay} onPress={() => setIsLangMenuOpen(false)} />
-            <View style={styles.languageMenu}>
-              <TouchableOpacity onPress={() => changeLanguage('es')}>
-                <Text style={styles.languageOption}>🇪🇸 Español</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => changeLanguage('en')}>
-                <Text style={styles.languageOption}>🇬🇧 English</Text>
-              </TouchableOpacity>
-            </View>
+          <Pressable
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 999,
+            }}
+            onPress={() => setIsLangMenuOpen(false)}
+          />
+          <View style={styles.languageMenu}>
+            <TouchableOpacity onPress={() => changeLanguage('es')}>
+              <Text style={styles.languageOption}>🇪🇸 Español</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeLanguage('en')}>
+              <Text style={styles.languageOption}>🇬🇧 English</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeLanguage('fr')}>
+              <Text style={styles.languageOption}>🇫🇷 Français</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeLanguage('de')}>
+              <Text style={styles.languageOption}>🇩🇪 Deutsch</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeLanguage('it')}>
+              <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
+            </TouchableOpacity>
+          </View>
           </>
         )}
 
         {isMenuOpen && (
           <>
-            <Pressable style={styles.overlay} onPress={() => setIsMenuOpen(false)} />
-            <View style={styles.menu}>
-              <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
-                <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
-              </TouchableOpacity>
-              {/* Opciones del menú */}
-            </View>
+          <Pressable
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999 
+          }} onPress={() => setIsMenuOpen(false)}
+        />
+          <View style={styles.menu}>
+            <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
+              <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('index')}>
+              <FontAwesome name="home" size={24} color={color} />
+              <Text style={styles.menuItemText}>{t('layout.menuButtons.home')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misReservas')}>
+              <FontAwesome5 name="shopping-cart" size={24} color={color} />
+              <Text style={styles.menuItemText}>{t('layout.menuButtons.reservations')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misIncidencias')}>
+              <FontAwesome5 name="exclamation-circle" size={24} color={color} />
+              <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('chat')}>
+              <FontAwesome5 name="comments" size={24} color={color} solid/>
+              <Text style={styles.menuItemText}>{t('layout.menuButtons.chat')}</Text>
+            </TouchableOpacity>
+          </View>
           </>
         )}
 

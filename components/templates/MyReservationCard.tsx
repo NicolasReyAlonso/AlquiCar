@@ -2,8 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface MyReservationCardProps {
   brand: string;
@@ -12,7 +11,7 @@ interface MyReservationCardProps {
   status: string;
   imageUrl?: string;
   onCancel: () => void;
-  onPress: () => void; 
+  onPress: () => void;
 }
 
 const ReservationCard: React.FC<MyReservationCardProps> = ({
@@ -23,11 +22,10 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
   imageUrl,
   onCancel,
   onPress,
-  //onChatPress
 }) => {
   const { width } = useWindowDimensions();
-  const isDesktop = width > 576;
-  const styles = getStyles(width, isDesktop);
+  const isDesktop = width > 768;
+  const styles = getStyles(isDesktop, width);
   const { t } = useTranslation();
 
   const getStatusStyle = () => {
@@ -39,209 +37,201 @@ const ReservationCard: React.FC<MyReservationCardProps> = ({
       case "Cancelled":
         return styles.cancelled;
       default:
-        return null;
+        return styles.defaultStatus;
     }
   };
 
-
-
+  const getStatusIcon = () => {
+    switch (status) {
+      case "Confirmed":
+        return "check-circle";
+      case "Pending":
+        return "pending";
+      case "Cancelled":
+        return "cancel";
+      default:
+        return "info";
+    }
+  };
 
   return (
-    <TouchableOpacity
-      style={isDesktop ? styles.containerDesktop : styles.containerMobile}
-      onPress={onPress}
-    >
-      <View style={isDesktop ? styles.cardDesktop : styles.cardMobile}>
-        <Image source={{ uri: imageUrl }} style={isDesktop ? styles.imageDesktop : styles.imageMobile} />
-        <View style={isDesktop ? styles.detailsContainerDesktop : styles.detailsContainerMobile}>
-          <View style={isDesktop ? styles.rowDesktop : styles.rowMobile}>
-            <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand}</Text>
-            <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>
-              {price}/{t('MyReservationCard.day')}
-            </Text>
+    <View style={styles.shadowContainer}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        style={styles.card}
+        onPress={onPress}
+      >
+        <View style={styles.imageContainer}>
+          <Image 
+            source={{ uri: imageUrl || 'https://via.placeholder.com/300x200?text=No+Image' }} 
+            style={styles.image} 
+            resizeMode="cover"
+          />
+          <View style={styles.priceTag}>
+            <Text style={styles.priceText}>{price}</Text>
+            <Text style={styles.perDayText}>/{t('MyReservationCard.day')}</Text>
           </View>
-          <Text style={isDesktop ? styles.dateDesktop : styles.dateMobile}>
-            {t('MyReservationCard.date')}: {date}
-          </Text>
-          <Text
-            style={[
-              isDesktop ? styles.statusDesktop : styles.statusMobile,
-              getStatusStyle(),
-            ]}
-          >
-            {status}
-          </Text>
-          {status === "Pendiente" && (
-            <TouchableOpacity
-              style={isDesktop ? styles.buttonDesktop : styles.buttonMobile}
-              onPress={(e) => {
-                e.stopPropagation();
-                onCancel();
-              }}
-            >
-              <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>
-                {t('MyReservationCard.buttons.cancel')}
-              </Text>
-            </TouchableOpacity>  
+        </View>
+
+        <View style={styles.infoContainer}>
+          <View style={styles.header}>
+            <Text style={styles.brand}>{brand}</Text>
+            <View style={[styles.statusContainer, getStatusStyle()]}>
+              <MaterialIcons 
+                name={getStatusIcon()} 
+                size={16} 
+                color={getStatusStyle().color} 
+              />
+              <Text style={styles.statusText}>{status}</Text>
+            </View>
+          </View>
+
+          <View style={styles.detailRow}>
+            <MaterialIcons name="event" size={16} color={theme.colors.gray} />
+            <Text style={styles.dateText}>{t('MyReservationCard.date')}: {date}</Text>
+          </View>
+
+          {status === "Pending" && (
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity 
+                style={styles.cancelButton} 
+                onPress={(e) => {
+                  e.stopPropagation();
+                  onCancel();
+                }}
+              >
+                <Text style={styles.buttonText}>{t('MyReservationCard.buttons.cancel')}</Text>
+              </TouchableOpacity>
+            </View>
           )}
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-
-const getStyles = (width: number, isDesktop: boolean) =>
+const getStyles = (isDesktop: boolean, width: number) =>
   StyleSheet.create({
-    containerDesktop: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 20,
-      padding: 10,
-    },
-    containerMobile: {
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 10,
-      padding: 10,
-    },
-    cardDesktop: {
-      backgroundColor: theme.colors.secondary,
-      borderRadius: 10,
-      padding: 15,
-      width: width * 0.36,
-      alignItems: "flex-start",
+    shadowContainer: {
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 5,
       marginVertical: 10,
+      borderRadius: 12,
+      backgroundColor: 'white',
+      width: isDesktop ? width * 0.4 : width * 0.9,
+      alignSelf: 'center',
     },
-    cardMobile: {
-      backgroundColor: theme.colors.secondary,
-      borderRadius: 10,
-      padding: 15,
-      width: 280,
-      alignItems: "flex-start",
-      marginVertical: 10,
-
+    card: {
+      flexDirection: isDesktop ? "row" : "column",
+      backgroundColor: theme.colors.white,
+      borderRadius: 12,
+      overflow: 'hidden',
+      height: isDesktop ? 180 : 'auto',
     },
-    imageDesktop: {
-      width: "100%",
-      height: width * 0.17,
-      backgroundColor: "#777",
-      borderRadius: 5,
+    imageContainer: {
+      position: 'relative',
+      width: isDesktop ? '40%' : '100%',
+      height: isDesktop ? '100%' : 150,
     },
-    imageMobile: {
-      width: "100%",
-      height: 120,
-      backgroundColor: "#777",
-      borderRadius: 5,
+    image: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#f5f5f5',
     },
-    detailsContainerDesktop: {
-      width: "100%",
-      paddingTop: 10,
+    priceTag: {
+      position: 'absolute',
+      top: 16,
+      right: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderTopLeftRadius: 20,
+      borderBottomLeftRadius: 20,
+      backgroundColor: 'rgba(0,0,0,0.7)',
     },
-    detailsContainerMobile: {
-      width: "100%",
-      paddingTop: 10,
-    },
-    rowDesktop: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    rowMobile: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    brandDesktop: {
-      fontSize: width * 0.017,
-      fontWeight: "bold",
+    priceText: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
       fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
     },
-    brandMobile: {
-      fontSize: 16,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    priceDesktop: {
-      fontSize: width * 0.017,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    priceMobile: {
-      fontSize: 16,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    dateDesktop: {
-      fontSize: width * 0.014,
-      color: "#555",
-      marginVertical: 5,
-      fontFamily: theme.fonts.regular,
-      color: theme.lightTemplate.textColor,
-    },
-    dateMobile: {
+    perDayText: {
+      color: 'rgba(255,255,255,0.8)',
       fontSize: 12,
-      color: "#555",
-      marginVertical: 5,
       fontFamily: theme.fonts.regular,
-      color: theme.lightTemplate.textColor,
+      marginLeft: 4,
     },
-    statusDesktop: {
-      fontSize: width * 0.015,
+    infoContainer: {
+      padding: 16,
+      flex: 1,
+      justifyContent: 'space-between',
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    brand: {
+      fontSize: 18,
       fontWeight: "bold",
-      marginBottom: 10,
-      fontFamily: theme.fonts.regular,
+      fontFamily: theme.fonts.bold,
+      color: theme.colors.dark,
     },
-    statusMobile: {
+    statusContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+      borderRadius: 12,
+      backgroundColor: 'rgba(0,0,0,0.05)',
+    },
+    statusText: {
       fontSize: 14,
-      fontWeight: "bold",
-      alignSelf: "flex-end",
-      fontFamily: theme.fonts.regular,
+      fontFamily: theme.fonts.medium,
+      marginLeft: 4,
     },
     confirmed: {
-      color: "green",
+      color: '#4CAF50',
     },
     pending: {
-      color: "yellow",
+      color: '#FFC107',
     },
     cancelled: {
-      color: "red",
+      color: '#F44336',
     },
-    buttonDesktop: {
-      backgroundColor: "#3b6ef5",
-      paddingVertical: 8,
-      borderRadius: 5,
-      alignItems: "center",
-      width: width * 0.17,
-      marginTop: 9,
-      alignSelf: "flex-end",
+    defaultStatus: {
+      color: theme.colors.gray,
     },
-    buttonMobile: {
-      backgroundColor: "#3b6ef5",
-      paddingVertical: 6,
-      borderRadius: 5,
-      alignItems: "center",
-      marginTop: 5,
-      alignSelf: "flex-start",
-      width: 125,
+    detailRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 12,
     },
-    buttonTextDesktop: {
-      color: "white",
-      fontWeight: "bold",
-      fontSize: width * 0.014,
-      fontFamily: theme.fonts.bold,
-    },
-    buttonTextMobile: {
-      color: "white",
-      fontWeight: "bold",
+    dateText: {
       fontSize: 14,
+      fontFamily: theme.fonts.regular,
+      color: theme.colors.gray,
+      marginLeft: 6,
+    },
+    buttonsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    },
+    cancelButton: {
+      backgroundColor: '#F44336',
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 14,
+      fontWeight: 'bold',
       fontFamily: theme.fonts.bold,
     },
   });

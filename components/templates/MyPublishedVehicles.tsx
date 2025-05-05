@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface MyPublishedVehiclesProps {
   brand: string;
@@ -19,23 +19,42 @@ const PublishedVehicles: React.FC<MyPublishedVehiclesProps> = ({
   imageUrl,
   onCancel,
 }) => {
-  const { width } = useWindowDimensions(); 
-  const isDesktop = width > 576;
-  const styles = getStyles(width, isDesktop); 
+  const { width } = useWindowDimensions();
+  const isDesktop = width > 768;
+  const styles = getStyles(isDesktop, width);
   const { t } = useTranslation();
 
   return (
-    <View style={isDesktop ? styles.containerDesktop : styles.containerMobile}>
-      <View style={isDesktop ? styles.cardDesktop : styles.cardMobile}>
-        <Image source={{ uri: imageUrl }} style={isDesktop ? styles.imageDesktop : styles.imageMobile} />
-        <View style={isDesktop ? styles.detailsContainerDesktop : styles.detailsContainerMobile}>
-          <View style={isDesktop ? styles.rowDesktop : styles.rowMobile}>
-            <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand}</Text>
-            <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t('MyPublishedVehicles.day')}</Text>
+    <View style={styles.shadowContainer}>
+      <View style={styles.card}>
+        <View style={styles.imageContainer}>
+          <Image 
+            source={{ uri: imageUrl || 'https://via.placeholder.com/300x200?text=No+Image' }} 
+            style={styles.image} 
+            resizeMode="cover"
+          />
+          <View style={styles.priceTag}>
+            <Text style={styles.priceText}>{price}</Text>
+            <Text style={styles.perDayText}>/{t('MyPublishedVehicles.day')}</Text>
           </View>
-          <Text style={isDesktop ? styles.cityDesktop : styles.cityMobile}>{t('MyPublishedVehicles.city')}: {city}</Text>
-          <TouchableOpacity style={isDesktop ? styles.buttonDesktop : styles.buttonMobile} onPress={onCancel}>
-            <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>{t('MyPublishedVehicles.buttons.remove')}</Text>
+        </View>
+
+        <View style={styles.infoContainer}>
+          <View style={styles.header}>
+            <Text style={styles.brand}>{brand}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <MaterialIcons name="location-on" size={16} color={theme.colors.gray} />
+            <Text style={styles.cityText}>{city}</Text>
+          </View>
+
+          <TouchableOpacity 
+            style={styles.removeButton} 
+            onPress={onCancel}
+          >
+            <MaterialIcons name="delete-outline" size={16} color="white" />
+            <Text style={styles.buttonText}>{t('MyPublishedVehicles.buttons.remove')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -43,133 +62,102 @@ const PublishedVehicles: React.FC<MyPublishedVehiclesProps> = ({
   );
 };
 
-const getStyles = (width: number, isDesktop: boolean) =>
+const getStyles = (isDesktop: boolean, width: number) =>
   StyleSheet.create({
-    containerDesktop: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 20,
-      padding: 10,
-    },
-    containerMobile: {
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 10,
-      padding: 10,
-    },
-    cardDesktop: {
-      backgroundColor: theme.colors.secondary,
-      borderRadius: 10,
-      padding: 15,
-      width: width * 0.36,
-      alignItems: "flex-start",
+    shadowContainer: {
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 5,
       marginVertical: 10,
+      borderRadius: 12,
+      backgroundColor: 'white',
+      width: isDesktop ? width * 0.4 : width * 0.9,
+      alignSelf: 'center',
     },
-    cardMobile: {
-      backgroundColor: theme.colors.secondary,
-      borderRadius: 10,
-      padding: 15,
-      width: 280,
-      alignItems: "flex-start",
-      marginVertical: 10,
-
+    card: {
+      flexDirection: isDesktop ? "row" : "column",
+      backgroundColor: theme.colors.white,
+      borderRadius: 12,
+      overflow: 'hidden',
+      height: isDesktop ? 180 : 'auto',
     },
-    imageDesktop: {
-      width: "100%",
-      height: width * 0.17,
-      borderRadius: 5,
+    imageContainer: {
+      position: 'relative',
+      width: isDesktop ? '40%' : '100%',
+      height: isDesktop ? '100%' : 150,
     },
-    imageMobile: {
-      width: "100%",
-      height: 120,
-      borderRadius: 5,
+    image: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#f5f5f5',
     },
-    detailsContainerDesktop: {
-      width: "100%",
-      paddingTop: 10,
-    },
-    detailsContainerMobile: {
-      width: "100%",
-      paddingTop: 10,
-    },
-    rowDesktop: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    rowMobile: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    brandDesktop: {
-      fontSize: width * 0.017,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    brandMobile: {
-      fontSize: 16,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    priceDesktop: {
-      fontSize: width * 0.017,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    priceMobile: {
-      fontSize: 16,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    cityDesktop: {
-      fontSize: width * 0.014,
-      marginVertical: 5,
-      fontFamily: theme.fonts.regular,
-      color: theme.lightTemplate.textColor,
-    },
-    cityMobile: {
-      fontSize: 12,
-      marginVertical: 5,
-      fontFamily: theme.fonts.regular,
-      color: theme.lightTemplate.textColor,
-    },
-    buttonDesktop: {
-      backgroundColor: "#3b6ef5",
-      paddingVertical: 8,
-      borderRadius: 5,
-      alignItems: "center",
-      marginTop: 5,
-      width: width * 0.15,
-      alignSelf: "flex-end",
-    },
-    buttonMobile: {
-      backgroundColor: "#3b6ef5",
+    priceTag: {
+      position: 'absolute',
+      top: 16,
+      right: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingVertical: 6,
-      borderRadius: 5,
-      alignItems: "center",
-      marginTop: 5,
-      alignSelf: "flex-start",
-      width: 125,
+      paddingHorizontal: 12,
+      borderTopLeftRadius: 20,
+      borderBottomLeftRadius: 20,
+      backgroundColor: 'rgba(0,0,0,0.7)',
     },
-    buttonTextDesktop: {
-      color: "white",
-      fontWeight: "bold",
-      fontSize: width * 0.014,
+    priceText: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
       fontFamily: theme.fonts.bold,
     },
-    buttonTextMobile: {
-      color: "white",
+    perDayText: {
+      color: 'rgba(255,255,255,0.8)',
+      fontSize: 12,
+      fontFamily: theme.fonts.regular,
+      marginLeft: 4,
+    },
+    infoContainer: {
+      padding: 16,
+      flex: 1,
+      justifyContent: 'space-between',
+    },
+    header: {
+      marginBottom: 12,
+    },
+    brand: {
+      fontSize: 18,
       fontWeight: "bold",
+      fontFamily: theme.fonts.bold,
+      color: theme.colors.dark,
+    },
+    detailRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    cityText: {
       fontSize: 14,
+      fontFamily: theme.fonts.regular,
+      color: theme.colors.gray,
+      marginLeft: 6,
+    },
+    removeButton: {
+      backgroundColor: '#F44336',
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'flex-end',
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 14,
+      fontWeight: 'bold',
       fontFamily: theme.fonts.bold,
+      marginLeft: 8,
     },
   });
 

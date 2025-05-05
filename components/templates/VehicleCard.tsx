@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, useWindowDimensions } 
 import theme from "@/components/Theme";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "expo-router";
-
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface VehicleCardProps {
   brand: string;
@@ -41,135 +41,214 @@ const VehicleCard: React.FC<VehicleCardProps> = ({
   onReserve,
 }) => {
   const { width } = useWindowDimensions();
-  const isDesktop = width > 576;
-  const styles = getStyles(width);
+  const isDesktop = width > 768;
+  const styles = getStyles(isDesktop, width);
   const { t } = useTranslation();
   const router = useRouter();
 
-
   return (
-    <TouchableOpacity
-      onPress={() => {
-        console.log("Navegando a los detalles del vehículo con ID:", vehicleId);
-        router.push({
-          pathname: "/vehicleDetailsPage", // Ruta hacia la página de detalles
-          params: { id: vehicleId }, // Envía el ID del vehículo
-        });
-      }}
-      style={isDesktop ? styles.cardDesktop : styles.cardMobile}
-    >
-      <View style={styles.infoContainer}>
-        <Text style={isDesktop ? styles.brandDesktop : styles.brandMobile}>{brand} {model} ({year})</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{t("VehicleCard.type")}: {type}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{t("VehicleCard.capacity")}: {seats} {t("VehicleCard.places")}</Text>
-        <Text style={isDesktop ? styles.detailsDesktop : styles.detailsMobile}>{t("VehicleCard.doors")}: {numDoors}</Text>
-        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{t("VehicleCard.price")}: {price}</Text>
-      </View>
+    <View style={styles.shadowContainer}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => router.push({ pathname: "/vehicleDetailsPage", params: { id: vehicleId } })}
+        style={styles.card}
+      >
+        {/* Sección de imagen con precio */}
+        <View style={styles.imageContainer}>
+          <Image 
+            source={{ uri: imageUrl || 'https://via.placeholder.com/300x200?text=No+Image' }} 
+            style={styles.image} 
+            resizeMode="cover"
+          />
+          <View style={styles.priceTag}>
+            <Text style={styles.priceText}>{price}</Text>
+            <Text style={styles.perDayText}>/{t("VehicleCard.day")}</Text>
+          </View>
+        </View>
 
-      <View style={styles.rightContainer}>
-        <Image source={{ uri: imageUrl }} style={isDesktop ? styles.imageDesktop : styles.imageMobile} />
-        <Text style={isDesktop ? styles.priceDesktop : styles.priceMobile}>{price}/{t("VehicleCard.day")}</Text>
-        <TouchableOpacity style={styles.button} onPress={onReserve}>
-          <Text style={isDesktop ? styles.buttonTextDesktop : styles.buttonTextMobile}>{t("VehicleCard.buttons.reservation")}</Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
+        {/* Sección de información principal */}
+        <View style={styles.infoContainer}>
+          <View style={styles.header}>
+            <Text style={styles.brand}>{brand} {model}</Text>
+            <Text style={styles.year}>{year}</Text>
+          </View>
+          
+          <Text style={styles.type}>{type}</Text>
+
+          {/* Detalles del vehículo en dos columnas */}
+          <View style={styles.detailsGrid}>
+            <View style={styles.detailItem}>
+              <MaterialIcons name="people" size={16} color={theme.colors.primary} />
+              <Text style={styles.detailText}>{seats} {t("VehicleCard.places")}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <MaterialIcons name="car-door" size={16} color={theme.colors.primary} />
+              <Text style={styles.detailText}>{numDoors} {t("VehicleCard.doors")}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <MaterialIcons name="settings" size={16} color={theme.colors.primary} />
+              <Text style={styles.detailText}>{transmission}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <MaterialIcons name="local-gas-station" size={16} color={theme.colors.primary} />
+              <Text style={styles.detailText}>{fuelType}</Text>
+            </View>
+
+            <View style={styles.detailItem}>
+              <MaterialIcons name="security" size={16} color={theme.colors.primary} />
+              <Text style={styles.detailText}>{deposit}</Text>
+            </View>
+          </View>
+
+          {/* Pie de tarjeta con ubicación y botón */}
+          <View style={styles.footer}>
+            <View style={styles.location}>
+            </View>
+            <TouchableOpacity 
+              style={styles.reserveButton} 
+              onPress={(e) => {
+                e.stopPropagation();
+                onReserve();
+              }}
+            >
+              <Text style={styles.reserveButtonText}>{t("VehicleCard.buttons.reservation")}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-const getStyles = (width: number) =>
+const getStyles = (isDesktop: boolean, width: number) =>
   StyleSheet.create({
-    cardMobile: {
-      flexDirection: "row",
-      backgroundColor: theme.colors.secondary,
-      padding: 15,
-      borderRadius: 8,
-      justifyContent: "space-between",
-      alignItems: "center",
+    shadowContainer: {
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 5,
       marginVertical: 10,
-      width: 320,
-      height: 150,
+      borderRadius: 12,
+      backgroundColor: 'white',
+      width: isDesktop ? width * 0.8 : width * 0.9,
+      alignSelf: 'center',
     },
-    cardDesktop: {
-      flexDirection: "row",
-      backgroundColor: theme.colors.secondary,
-      padding: width * 0.04,
-      borderRadius: 8,
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginVertical: 10,
-      width: width * 0.8,
-      height: width * 0.25,
-      alignSelf: "center",
+    card: {
+      flexDirection: isDesktop ? "row" : "column",
+      backgroundColor: theme.colors.white,
+      borderRadius: 12,
+      overflow: 'hidden',
+      height: isDesktop ? 220 : 'auto',
     },
-    infoContainer: {
-      flex: 1,
+    imageContainer: {
+      position: 'relative',
+      width: isDesktop ? '40%' : '100%',
+      height: isDesktop ? '100%' : 180,
     },
-    brandMobile: {
-      fontSize: 16,
-      fontWeight: "bold",
+    image: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#f5f5f5',
+    },
+    priceTag: {
+      position: 'absolute',
+      top: 16,
+      right: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderTopLeftRadius: 20,
+      borderBottomLeftRadius: 20,
+      backgroundColor: 'rgba(0,0,0,0.7)',
+    },
+    priceText: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
       fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
     },
-    brandDesktop: {
-      fontSize: width * 0.025,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    detailsMobile: {
+    perDayText: {
+      color: 'rgba(255,255,255,0.8)',
       fontSize: 12,
       fontFamily: theme.fonts.regular,
-      color: theme.lightTemplate.textColor,
+      marginLeft: 4,
     },
-    detailsDesktop: {
-      fontSize: width * 0.018,
-      fontFamily: theme.fonts.regular,
-      color: theme.lightTemplate.textColor,
+    infoContainer: {
+      padding: 16,
+      flex: 1,
     },
-    rightContainer: {
-      alignItems: "center",
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 8,
     },
-    imageMobile: {
-      width: 70,
-      height: 60,
-      backgroundColor: "#777",
-    },
-    imageDesktop: {
-      width: width * 0.18,
-      height: width * 0.15,
-      backgroundColor: "#777",
-    },
-    priceMobile: {
-      fontSize: 16,
+    brand: {
+      fontSize: 18,
       fontWeight: "bold",
-      marginVertical: 5,
       fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
+      color: theme.colors.dark,
     },
-    priceDesktop: {
-      fontSize: width * 0.022,
-      fontWeight: "bold",
-      marginVertical: 5,
-      fontFamily: theme.fonts.bold,
-      color: theme.lightTemplate.textColor,
-    },
-    button: {
-      backgroundColor: "#3b6ed5",
-      paddingVertical: width * 0.01,
-      paddingHorizontal: width * 0.04,
-      borderRadius: 5,
-    },
-    buttonTextMobile: {
-      color: "white",
+    year: {
       fontSize: 14,
-      fontWeight: "bold",
-      fontFamily: theme.fonts.bold,
+      fontFamily: theme.fonts.regular,
+      color: theme.colors.gray,
     },
-    buttonTextDesktop: {
-      color: "white",
-      fontSize: width * 0.02,
-      fontWeight: "bold",
+    type: {
+      fontSize: 14,
+      fontFamily: theme.fonts.regular,
+      color: theme.colors.primary,
+      marginBottom: 12,
+    },
+    detailsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      marginBottom: 16,
+    },
+    detailItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '48%',
+      marginBottom: 8,
+    },
+    detailText: {
+      fontSize: 14,
+      fontFamily: theme.fonts.regular,
+      color: theme.colors.dark,
+      marginLeft: 6,
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.lightGray,
+      paddingTop: 12,
+    },
+    location: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      maxWidth: '60%',
+    },
+    locationText: {
+      fontSize: 12,
+      fontFamily: theme.fonts.regular,
+      color: theme.colors.gray,
+      marginLeft: 4,
+    },
+    reserveButton: {
+      backgroundColor: theme.colors.primary,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+    },
+    reserveButtonText: {
+      color: 'white',
+      fontSize: 14,
+      fontWeight: 'bold',
       fontFamily: theme.fonts.bold,
     },
   });

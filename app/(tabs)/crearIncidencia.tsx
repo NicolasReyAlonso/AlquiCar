@@ -14,7 +14,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import theme from '@/components/Theme';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const CrearIncidencia = () => {
@@ -26,6 +26,7 @@ const CrearIncidencia = () => {
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('Pending');
   const [descriptionError, setDescriptionError] = useState('');
+  const [reservations, setReservations] = useState<number[]>([]);
   const [reservationIdError, setReservationIdError] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -60,19 +61,6 @@ const CrearIncidencia = () => {
       status,
     };
 
-    if (type === 'USER') {
-      body.reservation_id = reservationId;
-      const response = await fetch(`http://localhost:3000/reservations/${reservationId}`, {
-        method: "GET",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.ok) {
-        const reserva = await response.json();
-        setToId(reserva[0].customer_id);
-        body.to_id = reserva[0].customer_id
-       }
-    }
     try {
       const response = await fetch('http://localhost:3000/incidences/', {
         method: 'POST',
@@ -98,7 +86,7 @@ const CrearIncidencia = () => {
     }
   };
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const init = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
@@ -109,22 +97,40 @@ const CrearIncidencia = () => {
 
         const userResponse = await fetch('http://localhost:3000/users/getdata/', {
           method: 'GET',
-          credentials: 'include'
+          credentials: 'include',
         });
 
         const user = await userResponse.json();
         if (!userResponse.ok) {
           throw new Error(user.message || 'Error al obtener datos del usuario');
         }
-        setUserId(user[0].id);
+
+        const userId = user[0].id;
+        setUserId(userId);
+
+        // Obtener reservas del usuario
+        const resResponse = await fetch(`http://localhost:3000/reservations/customer/`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (resResponse.ok) {
+          const resData = await resResponse.json();
+          const ids = resData.map((r: any) => r.id);
+          setReservations(ids);
+        } else {
+          console.warn('No se pudieron obtener reservas');
+        }
+
       } catch (error) {
         console.error('Error inicial:', error);
       }
     };
 
     init();
-  }, []);
-  
+  });
+
+
 
   return (
     <KeyboardAvoidingView
@@ -148,20 +154,23 @@ const CrearIncidencia = () => {
         {type === 'USER' && (
           <>
             <Text style={styles.label}>{t('Incidencias.reserva')}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ej: 123"
-              placeholderTextColor="black"
-              keyboardType="numeric"
-              value={reservationId !== null ? reservationId.toString() : ''}
-              onChangeText={(text) => {
-                const number = parseInt(text);
-                setReservationId(!isNaN(number) ? number : null);
-              }}
-            />
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={reservationId}
+                onValueChange={(value) => setReservationId(value)}
+                style={styles.picker}
+                dropdownIconColor={theme.colors.text}
+              >
+                <Picker.Item label={t('Selecciona una reserva')} value={null} color="gray" />
+                {reservations.map((id) => (
+                  <Picker.Item key={id} label={`#${id}`} value={id} color="black" />
+                ))}
+              </Picker>
+            </View>
             {reservationIdError ? <Text style={styles.error}>{reservationIdError}</Text> : null}
           </>
         )}
+
 
         <Text style={styles.label}>{t('Incidencias.descripcion')}</Text>
         <TextInput

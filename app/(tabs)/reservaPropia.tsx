@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import { useTranslation } from 'react-i18next';
+
 
 const ReservaDetalles = () => {
   const params = useLocalSearchParams();

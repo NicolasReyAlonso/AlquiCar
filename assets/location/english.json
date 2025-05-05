@@ -187,5 +187,32 @@
     "notFound": "No results found.",
     "type": "Type",
     "price": "Daily price"
+  },
+
+  "Perfil": {
+    "perfil": "Profile of",
+    "vehiculos": {
+      "vehiculos": "Published vehicles",
+      "marca": "Brand: ",
+      "modelo": "Model: ",
+      "registro": "Registration date: ",
+      "precio": "Price per day: ",
+      "sinVehiculos": "This user has no published vehicles."
+    },
+    "reservas": {
+      "reservas": "Reservations",
+      "precio": "Total price: ",
+      "estado": "Status: ",
+      "fechaIn": "Start date: ",
+      "fechaFin": "End date: ",
+      "sinReservas": "This user has no reservations."
+    },
+    "incidencias": {
+      "incidencias": "Incidents",
+      "id": "Incident ID: ",
+      "descripcion": "Description: ",
+      "creado": "Created on: ",
+      "sinIncidencias": "This user has no incidents."
+    }
   }
 }

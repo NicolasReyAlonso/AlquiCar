@@ -186,6 +186,32 @@
     "notFound": "Nessun risultato trovato.",
     "type": "Tipo",
     "price": "Prezzo giornaliero"
-  }
+  },
 
+  "Perfil": {
+    "perfil": "Profilo di",
+    "vehiculos": {
+      "vehiculos": "Veicoli pubblicati",
+      "marca": "Marca: ",
+      "modelo": "Modello: ",
+      "registro": "Data di registrazione: ",
+      "precio": "Prezzo al giorno: ",
+      "sinVehiculos": "Questo utente non ha veicoli pubblicati."
+    },
+    "reservas": {
+      "reservas": "Prenotazioni",
+      "precio": "Prezzo totale: ",
+      "estado": "Stato: ",
+      "fechaIn": "Data di inizio: ",
+      "fechaFin": "Data di fine: ",
+      "sinReservas": "Questo utente non ha prenotazioni."
+    },
+    "incidencias": {
+      "incidencias": "Segnalazioni",
+      "id": "ID della segnalazione: ",
+      "descripcion": "Descrizione: ",
+      "creado": "Creato il: ",
+      "sinIncidencias": "Questo utente non ha segnalazioni."
+    }
+  }
 }

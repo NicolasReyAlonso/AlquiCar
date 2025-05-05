@@ -188,6 +188,33 @@
       "notFound": "No se encontraron resultados.",
       "type": "Tipo",
       "price": "Precio diario"
+    },
+
+    "Perfil": {
+      "perfil": "Perfil de",
+      "vehiculos": {
+        "vehiculos": "Vehículos publicados",
+        "marca": "Marca: ",
+        "modelo": "Modelo: ",
+        "registro": "Fecha de registro: ",
+        "precio": "Precio al día: ",
+        "sinVehiculos": "Este usuario no tiene vehículos publicados."
+      },
+      "reservas": {
+        "reservas": "Reservas",
+        "precio": "Precio total: ",
+        "estado": "Estado: ",
+        "fechaIn": "Fecha de inicio: ",
+        "fechaFin": "Fecha de fin: ",
+        "sinReservas": "Este usuario no tiene reservas."
+      },
+      "incidencias": {
+        "incidencias": "Incidencias",
+        "id": "Id de la incidencia: ",
+        "descripcion": "Descripción: ",
+        "creado": "Creado en: ",
+        "sinIncidencias": "Este usuario no tiene incidencias."
+      }
     }
 
   }

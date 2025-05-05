@@ -14,7 +14,6 @@
       "brand": "Wählen Sie eine Marke aus"
     }
   },
-
   "Account": {
     "title": "Kontodetails",
     "name": "Name",
@@ -25,7 +24,6 @@
     },
     "changePhoto": "Profilfoto ändern"
   },
-
   "Login": {
     "title": "Anmelden",
     "password": "Passwort",
@@ -34,7 +32,6 @@
       "register": "REGISTRIEREN"
     }
   },
-
   "Register": {
     "title": "Konto Erstellen",
     "password": "Passwort",
@@ -49,28 +46,26 @@
       "repeatPassword": "Passwort wiederholen"
     }
   },
-
   "RentYourVehicle": {
-  "title": "Dein Auto veröffentlichen",
-  "card": {
-    "brand": "Automarke",
-    "model": "Automodell",
-    "year": "Baujahr",
-    "address": "Adresse",
-    "price": "Preis pro Tag",
-    "type": "Autotyp",
-    "transmission": "Getriebe",
-    "fuel_type": "Kraftstoffart",
-    "capacity": "Anzahl der Sitze",
-    "num_doors": "Anzahl der Türen",
-    "deposit": "Kaution"
+    "title": "Dein Auto veröffentlichen",
+    "card": {
+      "brand": "Automarke",
+      "model": "Automodell",
+      "year": "Baujahr",
+      "address": "Adresse",
+      "price": "Preis pro Tag",
+      "type": "Autotyp",
+      "transmission": "Getriebe",
+      "fuel_type": "Kraftstoffart",
+      "capacity": "Anzahl der Sitze",
+      "num_doors": "Anzahl der Türen",
+      "deposit": "Kaution"
+    },
+    "buttons": {
+      "image": "Bild anhängen",
+      "publish": "Veröffentlichen"
+    }
   },
-  "buttons": {
-    "image": "Bild anhängen",
-    "publish": "Veröffentlichen"
-  }
-},
-
   "MyReservationCard": {
     "day": "Tag",
     "date": "Datum",
@@ -79,7 +74,6 @@
       "chat": "Kontakt mit dem Eigentümer"
     }
   },
-
   "MyPublishedVehicles": {
     "day": "Tag",
     "city": "Stadt",
@@ -87,7 +81,6 @@
       "remove": "Fahrzeug entfernen"
     }
   },
-
   "VehicleCard": {
     "places": "Sitzplätze",
     "mileage": "Kilometerstand",
@@ -97,7 +90,6 @@
       "reservation": "Reservieren"
     }
   },
-
   "reserveVehicle": {
     "title": "Reservierungsübersicht",
     "places": "Sitze",
@@ -118,7 +110,6 @@
     },
     "cancelDate": "Letztes Stornierungsdatum:"
   },
-
   "layout": {
     "search": "Suchen...",
     "Menu": "MENÜ",
@@ -127,7 +118,7 @@
       "home": "Startseite",
       "reservations": "Meine Reservierungen",
       "publications": "Meine Inserate",
-      "incidences" : "Meine Vorfälle",
+      "incidences": "Meine Vorfälle",
       "chat": "Plaudern"
     },
     "filter": "Filtern nach",
@@ -143,47 +134,69 @@
     "todas": "Alle",
     "todos": "Alle"
   },
-
   "Incidencias": {
-  "titulo": "Titel der Störung",
-  "descripcion": "Beschreibung",
-  "crear": "Störung erstellen",
-  "reserva": "Reservierungs-ID",
-  "id": "Störungs-ID",
-  "tipo": "Störungstyp",
-  "usuario": "Benutzer",
-  "plataforma": "Plattform",
-  "misIncidencias": "Meine Störungen",
-  "sinIncidencias": "Keine Störungen gemeldet",
-  "estado": "Status",
-  "fecha": "Datum",
-  "categoria": "Kategorie",
-  "formatoFecha": "TT/MM/JJJJ",
-  "problema": "Beschreibe das Problem",
-  "enviar": "Senden",
-  "resolver": "Beschließen",
-  "denegar": "Leugnen",
-  "botones": {
-    "guardar": "Speichern",
-    "cancelar": "Abbrechen"
-  }
-},
-
+    "titulo": "Titel der Störung",
+    "descripcion": "Beschreibung",
+    "crear": "Störung erstellen",
+    "reserva": "Reservierungs-ID",
+    "id": "Störungs-ID",
+    "tipo": "Störungstyp",
+    "usuario": "Benutzer",
+    "plataforma": "Plattform",
+    "misIncidencias": "Meine Störungen",
+    "sinIncidencias": "Keine Störungen gemeldet",
+    "estado": "Status",
+    "fecha": "Datum",
+    "categoria": "Kategorie",
+    "formatoFecha": "TT/MM/JJJJ",
+    "problema": "Beschreibe das Problem",
+    "enviar": "Senden",
+    "resolver": "Beschließen",
+    "denegar": "Leugnen",
+    "botones": {
+      "guardar": "Speichern",
+      "cancelar": "Abbrechen"
+    }
+  },
   "VerifyEmail": {
     "title": "Überprüfe deine E-Mail!",
     "message": "Wir haben dir eine Bestätigungs-E-Mail gesendet. Bitte überprüfe dein Postfach, um die Registrierung abzuschließen.",
     "goToLogin": "Zum Login"
   },
-
   "ModoAdmin": {
     "modoAdmin": "Administrator-Modus",
     "modoUsuario": "Benutzermodus"
   },
-
   "ResultadosFiltrados": {
     "title": "Gefilterte Ergebnisse",
     "notFound": "Keine Ergebnisse gefunden.",
     "type": "Typ",
     "price": "Tagespreis"
+  },
+  "Perfil": {
+    "perfil": "Profil von",
+    "vehiculos": {
+      "vehiculos": "Veröffentlichte Fahrzeuge",
+      "marca": "Marke: ",
+      "modelo": "Modell: ",
+      "registro": "Registrierungsdatum: ",
+      "precio": "Preis pro Tag: ",
+      "sinVehiculos": "Dieser Benutzer hat keine veröffentlichten Fahrzeuge."
+    },
+    "reservas": {
+      "reservas": "Reservierungen",
+      "precio": "Gesamtpreis: ",
+      "estado": "Status: ",
+      "fechaIn": "Startdatum: ",
+      "fechaFin": "Enddatum: ",
+      "sinReservas": "Dieser Benutzer hat keine Reservierungen."
+    },
+    "incidencias": {
+      "incidencias": "Vorfälle",
+      "id": "Vorfall-ID: ",
+      "descripcion": "Beschreibung: ",
+      "creado": "Erstellt am: ",
+      "sinIncidencias": "Dieser Benutzer hat keine Vorfälle."
+    }
   }
 }

@@ -69,7 +69,7 @@ const ReservaDetalles = () => {
         
         <View style={[styles.statusBox, reservation?.status === "Cancelled" ? styles.cancelled : styles.active]}>
           <Text style={styles.statusText}>
-            {reservation?.status === "Cancelled" ? "Cancel" : "Active"}
+            {reservation?.status === "Cancelled" ? "Cancelada" : "Activa"}
           </Text>
         </View>
 

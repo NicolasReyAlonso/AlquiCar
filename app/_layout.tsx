@@ -427,18 +427,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     color: "#333", // Color oscuro para mejor legibilidad
-    marginBottom: 12,
+    marginBottom: 1,
     textAlign: "center",
   },
   filterLabel: {
     fontSize: 16,
     fontWeight: "600",
     color: "#555", // Color neutro
-    marginTop: 12,
+    marginTop: 5,
   },
   picker: {
     height: 40,
-    marginBottom: 15,
+    marginBottom: 4,
     backgroundColor: "#EFEFEF", // Fondo más claro en los selects
     borderRadius: 8,
     paddingHorizontal: 10, // Espaciado interno

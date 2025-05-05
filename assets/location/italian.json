@@ -178,7 +178,10 @@
 
   "ModoAdmin": {
     "modoAdmin": "Modalità Amministratore",
-    "modoUsuario": "Modalità Utente"
+    "modoUsuario": "Modalità Utente",
+    "usuarios": "Utenti registrati",
+    "ver": "See",
+    "eliminar": "Elimina"
   },
   
   "ResultadosFiltrados": {

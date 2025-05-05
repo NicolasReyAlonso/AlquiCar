@@ -179,7 +179,10 @@
 
   "ModoAdmin": {
     "modoAdmin": "Administrator Mode",
-    "modoUsuario": "User Mode"
+    "modoUsuario": "User Mode",
+    "usuarios": "Registered users",
+    "ver": "See",
+    "eliminar": "Delete"
   },
 
   "ResultadosFiltrados": {

@@ -180,7 +180,10 @@
 
     "ModoAdmin": {
       "modoAdmin": "Modo Administrador",
-      "modoUsuario": "Modo Usuario"
+      "modoUsuario": "Modo Usuario",
+      "usuarios": "Usuarios registrados",
+      "ver": "Ver",
+      "eliminar": "Eliminar"
     },
 
     "ResultadosFiltrados": {

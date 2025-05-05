@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { useTranslation } from 'react-i18next';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ReservaDetalles = () => {
   const params = useLocalSearchParams();
   const [customer, setCustomer] = useState(null); // Estado para el cliente
   const [reservation, setReservation] = useState(null);
-  const { t } = useTranslation();
 
   useEffect(() => {
     console.log("ID recibido en ReservaDetalles:", params.id);
@@ -76,7 +74,6 @@ const ReservaDetalles = () => {
         </View>
 
         <Text style={styles.detail}><Text style={styles.label}>Vehículo:</Text> {params.vehicleName}</Text>
-        <Text style={styles.detail}><Text style={styles.label}>Cliente:</Text> {customerName}</Text>
         <Text style={styles.detail}><Text style={styles.label}>Fecha de inicio:</Text> {new Date(params.startDate).toLocaleDateString()}</Text>
         <Text style={styles.detail}><Text style={styles.label}>Fecha de fin:</Text> {new Date(params.endDate).toLocaleDateString()}</Text>
         <Text style={styles.detail}><Text style={styles.label}>Precio total:</Text> {params.totalPrice}€</Text>

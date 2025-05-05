@@ -20,6 +20,17 @@ export default function ConfirmacionReserva() {
   const [precioTotal, setPrecioTotal] = useState(0);
   const [fechasReservadas, setFechasReservadas] = useState<{ start_date: string; end_date: string }[]>([]);
   const [direccion, setDireccion] = useState("Dirección desconocida");
+  const [vehicle, setVehicle] = useState<any>(null);
+  const fetchImageUrl = async (ownerId: string, vehicleId: string) => {
+    try {
+      const res = await fetch(`http://localhost:3000/media/vehicles/${ownerId}/${vehicleId}`);
+      const images = await res.json();
+      return images.length > 0 && images[0].data ? images[0].data : "http://via.placeholder.com/150";
+    } catch (err) {
+      console.warn(`No se pudo cargar la imagen del vehículo ${vehicleId}`, err);
+      return "http://via.placeholder.com/150";
+    }
+  };
 
   const openPickupDatePicker = () => setPickupDatePickerVisible(true);
   const closePickupDatePicker = () => setPickupDatePickerVisible(false);
@@ -37,8 +48,17 @@ export default function ConfirmacionReserva() {
   };
 
   const obtenerPrecioNumerico = (precio: string) => {
-    const match = precio.match(/\d+/);
-    return match ? Number(match[0]) : 0;
+    if (!precio) return 0;
+    const valorLimpio = precio.toString().replace(/[^\d.,]/g, '');
+    const valorNormalizado = valorLimpio.replace(',', '.');
+    return parseFloat(valorNormalizado) || 0;
+  };
+
+  const obtenerDepositoNumerico = (deposito: string) => {
+    if (!deposito) return 0;
+    const valorLimpio = deposito.toString().replace(/[^\d.,]/g, '');
+    const valorNormalizado = valorLimpio.replace(',', '.');
+    return parseFloat(valorNormalizado) || 0;
   };
 
   const getUserId = async () => {
@@ -76,7 +96,7 @@ export default function ConfirmacionReserva() {
       customer_id: userId, 
       start_date: pickupDate.toISOString(),
       end_date: returnDate.toISOString(),
-      total_price: Number(precioTotal),
+      total_price: precioTotal,
     };
 
     try {
@@ -100,7 +120,6 @@ export default function ConfirmacionReserva() {
   };
 
   useEffect(() => {
-
     const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
       try {
         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
@@ -114,17 +133,20 @@ export default function ConfirmacionReserva() {
 
     const cargarDatosVehiculo = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/vehicles/${params.vehicleId}`, {
-          method: "GET",
-          credentials: "include",
-        });
-  
+        const response = await fetch(`http://localhost:3000/vehicles/${params.vehicleId}`);
         const data = await response.json();
-  
+    
         if (data && data.length > 0) {
           const vehiculo = data[0];
+          // Obtener la URL de la imagen
+          const imageUrl = await fetchImageUrl(vehiculo.owner_id, vehiculo.id);
+          setVehicle({ ...vehiculo, imageUrl }); // Añadir imageUrl al objeto del vehículo
+          
           if (vehiculo.latitude && vehiculo.longitude) {
-            const direccionObtenida = await convertirCoordenadasADireccion(vehiculo.latitude, vehiculo.longitude);
+            const direccionObtenida = await convertirCoordenadasADireccion(
+              parseFloat(vehiculo.latitude),
+              parseFloat(vehiculo.longitude)
+            );
             setDireccion(direccionObtenida);
           }
         }
@@ -138,8 +160,7 @@ export default function ConfirmacionReserva() {
         const response = await fetch(`http://localhost:3000/reservations?vehicle_id=${params.vehicleId}`);
         const data = await response.json();
   
-        // Filtrar reservas que no estén canceladas
-        const reservasActivas = data.filter((reserva) => reserva.status !== "Cancelled");
+        const reservasActivas = data.filter((reserva: any) => reserva.status !== "Cancelled");
         setFechasReservadas(reservasActivas);
       } catch (error) {
         console.error("Error al cargar las fechas reservadas:", error);
@@ -164,25 +185,31 @@ export default function ConfirmacionReserva() {
     return noDisponibles;
   };
 
-  const reserva = {
-    marca: params.brand || "Desconocido",
-    tipo: params.type || "Desconocido",
-    plazas: params.seats || 0,
-    transmision: "Manual",
-    precioPorDia: obtenerPrecioNumerico(Array.isArray(params.price) ? params.price[0] : params.price || "0"),
-    imagen: params.imageUrl || "http://via.placeholder.com/100",
-    ciudad: params.pickupLocation || "Desconocido",
-  };
-
   useEffect(() => {
-    if (pickupDate && returnDate) {
+    if (pickupDate && returnDate && vehicle?.daily_price) {
       const diffTime = returnDate.getTime() - pickupDate.getTime();
       const newDias = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+      
+      const precioPorDia = obtenerPrecioNumerico(vehicle.daily_price);
+      const precioBase = precioPorDia * newDias;
+      const deposito = obtenerDepositoNumerico(vehicle.deposit);
+      const precioFinal = precioBase + deposito;
+
+      console.log('Cálculo de precio:', {
+        precioPorDia,
+        newDias,
+        precioBase,
+        deposito,
+        precioFinal,
+        dailyPrice: vehicle.daily_price,
+        deposit: vehicle.deposit
+      });
+
       setDias(newDias);
-      setPrecioCoche(reserva.precioPorDia * newDias);
-      setPrecioTotal(reserva.precioPorDia * newDias);
+      setPrecioCoche(precioBase);
+      setPrecioTotal(precioFinal);
     }
-  }, [pickupDate, returnDate]);
+  }, [pickupDate, returnDate, vehicle]);
 
   const calcularFechaCancelacion = () => {
     if (!pickupDate) return "";
@@ -196,15 +223,26 @@ export default function ConfirmacionReserva() {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>{t("reserveVehicle.title")}</Text>
+      
       <View style={styles.row}>
-        <Image source={{ uri: reserva.imagen }} style={styles.image} />
+        <Image 
+          source={{ uri: vehicle?.imageUrl || "http://via.placeholder.com/100" }} 
+          style={styles.image} 
+        />
         <View>
-          <Text style={styles.title}>{reserva.marca}</Text>
-          <Text style={styles.text}>{reserva.tipo} - {reserva.plazas} plazas</Text>
-          <Text style={styles.text}>{reserva.transmision}</Text>
-          <Text style={styles.text}>{t("reservaPropia.dirección")}: {direccion}</Text>
+          <Text style={styles.title}>{vehicle?.brand || "Desconocido"}</Text>
+          <Text style={styles.text}>
+            {vehicle?.type || "Desconocido"} - {vehicle?.capacity || 0} plazas
+          </Text>
+          <Text style={styles.text}>
+            {vehicle?.transmission === "Automatic" ? "Automático" : "Manual"}
+          </Text>
+          <Text style={styles.text}>
+            {t("reservaPropia.dirección")}: {direccion}
+          </Text>
         </View>
       </View>
+
       <View style={styles.dateContainer}>
         <Text style={styles.subtitle}>{t("reserveVehicle.startDate")}</Text>
         <View style={styles.dateRow}>
@@ -232,6 +270,7 @@ export default function ConfirmacionReserva() {
           }}
         />
       </View>
+
       <View style={styles.dateContainer}>
         <Text style={styles.subtitle}>{t("reserveVehicle.finishDate")}</Text>
         <View style={styles.dateRow}>
@@ -259,50 +298,41 @@ export default function ConfirmacionReserva() {
           }}
         />
       </View>
-      <Text style={styles.subtitle}>{t("reserveVehicle.duration")}</Text>
-      <Text style={styles.text}>{dias} {t("reserveVehicle.days")}</Text>
-      <Text style={styles.text}>{t("reserveVehicle.vehiclePrice")}: {reserva.precioPorDia}€/día × {dias} días = {precioCoche}€</Text>
-      <Text style={styles.text}>——————</Text>
-      <View style={styles.totalContainer}>
-        <Text style={styles.total}>{t("reserveVehicle.totalPrice")}</Text>
-        <Text style={styles.total}>{precioTotal}€</Text>
+
+      <View style={styles.priceDetails}>
+        <Text style={styles.subtitle}>{t("reserveVehicle.duration")}</Text>
+        <Text style={styles.priceRow}>
+          {t("reserveVehicle.vehiclePrice")}: {obtenerPrecioNumerico(vehicle?.daily_price || "0").toFixed(2)}€ × {dias} días = {precioCoche.toFixed(2)}€
+        </Text>
+        <Text style={styles.priceRow}>
+          Depósito: {vehicle?.deposit ? `${vehicle.deposit}` : '0.00€'}
+        </Text>
+        <View style={styles.divider} />
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalLabel}>{t("reserveVehicle.totalPrice")}:</Text>
+          <Text style={styles.totalPrice}>{precioTotal.toFixed(2)}€</Text>
+        </View>
       </View>
+
       <TouchableOpacity style={styles.button} onPress={handleConfirmReservation}>
         <Text style={styles.buttonText}>{t("reserveVehicle.buttons.confirmation")}</Text>
       </TouchableOpacity>
-      <Text style={styles.cancelText}>{t("reserveVehicle.cancelDate")}: {fechaCancelacionMax}</Text>
+      
+      <Text style={styles.cancelText}>
+        {t("reserveVehicle.cancelDate")}: {fechaCancelacionMax}
+      </Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
-    backgroundColor: "#FFFFFF", // Fondo blanco
-    flexGrow: 1,
-  },
-  totalContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 30,
-    padding: 10,
-    backgroundColor: "#F9F9F9",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  total: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#333",
-    textAlign: "right",
+    backgroundColor: "#FFFFFF",
   },
   header: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
     color: "#3B6ED5",
     textAlign: "center",
@@ -312,96 +342,110 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F5F5F5",
-    borderRadius: 15,
+    borderRadius: 12,
     padding: 15,
     marginBottom: 20,
     shadowColor: "#000",
-    shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   image: {
     width: 120,
-    height: 100,
-    borderRadius: 10,
+    height: 90,
+    borderRadius: 8,
     marginRight: 15,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#333",
+    marginBottom: 5,
   },
   text: {
     fontSize: 16,
     color: "#555",
-    marginBottom: 5,
+    marginBottom: 3,
   },
   subtitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontWeight: "600",
     color: "#3B6ED5",
-    marginTop: 15,
     marginBottom: 10,
+  },
+  dateContainer: {
+    marginBottom: 15,
   },
   dateRow: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F9F9F9",
-    padding: 10,
+    padding: 12,
     borderRadius: 10,
-    marginBottom: 20,
     borderWidth: 1,
     borderColor: "#E0E0E0",
   },
   dateInput: {
-    fontSize: 16,
     flex: 1,
-    padding: 10,
-    borderRadius: 8,
+    fontSize: 16,
+    color: "#333",
+  },
+  priceDetails: {
+    marginVertical: 20,
+    padding: 15,
+    backgroundColor: "#F8F9FA",
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
-    backgroundColor: "#FFFFFF",
-    marginRight: 10,
+    borderColor: "#EEE",
+  },
+  priceRow: {
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 8,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#DDD",
+    marginVertical: 10,
+  },
+  totalContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  totalLabel: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+  },
+  totalPrice: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#3B6ED5",
   },
   button: {
     backgroundColor: "#3B6ED5",
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 10,
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 20,
     shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
-    elevation: 5,
+    shadowRadius: 4,
+    elevation: 3,
   },
   buttonText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#FFFFFF",
-    textTransform: "uppercase",
+    color: "#FFF",
   },
   cancelText: {
     fontSize: 16,
-    color: "#888",
+    color: "#777",
     textAlign: "center",
-    marginTop: 15,
-  },
-  dateContainer: {
-    marginBottom: 15,
-  },
-  priceBreakdown: {
-    fontSize: 16,
-    color: "#333",
-    marginBottom: 10,
-    padding: 10,
-    backgroundColor: "#F9F9F9",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 3,
+    marginTop: 20,
   },
 });

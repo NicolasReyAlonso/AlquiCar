@@ -5,8 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ReservaDetalles = () => {
   const params = useLocalSearchParams();
-  const [customer, setCustomer] = useState(null); // Estado para el cliente
+  const [customer, setCustomer] = useState(null);
   const [reservation, setReservation] = useState(null);
+  const [modificada, setModificada] = useState(false); 
 
   useEffect(() => {
     console.log("ID recibido en ReservaDetalles:", params.id);
@@ -18,11 +19,19 @@ const ReservaDetalles = () => {
         console.log("Datos de la reserva:", data);
 
         const reservationDetails = Array.isArray(data) ? data[0] : data;
+
+        // Verificar si la reserva ha sido modificada
+        if (reservation && JSON.stringify(reservation) !== JSON.stringify(reservationDetails)) {
+          setModificada(true);
+        } else {
+          setModificada(false);
+        }
+
         setReservation(reservationDetails);
 
         const customerId = reservationDetails.customer_id;
         if (!customerId) {
-          console.warn("⚠️ Customer ID es inválido o vacío.");
+          console.warn("Customer ID es inválido o vacío.");
           setCustomer({ name: "Desconocido" });
           return;
         }
@@ -47,12 +56,12 @@ const ReservaDetalles = () => {
         console.log("Datos del cliente recibidos:", customerData);
 
         if (Array.isArray(customerData) && customerData.length > 0) {
-          setCustomer(customerData[0]); // Guardar el objeto completo del cliente
+          setCustomer(customerData[0]);
         } else {
           setCustomer(customerData);
         }
       } catch (error) {
-        console.error("❌ Error al obtener los detalles de la reserva:", error);
+        console.error("Error al obtener los detalles de la reserva:", error);
         setCustomer({ name: "Desconocido" });
       }
     };
@@ -64,9 +73,9 @@ const ReservaDetalles = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
+      <View style={[styles.card, modificada ? styles.modified : null]}>
         <Text style={styles.title}>Detalles de la Reserva</Text>
-        
+
         <View style={[styles.statusBox, reservation?.status === "Cancelled" ? styles.cancelled : styles.active]}>
           <Text style={styles.statusText}>
             {reservation?.status === "Cancelled" ? "Cancelada" : "Activa"}
@@ -79,7 +88,6 @@ const ReservaDetalles = () => {
         <Text style={styles.detail}><Text style={styles.label}>Precio total:</Text> {params.totalPrice}€</Text>
       </View>
 
-      {/* 🟢 Sección nueva para los datos del cliente */}
       {customer && (
         <View style={styles.card}>
           <Text style={styles.title}>Datos del Cliente</Text>
@@ -112,6 +120,9 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
     marginBottom: 15,
+  },
+  modified: {
+    backgroundColor: "#FFE57F", 
   },
   title: {
     fontSize: 24,

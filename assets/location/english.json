@@ -93,12 +93,14 @@
 
   "VehicleCard": {
     "places": "Seats",
-    "mileage": "Mileage",
-    "location": "Pick-up location",
     "day": "day",
     "buttons": {
       "reservation": "Reserve"
-    }
+    },
+    "type": "Type",
+    "capacity": "Capacity",
+    "doors": "Doors",
+    "price": "Daily price"
   },
 
   "reserveVehicle": {
@@ -119,7 +121,9 @@
     "buttons": {
       "confirmation": "Confirm Reservation"
     },
-    "cancelDate": "Maximum cancellation date:"
+    "cancelDate": "Maximum cancellation date:",
+    "selecciona": "Select the date:"
+
   },
 
   "layout": {
@@ -186,7 +190,10 @@
     "title": "Filtered Results",
     "notFound": "No results found.",
     "type": "Type",
-    "price": "Daily price"
+    "price": "Daily price",
+    "search": "Vehicles found",
+    "noSearch": "No vehicles available with the selected criteria."
+
   },
 
   "Perfil": {
@@ -214,5 +221,39 @@
       "creado": "Created on: ",
       "sinIncidencias": "This user has no incidents."
     }
+  },
+
+  "reservaPropia": {
+    "activa": "Active",
+    "cancelada": "Cancelled",
+    "detallesReserva": "Reservation Details",
+    "id": "Reservation ID",
+    "fechas": "Dates",
+    "precio": "Total Price",
+    "detallesVehículo": "Vehicle Details",
+    "capacidad": "Capacity",
+    "pasajeros": "Passengers",
+    "tipo": "Type",
+    "transmisión": "Transmission",
+    "puertas": "Number of Doors",
+    "depósito": "Deposit",
+    "precioDia": "Price per Day",
+    "propietario": "Vehicle Owner",
+    "nombre": "Name",
+    "teléfono": "Phone",
+    "cancelar": "Cancel Reservation",
+    "volver": "Back",
+    "guardar": "Save Changes",
+    "editar": "Edit Reservation",
+    "fechaIn": "Start date",
+    "fechaFin": "End date",
+    "cancel": "Cancel",
+    "combustible": "Fuel",
+    "dirección": "Address",
+    "noCarga": "Failed to load owner's information.",
+    "vehículo": "Vehicle",
+    "cliente": "Customer",
+    "activas": "Active",
+    "canceladas": "Cancelled"
   }
 }

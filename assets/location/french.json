@@ -83,12 +83,14 @@
   },
   "VehicleCard": {
     "places": "Places",
-    "mileage": "Kilométrage",
-    "location": "Lieu de prise en charge",
     "day": "jour",
     "buttons": {
       "reservation": "Réserver"
-    }
+    },
+    "type": "Type",
+    "capacity": "Capacité",
+    "doors": "Portes",
+    "price": "Prix journalier"
   },
   "reserveVehicle": {
     "title": "Résumé de la réservation",
@@ -108,7 +110,9 @@
     "buttons": {
       "confirmation": "Confirmer la Réservation"
     },
-    "cancelDate": "Date limite d’annulation :"
+    "cancelDate": "Date limite d’annulation :",
+    "selecciona": "Sélectionnez la date :"
+
   },
   "layout": {
     "search": "Rechercher...",
@@ -171,7 +175,10 @@
     "title": "Résultats Filtrés",
     "notFound": "Aucun résultat trouvé.",
     "type": "Type",
-    "price": "Prix journalier"
+    "price": "Prix journalier",
+    "search": "Véhicules trouvés",
+    "noSearch": "Aucun véhicule disponible selon les critères sélectionnés."
+
   },
   "Perfil": {
     "perfil": "Profil de",
@@ -198,5 +205,39 @@
       "creado": "Créé le : ",
       "sinIncidencias": "Cet utilisateur n'a aucun incident."
     }
-  }
+  },
+
+  "reservaPropia": {
+      "activa": "Active",
+      "cancelada": "Annulée",
+      "detallesReserva": "Détails de la réservation",
+      "id": "ID de la réservation",
+      "fechas": "Dates",
+      "precio": "Prix total",
+      "detallesVehículo": "Détails du véhicule",
+      "capacidad": "Capacité",
+      "pasajeros": "Passagers",
+      "tipo": "Type",
+      "transmisión": "Transmission",
+      "puertas": "Nombre de portes",
+      "depósito": "Dépôt",
+      "precioDia": "Prix par jour",
+      "propietario": "Propriétaire du véhicule",
+      "nombre": "Nom",
+      "teléfono": "Téléphone",
+      "cancelar": "Annuler la réservation",
+      "volver": "Retour",
+      "guardar": "Enregistrer les modifications",
+      "editar": "Modifier la réservation",
+      "fechaIn": "Date de début",
+      "fechaFin": "Date de fin",
+      "cancel": "Annuler",
+      "combustible": "Kraftstoff",
+      "dirección": "Adresse",
+      "noCarga": "Impossible de charger les informations du propriétaire.",
+      "vehículo": "Véhicule",
+      "cliente": "Client",
+      "activas": "Actives",
+      "canceladas": "Annulées"
+    }
 }

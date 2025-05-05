@@ -3,34 +3,67 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import VehicleCard from "@/components/templates/VehicleCard"; 
 import { useRouter } from 'expo-router';
+import { useTranslation } from "react-i18next";
+
 
 export default function VehicleDetails() {
   const { id, vehicles: vehiclesParam } = useLocalSearchParams();
   const [vehicle, setVehicle] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const router = useRouter();
+  const { t } = useTranslation();
+  
 
   useEffect(() => {
+    const fetchImageUrl = async (ownerId: string, vehicleId: string) => {
+      try {
+        const res = await fetch(`http://localhost:3000/media/vehicles/${ownerId}/${vehicleId}`);
+        const images = await res.json();
+        return images.length > 0 && images[0].data ? images[0].data : "http://via.placeholder.com/150";
+      } catch (err) {
+        console.warn(`No se pudo cargar la imagen del vehículo ${vehicleId}`, err);
+        return "http://via.placeholder.com/150";
+      }
+    };
+  
+    const loadVehiclesWithImages = async (vehiclesData) => {
+      const enrichedVehicles = await Promise.all(
+        vehiclesData.map(async (v) => ({
+          ...v,
+          imageUrl: await fetchImageUrl(v.owner_id, v.id),
+        }))
+      );
+      setVehicles(enrichedVehicles);
+    };
+  
+    const loadSingleVehicleWithImage = async (vehicleData) => {
+      const imageUrl = await fetchImageUrl(vehicleData.owner_id, vehicleData.id);
+      setVehicle({ ...vehicleData, imageUrl });
+    };
+  
     // Si tenemos parámetro vehicles (búsqueda múltiple)
     if (vehiclesParam) {
       try {
         const parsedVehicles = JSON.parse(vehiclesParam);
-        setVehicles(Array.isArray(parsedVehicles) ? parsedVehicles : []);
-        return;
+        if (Array.isArray(parsedVehicles)) {
+          loadVehiclesWithImages(parsedVehicles); // ← AQUÍ se llama correctamente
+        } else {
+          setVehicles([]);
+        }
       } catch (error) {
         console.error("Error al parsear vehículos:", error);
       }
+      return; // ← importante para no ejecutar también el bloque de ID
     }
-
+  
     // Si tenemos ID (búsqueda individual)
     if (id) {
       const fetchVehicle = async () => {
         try {
-          console.log("ID del vehículo recibido:", id); 
-          const response = await fetch(`http://localhost:3000/vehicles/${id}`); 
+          const response = await fetch(`http://localhost:3000/vehicles/${id}`);
           const data = await response.json();
           if (data && data.length > 0) {
-            setVehicle(data[0]);
+            loadSingleVehicleWithImage(data[0]); // ← AQUÍ también se llama correctamente
           } else {
             console.error("No se encontraron datos del vehículo con este ID");
           }
@@ -46,7 +79,7 @@ export default function VehicleDetails() {
   if (vehicles.length > 0) {
     return (
       <View style={styles.container}>
-        <Text style={styles.resultsTitle}>Vehículos encontrados: {vehicles.length}</Text>
+        <Text style={styles.resultsTitle}>{t("ResultadosFiltrados.search")}: {vehicles.length}</Text>
         
         <FlatList
           data={vehicles}
@@ -139,7 +172,7 @@ export default function VehicleDetails() {
   return (
     <View style={styles.noVehiclesContainer}>
       <Text style={styles.noVehiclesText}>
-        No hay vehículos disponibles con los criterios seleccionados.
+        {t("ResultadosFiltrados.noSearch")}
       </Text>
     </View>
   );

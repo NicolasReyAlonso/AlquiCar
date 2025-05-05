@@ -91,12 +91,14 @@
 
   "VehicleCard": {
     "places": "Posti",
-    "mileage": "Chilometraggio",
-    "location": "Luogo di ritiro",
     "day": "giorno",
     "buttons": {
       "reservation": "Prenota"
-    }
+    },
+    "type": "Tipo",
+    "capacity": "Capacità",
+    "doors": "Porte",
+    "price": "Prezzo giornaliero"
   },
 
   "reserveVehicle": {
@@ -117,7 +119,9 @@
     "buttons": {
       "confirmation": "Conferma Prenotazione"
     },
-    "cancelDate": "Data massima per annullamento:"
+    "cancelDate": "Data massima per annullamento:",
+    "selecciona": "Seleziona la data:"
+
   },
 
   "layout": {
@@ -185,7 +189,10 @@
     "title": "Risultati Filtrati",
     "notFound": "Nessun risultato trovato.",
     "type": "Tipo",
-    "price": "Prezzo giornaliero"
+    "price": "Prezzo giornaliero",
+    "search": "Veicoli trovati",
+    "noSearch": "Nessun veicolo disponibile con i criteri selezionati."
+
   },
 
   "Perfil": {
@@ -213,5 +220,38 @@
       "creado": "Creato il: ",
       "sinIncidencias": "Questo utente non ha segnalazioni."
     }
+  },
+  "reservaPropia": {
+    "activa": "Attiva",
+    "cancelada": "Annullata",
+    "detallesReserva": "Dettagli della prenotazione",
+    "id": "ID della prenotazione",
+    "fechas": "Date",
+    "precio": "Prezzo totale",
+    "detallesVehículo": "Dettagli del veicolo",
+    "capacidad": "Capacità",
+    "pasajeros": "Passeggeri",
+    "tipo": "Tipo",
+    "transmisión": "Trasmissione",
+    "puertas": "Numero di porte",
+    "depósito": "Deposito",
+    "precioDia": "Prezzo per giorno",
+    "propietario": "Proprietario del veicolo",
+    "nombre": "Nome",
+    "teléfono": "Telefono",
+    "cancelar": "Annulla prenotazione",
+    "volver": "Indietro",
+    "guardar": "Salva modifiche",
+    "editar": "Modifica prenotazione",
+    "fechaIn": "Data di inizio",
+    "fechaFin": "Data di fine",
+    "cancel": "Annulla",
+    "combustible": "Carburante",
+    "dirección": "Indirizzo",
+    "noCarga": "Impossibile caricare le informazioni del proprietario.",
+    "vehículo": "Veicolo",
+    "cliente": "Cliente",
+    "activas": "Attive",
+    "canceladas": "Cancellate"
   }
 }

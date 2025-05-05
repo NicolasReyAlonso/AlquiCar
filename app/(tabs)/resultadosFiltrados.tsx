@@ -32,9 +32,24 @@ const ResultadosFiltrados = () => {
 
           return matchesBrand && matchesType; // Ambas condiciones deben cumplirse
         });
+        
+        const resultsWithImages = await Promise.all(
+          results.map(async (vehicle) => {
+            let imageUrl = "http://via.placeholder.com/150";
+            try {
+              const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+              const images = await imgRes.json();
+              if (images.length > 0 && images[0].data) {
+                imageUrl = images[0].data;
+              }
+            } catch (imgError) {
+              console.warn(`No se pudo cargar la imagen del vehículo ${vehicle.id}`, imgError);
+            }
+            return { ...vehicle, imageUrl };
+          })
+        );
 
-        console.log("Resultados filtrados:", results); // Verifica los resultados filtrados
-        setFilteredResults(results);
+        setFilteredResults(resultsWithImages);
       } catch (error) {
         console.error("Error al obtener los resultados filtrados:", error);
       }

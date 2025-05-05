@@ -174,7 +174,7 @@ export default function ConfirmacionReserva() {
         <Text style={styles.subtitle}>{t("reserveVehicle.startDate")}</Text>
         <View style={styles.dateRow}>
           <TextInput
-            placeholder="Selecciona la fecha"
+            placeholder={t("reserveVehicle.selecciona")}
             placeholderTextColor="gray"
             value={pickupDate ? pickupDate.toLocaleDateString() : ""}
             editable={false}
@@ -201,7 +201,7 @@ export default function ConfirmacionReserva() {
         <Text style={styles.subtitle}>{t("reserveVehicle.finishDate")}</Text>
         <View style={styles.dateRow}>
           <TextInput
-            placeholder="Selecciona la fecha"
+            placeholder={t("reserveVehicle.selecciona")}
             placeholderTextColor="gray"
             value={returnDate ? returnDate.toLocaleDateString() : ""}
             editable={false}

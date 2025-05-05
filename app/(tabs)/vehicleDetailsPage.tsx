@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'rea
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Para obtener el userId del usuario actual
+import { useTranslation } from "react-i18next";
 
 export default function VehicleDetailsPage() {
   const { id } = useLocalSearchParams();
@@ -11,6 +12,7 @@ export default function VehicleDetailsPage() {
   const [direccion, setDireccion] = useState("Dirección desconocida");
   const [userId, setUserId] = useState(null); // Estado para el userId del usuario actual
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -119,28 +121,28 @@ export default function VehicleDetailsPage() {
         </View>
 
         {/* Otros detalles */}
-        <Text style={styles.sectionTitle}>Detalles del Vehículo:</Text>
-        <Text style={styles.detailText}>Capacidad: {vehicle.capacity} pasajeros</Text>
-        <Text style={styles.detailText}>Tipo: {vehicle.type}</Text>
-        <Text style={styles.detailText}>Transmisión: {vehicle.transmission}</Text>
-        <Text style={styles.detailText}>Combustible: {vehicle.fuel_type}</Text>
-        <Text style={styles.detailText}>Número de Puertas: {vehicle.num_doors}</Text>
-        <Text style={styles.detailText}>Dirección: {direccion}</Text>
-        <Text style={styles.detailText}>Depósito: {`€${vehicle.deposit}`}</Text>
-        <Text style={styles.detailText}>Precio por Día: {`€${vehicle.daily_price}`}</Text>
+        <Text style={styles.sectionTitle}>{t("reservaPropia.detallesVehículo")}:</Text>
+        <Text style={styles.detailText}>{t("reservaPropia.capacidad")}: {vehicle.capacity} {t("reservaPropia.pasajeros")}</Text>
+        <Text style={styles.detailText}>{t("reservaPropia.tipo")}: {vehicle.type}</Text>
+        <Text style={styles.detailText}>{t("reservaPropia.transmisión")}: {vehicle.transmission}</Text>
+        <Text style={styles.detailText}>{t("reservaPropia.combustible")}: {vehicle.fuel_type}</Text>
+        <Text style={styles.detailText}>{t("reservaPropia.puertas")}: {vehicle.num_doors}</Text>
+        <Text style={styles.detailText}>{t("reservaPropia.dirección")}: {direccion}</Text>
+        <Text style={styles.detailText}>{t("reservaPropia.depósito")}: {`€${vehicle.deposit}`}</Text>
+        <Text style={styles.detailText}>{t("reservaPropia.precio")}: {`€${vehicle.daily_price}`}</Text>
       </View>
 
       {/* Información del propietario */}
       <View style={styles.detailsContainer}>
-        <Text style={styles.sectionTitle}>Propietario del Vehículo:</Text>
+        <Text style={styles.sectionTitle}>{t("reservaPropia.propietario")}:</Text>
         {owner ? (
           <>
-            <Text style={styles.detailText}>Nombre: {owner.name}</Text>
-            <Text style={styles.detailText}>Email: {owner.email}</Text>
-            <Text style={styles.detailText}>Teléfono: {owner.phone}</Text>
+            <Text style={styles.detailText}>{t("reservaPropia.nombre")}: {owner.name}</Text>
+            <Text style={styles.detailText}>{t("reservaPropia.dirección")}: {owner.email}</Text>
+            <Text style={styles.detailText}>{t("reservaPropia.teléfono")}: {owner.phone}</Text>
           </>
         ) : (
-          <Text style={styles.detailText}>No se pudo cargar la información del propietario.</Text>
+          <Text style={styles.detailText}>{t("reservaPropia.noCarga")}</Text>
         )}
       </View>
 
@@ -168,7 +170,7 @@ export default function VehicleDetailsPage() {
             })
           }
         >
-          <Text style={styles.backButtonText}>Reservar</Text>
+          <Text style={styles.backButtonText}>{t("VehicleCard.buttons.reservation")}</Text>
         </TouchableOpacity>
       )}
     </ScrollView>

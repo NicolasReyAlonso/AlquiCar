@@ -3,6 +3,9 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } fr
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
 import { DatePickerModal } from 'react-native-paper-dates';
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function DetallesReserva() {
   const { id } = useLocalSearchParams();
@@ -17,6 +20,7 @@ export default function DetallesReserva() {
   const [pickupDatePickerVisible, setPickupDatePickerVisible] = useState(false);
   const [returnDatePickerVisible, setReturnDatePickerVisible] = useState(false);
   const [changedStatus, setChangedStatus] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchReservationDetails = async () => {
@@ -38,6 +42,19 @@ export default function DetallesReserva() {
           const vehicleData = await vehicleResponse.json();
 
           const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
+
+          let imageUrl = "http://via.placeholder.com/150";
+          try {
+            const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+            const images = await imgRes.json();
+            if (images.length > 0 && images[0].data) {
+              imageUrl = images[0].data;
+            }
+          } catch (imgError) {
+            console.warn(`No se pudo cargar la imagen del vehículo ${vehicleData.id}`, imgError);
+          }
+          vehicle.imageUrl = imageUrl;
+
           setVehicle(vehicle);
 
           // Propietario del coche
@@ -172,15 +189,15 @@ const handleUpdateReservation = async () => {
       <View style={styles.detailsContainer}>
         <View style={[styles.statusContainer, { backgroundColor: statusBackgroundColor }]}>
           <Text style={[styles.statusText, { color: statusTextColor }]}>
-            {reservation.status === "Cancelled" ? "Cancelada" : "Activa"}
+            {reservation.status === "Cancelled" ? "Cancelled" : "Active"}
           </Text>
         </View>
   
         {isEditing ? (
           <>
-            <Text style={styles.sectionTitle}>Editar Reserva:</Text>
+            <Text style={styles.sectionTitle}>{t('reservaPropia.detallesReserva')}</Text>
             <TouchableOpacity onPress={() => setPickupDatePickerVisible(true)}>
-              <Text style={styles.detailText}>Fecha de inicio: {new Date(startDate).toLocaleDateString()}</Text>
+              <Text style={styles.detailText}>{t('reservaPropia.fechaIn')}: {new Date(startDate).toLocaleDateString()}</Text>
             </TouchableOpacity>
             <DatePickerModal
               locale="es"
@@ -191,7 +208,7 @@ const handleUpdateReservation = async () => {
               onConfirm={onPickupDateConfirm}
             />
             <TouchableOpacity onPress={() => setReturnDatePickerVisible(true)}>
-              <Text style={styles.detailText}>Fecha de fin: {new Date(endDate).toLocaleDateString()}</Text>
+              <Text style={styles.detailText}>{t('reservaPropia.fechaFin')}: {new Date(endDate).toLocaleDateString()}</Text>
             </TouchableOpacity>
             <DatePickerModal
               locale="es"
@@ -201,25 +218,25 @@ const handleUpdateReservation = async () => {
               date={new Date(endDate)}
               onConfirm={onReturnDateConfirm}
             />
-            <Text style={styles.detailText}>Precio Total: €{totalPrice}</Text>
+            <Text style={styles.detailText}>{t('reservaPropia.precio')}: €{totalPrice}</Text>
             <TouchableOpacity style={styles.saveButton} onPress={handleUpdateReservation}>
-              <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+              <Text style={styles.saveButtonText}>{t('reservaPropia.guardar')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.cancelButton} onPress={() => setIsEditing(false)}>
-              <Text style={styles.cancelButtonText}>Cancelar</Text>
+              <Text style={styles.cancelButtonText}>{t('reservaPropia.cancel')}</Text>
             </TouchableOpacity>
           </>
         ) : (
           <>
-            <Text style={styles.sectionTitle}>Detalles de la Reserva:</Text>
-            <Text style={styles.detailText}>ID de la reserva: {reservation.id}</Text>
+            <Text style={styles.sectionTitle}>{t('reservaPropia.detallesReserva')}</Text>
+            <Text style={styles.detailText}>{t('reservaPropia.id')}: {reservation.id}</Text>
             <Text style={styles.detailText}>
-              Fechas: {new Date(reservation.start_date).toLocaleDateString()} - {new Date(reservation.end_date).toLocaleDateString()}
+            {t('reservaPropia.fechas')}: {new Date(reservation.start_date).toLocaleDateString()} - {new Date(reservation.end_date).toLocaleDateString()}
             </Text>
-            <Text style={styles.detailText}>Precio Total: €{reservation.total_price}</Text>
+            <Text style={styles.detailText}>{t('reservaPropia.precio')}: €{reservation.total_price}</Text>
             {reservation.status !== "Cancelled" && (
               <TouchableOpacity style={styles.editButton} onPress={() => setIsEditing(true)}>
-                <Text style={styles.editButtonText}>Editar Reserva</Text>
+                <Text style={styles.editButtonText}>{t('reservaPropia.editar')}</Text>
               </TouchableOpacity>
             )}
           </>
@@ -228,34 +245,34 @@ const handleUpdateReservation = async () => {
   
       {/* Detalles del vehículo */}
       <View style={styles.detailsContainer}>
-        <Text style={styles.sectionTitle}>Detalles del Vehículo:</Text>
-        <Text style={styles.detailText}>Capacidad: {vehicle.capacity} pasajeros</Text>
-        <Text style={styles.detailText}>Tipo: {vehicle.type}</Text>
-        <Text style={styles.detailText}>Transmisión: {vehicle.transmission}</Text>
-        <Text style={styles.detailText}>Combustible: {vehicle.fuel_type}</Text>
-        <Text style={styles.detailText}>Número de Puertas: {vehicle.num_doors}</Text>
-        <Text style={styles.detailText}>Depósito: €{vehicle.deposit}</Text>
-        <Text style={styles.detailText}>Precio por Día: €{vehicle.daily_price}</Text>
+        <Text style={styles.sectionTitle}>{t('reservaPropia.detallesVehículo')}:</Text>
+        <Text style={styles.detailText}>{t('reservaPropia.capacidad')}: {vehicle.capacity} pasajeros</Text>
+        <Text style={styles.detailText}>{t('reservaPropia.tipo')}: {vehicle.type}</Text>
+        <Text style={styles.detailText}>{t('reservaPropia.transmisión')}: {vehicle.transmission}</Text>
+        <Text style={styles.detailText}>{t('reservaPropia.combustible')}: {vehicle.fuel_type}</Text>
+        <Text style={styles.detailText}>{t('reservaPropia.puertas')}: {vehicle.num_doors}</Text>
+        <Text style={styles.detailText}>{t('reservaPropia.depósito')}: €{vehicle.deposit}</Text>
+        <Text style={styles.detailText}>{t('reservaPropia.precioDia')}: €{vehicle.daily_price}</Text>
       </View>
   
       {/* Datos personales del propietario */}
       <View style={styles.detailsContainer}>
-        <Text style={styles.sectionTitle}>Propietario del Vehículo:</Text>
+        <Text style={styles.sectionTitle}>{t('reservaPropia.propietario')}:</Text>
         {owner ? (
           <>
-            <Text style={styles.detailText}>Nombre: {owner.name}</Text>
+            <Text style={styles.detailText}>{t('reservaPropia.nombre')}: {owner.name}</Text>
             <Text style={styles.detailText}>Email: {owner.email}</Text>
-            <Text style={styles.detailText}>Teléfono: {owner.phone}</Text>
+            <Text style={styles.detailText}>{t('reservaPropia.teléfono')}: {owner.phone}</Text>
           </>
         ) : (
-          <Text style={styles.detailText}>No se pudo cargar la información del propietario.</Text>
+          <Text style={styles.detailText}>{t('reservaPropia.noCarga')}</Text>
         )}
       </View>
   
       {/* Botón para cancelar la reserva */}
       {reservation.status !== "Cancelled" && (
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancelReservation}>
-          <Text style={styles.cancelButtonText}>Cancelar Reserva</Text>
+          <Text style={styles.cancelButtonText}>{t('reservaPropia.cancelar')}</Text>
         </TouchableOpacity>
       )}
   
@@ -268,7 +285,7 @@ const handleUpdateReservation = async () => {
         
         }} // Navegar a MisReservas
       >
-        <Text style={styles.backButtonText}>Volver</Text>
+        <Text style={styles.backButtonText}>{t('reservaPropia.volver')}</Text>
       </TouchableOpacity>
     </ScrollView>
   );

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import { useTranslation } from 'react-i18next';
 
 const ReservaDetalles = () => {
   const params = useLocalSearchParams();
   const [customerName, setCustomerName] = useState("Cargando...");
   const [reservation, setReservation] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.log("ID recibido en ReservaDetalles:", params.id);
@@ -50,19 +52,19 @@ const ReservaDetalles = () => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>Detalles de la Reserva</Text>
+        <Text style={styles.title}>{t("reservaPropia.detallesReserva")}</Text>
         
         <View style={[styles.statusBox, reservation?.status === "Cancelled" ? styles.cancelled : styles.active]}>
           <Text style={styles.statusText}>
-            {reservation?.status === "Cancelled" ? "Cancelada" : "Activa"}
+            {reservation?.status === "Cancelled" ? "Cancel" : "Active"}
           </Text>
         </View>
 
-        <Text style={styles.detail}><Text style={styles.label}>Vehículo:</Text> {params.vehicleName}</Text>
-        <Text style={styles.detail}><Text style={styles.label}>Cliente:</Text> {customerName}</Text>
-        <Text style={styles.detail}><Text style={styles.label}>Fecha de inicio:</Text> {new Date(params.startDate).toLocaleDateString()}</Text>
-        <Text style={styles.detail}><Text style={styles.label}>Fecha de fin:</Text> {new Date(params.endDate).toLocaleDateString()}</Text>
-        <Text style={styles.detail}><Text style={styles.label}>Precio total:</Text> {params.totalPrice}€</Text>
+        <Text style={styles.detail}><Text style={styles.label}>{t("reservaPropia.vehículo")}:</Text> {params.vehicleName}</Text>
+        <Text style={styles.detail}><Text style={styles.label}>{t("reservaPropia.cliente")}:</Text> {customerName}</Text>
+        <Text style={styles.detail}><Text style={styles.label}>{t("reservaPropia.fechaIn")}:</Text> {new Date(params.startDate).toLocaleDateString()}</Text>
+        <Text style={styles.detail}><Text style={styles.label}>{t("reservaPropia.fechaFin")}:</Text> {new Date(params.endDate).toLocaleDateString()}</Text>
+        <Text style={styles.detail}><Text style={styles.label}>{t("reservaPropia.precio")}:</Text> {params.totalPrice}€</Text>
       </View>
     </View>
   );

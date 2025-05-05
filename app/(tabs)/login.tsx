@@ -33,8 +33,13 @@ export default function LoginScreen() {
       });
   
       const data = await response.json();
-  
+    
+
       if (!response.ok) {
+        if(data.error === 'Usuario no verificado') {
+          alert('Falta la verificación de tu cuenta. Por favor, revisa tu correo electrónico para verificar tu cuenta.');
+          return;
+        }
         alert('Email o contraseña incorrectos');
         return;
       }

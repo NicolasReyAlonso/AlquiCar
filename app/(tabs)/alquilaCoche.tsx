@@ -277,10 +277,11 @@ export default function AlquilarCoche() {
             <Picker.Item key={model} label={model} value={model} />
           ))}
         </Picker>
-
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} keyboardType="numeric" />
+        
+        <Text>{t('RentYourVehicle.card.year')}</Text>
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} keyboardType="numeric" placeholderTextColor="grey"/>
         <Text>{t('RentYourVehicle.card.address')}</Text>
-        <TextInput style={styles.input} placeholder="Calle Pepito, 33, Las Palmas" value={address} onChangeText={setAddress} />
+        <TextInput style={styles.input} placeholder="Calle, Número, Ciudad" value={address} onChangeText={setAddress} placeholderTextColor="grey"/>
 
         <Text>{t('RentYourVehicle.card.type')}</Text>
         <Picker selectedValue={type} onValueChange={setType} style={styles.input}>
@@ -297,10 +298,14 @@ export default function AlquilarCoche() {
           {fuelTypes.map((f) => <Picker.Item key={f} label={f} value={f} />)}
         </Picker>
 
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.capacity')} value={capacity} onChangeText={setCapacity} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.num_doors')} value={numDoors} onChangeText={setNumDoors} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.price')} value={price} onChangeText={setPrice} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.deposit')} value={deposit} onChangeText={setDeposit} keyboardType="numeric" />
+        <Text>{t('RentYourVehicle.card.capacity')}</Text>
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.capacity')} value={capacity} onChangeText={setCapacity} keyboardType="numeric" placeholderTextColor="grey"/>
+        <Text>{t('RentYourVehicle.card.num_doors')}</Text>
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.num_doors')} value={numDoors} onChangeText={setNumDoors} keyboardType="numeric" placeholderTextColor="grey"/>
+        <Text>{t('RentYourVehicle.card.price')}</Text>
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.price')} value={price} onChangeText={setPrice} keyboardType="numeric" placeholderTextColor="grey"/>
+        <Text>{t('RentYourVehicle.card.deposit')}</Text>
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.deposit')} value={deposit} onChangeText={setDeposit} keyboardType="numeric" placeholderTextColor="grey"/>
 
         <TouchableOpacity style={styles.buttonAd} onPress={handleImagePicker}>
           <Text style={styles.buttonTextAd}>{t('RentYourVehicle.buttons.image')}</Text>
@@ -351,7 +356,7 @@ const styles = StyleSheet.create({
     borderColor: '#DDD',
     marginBottom: 15,
     fontFamily: theme.fonts.regular,
-    color: theme.lightTemplate.textColor,
+    color: 'black',
     width: '100%',
   },
   picker: {

@@ -88,10 +88,13 @@ export default function Layout({ children }: LayoutProps) {
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
+            <TouchableOpacity onPress={() => navigation.navigate('index')}>
               <Image
-                source={require('@/assets/images/logo2.png')}
-                style={styles.logo}
-              />
+                  source={require('@/assets/images/logo2.png')}
+                  style={styles.logo}
+                  
+                />
+            </TouchableOpacity>
               <TouchableOpacity
                 style={styles.touchableButton}
                 onPress={() => setIsLangMenuOpen(!isLangMenuOpen)}

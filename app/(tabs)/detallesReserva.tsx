@@ -212,6 +212,7 @@ const handleUpdateReservation = async () => {
         ) : (
           <>
             <Text style={styles.sectionTitle}>Detalles de la Reserva:</Text>
+            <Text style={styles.detailText}>ID de la reserva: {reservation.id}</Text>
             <Text style={styles.detailText}>
               Fechas: {new Date(reservation.start_date).toLocaleDateString()} - {new Date(reservation.end_date).toLocaleDateString()}
             </Text>

@@ -19,6 +19,7 @@ export default function ConfirmacionReserva() {
   const [precioCoche, setPrecioCoche] = useState(0);
   const [precioTotal, setPrecioTotal] = useState(0);
   const [fechasReservadas, setFechasReservadas] = useState<{ start_date: string; end_date: string }[]>([]);
+  const [direccion, setDireccion] = useState("Dirección desconocida");
 
   const openPickupDatePicker = () => setPickupDatePickerVisible(true);
   const closePickupDatePicker = () => setPickupDatePickerVisible(false);
@@ -99,6 +100,39 @@ export default function ConfirmacionReserva() {
   };
 
   useEffect(() => {
+
+    const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+        const data = await res.json();
+        return data.display_name || "Dirección desconocida";
+      } catch (error) {
+        console.error("Error al convertir coordenadas:", error);
+        return "Dirección desconocida";
+      }
+    };
+
+    const cargarDatosVehiculo = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/vehicles/${params.vehicleId}`, {
+          method: "GET",
+          credentials: "include",
+        });
+  
+        const data = await response.json();
+  
+        if (data && data.length > 0) {
+          const vehiculo = data[0];
+          if (vehiculo.latitude && vehiculo.longitude) {
+            const direccionObtenida = await convertirCoordenadasADireccion(vehiculo.latitude, vehiculo.longitude);
+            setDireccion(direccionObtenida);
+          }
+        }
+      } catch (error) {
+        console.error("Error al cargar datos del vehículo:", error);
+      }
+    };
+
     const cargarFechasReservadas = async () => {
       try {
         const response = await fetch(`http://localhost:3000/reservations?vehicle_id=${params.vehicleId}`);
@@ -113,6 +147,7 @@ export default function ConfirmacionReserva() {
     };
   
     if (params.vehicleId) {
+      cargarDatosVehiculo();
       cargarFechasReservadas();
     }
   }, [params.vehicleId]);
@@ -167,14 +202,14 @@ export default function ConfirmacionReserva() {
           <Text style={styles.title}>{reserva.marca}</Text>
           <Text style={styles.text}>{reserva.tipo} - {reserva.plazas} plazas</Text>
           <Text style={styles.text}>{reserva.transmision}</Text>
-          <Text style={styles.text}>{t("reserveVehicle.city")}: {reserva.ciudad}</Text>
+          <Text style={styles.text}>{t("reservaPropia.dirección")}: {direccion}</Text>
         </View>
       </View>
       <View style={styles.dateContainer}>
         <Text style={styles.subtitle}>{t("reserveVehicle.startDate")}</Text>
         <View style={styles.dateRow}>
           <TextInput
-            placeholder="Selecciona la fecha"
+            placeholder={t("reserveVehicle.selecciona")}
             placeholderTextColor="gray"
             value={pickupDate ? pickupDate.toLocaleDateString() : ""}
             editable={false}
@@ -201,7 +236,7 @@ export default function ConfirmacionReserva() {
         <Text style={styles.subtitle}>{t("reserveVehicle.finishDate")}</Text>
         <View style={styles.dateRow}>
           <TextInput
-            placeholder="Selecciona la fecha"
+            placeholder={t("reserveVehicle.selecciona")}
             placeholderTextColor="gray"
             value={returnDate ? returnDate.toLocaleDateString() : ""}
             editable={false}

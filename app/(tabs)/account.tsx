@@ -288,7 +288,7 @@ export default function AccountPage() {
 
       {isAdminMode ? (
         <View style={styles.usersContainer}>
-          <Text style={styles.subTitle}>Usuarios registrados</Text>
+          <Text style={styles.subTitle}>{t('ModoAdmin.usuarios')}</Text>
           <FlatList
             data={users}
             renderItem={({ item }) => (
@@ -296,14 +296,14 @@ export default function AccountPage() {
                 <Text style={styles.userText}>{item.name} - {item.email}</Text>
                 <View style={styles.userActions}>
                   <TouchableOpacity onPress={() => handleViewUser(item.id)} style={styles.actionButton}>
-                    <Text style={styles.buttonText}>Ver</Text>
+                    <Text style={styles.buttonText}>{t('ModoAdmin.ver')}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => handleDeleteUser(item.id)}
                     style={[styles.actionButton, { opacity: item.role === 'admin' ? 0.5 : 1 }]}
                     disabled={item.role === 'admin'}
                   >
-                    <Text style={styles.buttonText}>Eliminar</Text>
+                    <Text style={styles.buttonText}>{t('ModoAdmin.eliminar')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>

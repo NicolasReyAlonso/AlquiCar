@@ -5,6 +5,8 @@ import theme from "@/components/Theme";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { use } from "i18next";
+import { useTranslation } from 'react-i18next';
+
 
 interface Reservation {
   id: number;
@@ -23,6 +25,7 @@ const MisReservas = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [activeTab, setActiveTab] = useState("Activas"); 
   const {id, status} = useLocalSearchParams(); 
+  const { t } = useTranslation();
 
   const getUserId = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -141,13 +144,13 @@ const MisReservas = () => {
           style={[styles.tab, activeTab === "Activas" && styles.activeTab]}
           onPress={() => setActiveTab("Activas")}
         >
-          <Text style={[styles.tabText, activeTab === "Activas" && styles.activeTabText]}>Activas</Text>
+          <Text style={[styles.tabText, activeTab === "Activas" && styles.activeTabText]}>{t('reservaPropia.activas')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, activeTab === "Canceladas" && styles.activeTab]}
           onPress={() => setActiveTab("Canceladas")}
         >
-          <Text style={[styles.tabText, activeTab === "Canceladas" && styles.activeTabText]}>Canceladas</Text>
+          <Text style={[styles.tabText, activeTab === "Canceladas" && styles.activeTabText]}>{t('reservaPropia.canceladas')}</Text>
         </TouchableOpacity>
       </View>
 

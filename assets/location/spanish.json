@@ -93,12 +93,14 @@
   
     "VehicleCard": {
       "places": "Plazas",
-      "mileage": "Kilometraje",
-      "location": "Lugar de recogida",
       "day": "día",
       "buttons": {
         "reservation": "Reservar"
-      }
+      },
+      "type": "Tipo",
+      "capacity": "Capacidad",
+      "doors": "Puertas",
+      "price":"Precio diario"
     },
   
     "reserveVehicle": {
@@ -119,7 +121,8 @@
       "buttons": {
         "confirmation": "Confirmar Reserva"
       },
-      "cancelDate": "Fecha de cancelación máxima:"
+      "cancelDate": "Fecha de cancelación máxima:",
+      "selecciona": "Selecciona la fecha:"
     },
   
     "layout": {
@@ -180,14 +183,19 @@
 
     "ModoAdmin": {
       "modoAdmin": "Modo Administrador",
-      "modoUsuario": "Modo Usuario"
+      "modoUsuario": "Modo Usuario",
+      "usuarios": "Usuarios registrados",
+      "ver": "Ver",
+      "eliminar": "Eliminar"
     },
 
     "ResultadosFiltrados": {
       "title": "Resultados Filtrados",
       "notFound": "No se encontraron resultados.",
       "type": "Tipo",
-      "price": "Precio diario"
+      "price": "Precio diario",
+      "search": "Vehículos encontrados",
+      "noSearch": "No hay vehículos disponibles con los criterios seleccionados."
     },
 
     "Perfil": {
@@ -215,7 +223,41 @@
         "creado": "Creado en: ",
         "sinIncidencias": "Este usuario no tiene incidencias."
       }
-    }
+    },
+
+    "reservaPropia":{
+        "activa": "Activa",
+        "cancelada": "Cancelada",
+        "detallesReserva": "Detalles de la Reserva",
+        "id": "ID de la reserva",
+        "fechas": "Fechas",
+        "precio": "Precio Total",
+        "detallesVehículo": "Detalles del Vehículos",
+        "capacidad": "Capacidad",
+        "pasajeros": "Pasajeros",
+        "tipo": "Tipo",
+        "transmisión": "Transmisión",
+        "puertas": "Número de Puertas",
+        "depósito": "Depósito",
+        "precioDia": "Precio por Día",
+        "propietario": "Propietario del Vehículo",
+        "nombre": "Nombre",
+        "teléfono": "Teléfono",
+        "cancelar": "Cancelar Reserva",
+        "volver": "Volver",
+        "guardar": "Guardar Cambios",
+        "editar": "Editar Reserva",
+        "fechaIn": "Fecha de inicio",
+        "fechaFin": "Fecha de fin",
+        "cancel": "Cancelar",
+        "combustible": "Combustible",
+        "dirección": "Dirección",
+        "noCarga": "No se pudo cargar la información del propietario.",
+        "vehículo": "Vehículo",
+        "cliente": "Cliente",
+        "activas": "Activas",
+        "canceladas": "Canceladas"
+      }
 
   }
   

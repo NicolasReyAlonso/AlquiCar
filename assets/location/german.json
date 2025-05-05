@@ -83,12 +83,14 @@
   },
   "VehicleCard": {
     "places": "Sitzplätze",
-    "mileage": "Kilometerstand",
-    "location": "Abholort",
     "day": "Tag",
     "buttons": {
       "reservation": "Reservieren"
-    }
+    },
+    "type": "Typ",
+    "capacity": "Kapazität",
+    "doors": "Türen",
+    "price": "Tagespreis"
   },
   "reserveVehicle": {
     "title": "Reservierungsübersicht",
@@ -108,7 +110,9 @@
     "buttons": {
       "confirmation": "Reservierung bestätigen"
     },
-    "cancelDate": "Letztes Stornierungsdatum:"
+    "cancelDate": "Letztes Stornierungsdatum:",
+    "selecciona": "Wähle das Datum:"
+
   },
   "layout": {
     "search": "Suchen...",
@@ -165,13 +169,19 @@
   },
   "ModoAdmin": {
     "modoAdmin": "Administrator-Modus",
-    "modoUsuario": "Benutzermodus"
+    "modoUsuario": "Benutzermodus",
+    "usuarios": "Registrierte Benutzer",
+    "ver": "Sehen",
+    "eliminar": "Löschen"
   },
   "ResultadosFiltrados": {
     "title": "Gefilterte Ergebnisse",
     "notFound": "Keine Ergebnisse gefunden.",
     "type": "Typ",
-    "price": "Tagespreis"
+    "price": "Tagespreis",
+    "search": "Gefundene Fahrzeuge",
+    "noSearch": "Keine Fahrzeuge mit den ausgewählten Kriterien verfügbar."
+
   },
   "Perfil": {
     "perfil": "Profil von",
@@ -198,5 +208,39 @@
       "creado": "Erstellt am: ",
       "sinIncidencias": "Dieser Benutzer hat keine Vorfälle."
     }
-  }
+  },
+
+  "reservaPropia": {
+      "activa": "Aktiv",
+      "cancelada": "Storniert",
+      "detallesReserva": "Reservierungsdetails",
+      "id": "Reservierungs-ID",
+      "fechas": "Daten",
+      "precio": "Gesamtpreis",
+      "detallesVehículo": "Fahrzeugdetails",
+      "capacidad": "Kapazität",
+      "pasajeros": "Passagiere",
+      "tipo": "Typ",
+      "transmisión": "Getriebe",
+      "puertas": "Anzahl der Türen",
+      "depósito": "Kaution",
+      "precioDia": "Preis pro Tag",
+      "propietario": "Fahrzeugeigentümer",
+      "nombre": "Name",
+      "teléfono": "Telefon",
+      "cancelar": "Reservierung stornieren",
+      "volver": "Zurück",
+      "guardar": "Änderungen speichern",
+      "editar": "Reservierung bearbeiten",
+      "fechaIn": "Startdatum",
+      "fechaFin": "Enddatum",
+      "cancel": "Abbrechen",
+      "combustible": "Kraftstoff",
+      "dirección": "Adresse",
+      "noCarga": "Eigentümerinformationen konnten nicht geladen werden.",
+      "vehículo": "Fahrzeug",
+      "cliente": "Kunde",
+      "activas": "Aktiv",
+      "canceladas": "Storniert"
+    }
 }

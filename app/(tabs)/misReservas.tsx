@@ -174,7 +174,7 @@ const MisReservas = () => {
                     : undefined
                 } 
                 onPress={() => router.push({ pathname: "/detallesReserva", params: { id: reservation.id } })}
-                onChatPress={() => router.push({ pathname: "/chat", params: { contactId: reservation.ownerId } })}
+                //onChatPress={() => router.push({ pathname: "/chat", params: { contactId: reservation.ownerId } })}
 
               />
             </View>

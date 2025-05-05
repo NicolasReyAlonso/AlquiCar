@@ -44,38 +44,51 @@ const index = () => {
     closeReturnDatePicker();
   };
 
+
   const handleBuscar = async () => {
     try {
-      if (!city && !brand) {
-        Alert.alert('Error', 'Por favor, ingresa al menos un filtro para buscar.');
-        return;
-      }
-  
       const response = await fetch('http://localhost:3000/vehicles/');
-      if (!response.ok) {
-        throw new Error('Error en la respuesta del servidor');
-      }
+      if (!response.ok) throw new Error('Error en la respuesta del servidor');
+      
       const allVehicles = await response.json();
-  
+      
       const filteredVehicles = allVehicles.filter(vehicle => {
-        const isCityMatch = city === "" || vehicle.city?.toLowerCase().includes(city.toLowerCase());
-        const isBrandMatch = brand === "" || (vehicle.brand?.trim().toLowerCase() || "") === brand.trim().toLowerCase();
-
-        return isCityMatch && isBrandMatch;
+        const isCityMatch = city ? 
+          vehicle.city?.toLowerCase().includes(city.toLowerCase()) : true;
+        
+        const isBrandMatch = brand ? 
+          vehicle.brand?.toLowerCase() === brand.toLowerCase() : true;
+        
+        let isDateMatch = true;
+        if (pickupDate) {
+          const vehicleRegDate = new Date(vehicle.registration_date);
+          isDateMatch = vehicle.availability === 1 && vehicleRegDate <= pickupDate;
+        }
+  
+        return isCityMatch && isBrandMatch && isDateMatch;
       });
   
-      if (filteredVehicles.length === 1) {
-        router.push(`/vehicleDetails?id=${filteredVehicles[0].id}`);
-      } else if (filteredVehicles.length === 0) {
-        router.push('/noResults'); 
-      } else {
-        setVehicles(filteredVehicles);
-      }
+      // Siempre redirigir a vehicleDetails con los resultados
+      router.push({
+        pathname: '/vehicleDetails',
+        params: { 
+          vehicles: JSON.stringify(filteredVehicles),
+          searchParams: JSON.stringify({
+            pickupDate: pickupDate?.toISOString(),
+            city,
+            brand
+          })
+        }
+      });
+      
     } catch (error) {
+      console.error("Error en handleBuscar:", error);
       Alert.alert('Error', 'Hubo un problema al buscar los vehículos');
-      console.error(error);
     }
   };
+  
+  
+
 
   return (
     <SafeAreaView style={styles.safeArea}>

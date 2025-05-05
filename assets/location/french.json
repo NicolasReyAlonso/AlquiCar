@@ -14,7 +14,6 @@
       "brand": "Sélectionnez une marque"
     }
   },
-
   "Account": {
     "title": "Détails du Compte",
     "name": "Nom",
@@ -25,7 +24,6 @@
     },
     "changePhoto": "Changer la photo de profil"
   },
-
   "Login": {
     "title": "Connexion",
     "password": "Mot de passe",
@@ -34,7 +32,6 @@
       "register": "S'INSCRIRE"
     }
   },
-
   "Register": {
     "title": "Créer un Compte",
     "password": "Mot de passe",
@@ -49,7 +46,6 @@
       "repeatPassword": "Répéter le mot de passe"
     }
   },
-
   "RentYourVehicle": {
     "title": "Publier votre voiture",
     "card": {
@@ -70,8 +66,6 @@
       "publish": "Publier"
     }
   },
-
-
   "MyReservationCard": {
     "day": "jour",
     "date": "Date",
@@ -80,7 +74,6 @@
       "chat": "Contacter le propriétaire"
     }
   },
-
   "MyPublishedVehicles": {
     "day": "jour",
     "city": "Ville",
@@ -88,7 +81,6 @@
       "remove": "Supprimer le véhicule"
     }
   },
-
   "VehicleCard": {
     "places": "Places",
     "mileage": "Kilométrage",
@@ -98,7 +90,6 @@
       "reservation": "Réserver"
     }
   },
-
   "reserveVehicle": {
     "title": "Résumé de la réservation",
     "places": "places",
@@ -119,7 +110,6 @@
     },
     "cancelDate": "Date limite d’annulation :"
   },
-
   "layout": {
     "search": "Rechercher...",
     "Menu": "MENU",
@@ -128,7 +118,7 @@
       "home": "Page d’Accueil",
       "reservations": "Mes Réservations",
       "publications": "Mes Annonces",
-      "incidences" : "Mes incidents",
+      "incidences": "Mes incidents",
       "chat": "Bavarder"
     },
     "filter": "Filtrer par",
@@ -144,48 +134,69 @@
     "todas": "Toutes",
     "todos": "Tous"
   },
-
   "Incidencias": {
-  "titulo": "Titre de l'incident",
-  "descripcion": "Description",
-  "crear": "Créer un incident",
-  "reserva": "ID de réservation",
-  "id": "ID de l'incident",
-  "tipo": "Type d'incident",
-  "usuario": "Utilisateur",
-  "plataforma": "Plateforme",
-  "misIncidencias": "Mes incidents",
-  "sinIncidencias": "Aucun incident signalé",
-  "estado": "État",
-  "fecha": "Date",
-  "categoria": "Catégorie",
-  "formatoFecha": "JJ/MM/AAAA",
-  "problema": "Décrivez le problème",
-  "enviar": "Envoyer",
-  "resolver": "Résoudre",
-  "denegar": "Nier",
-  "botones": {
-    "guardar": "Enregistrer",
-    "cancelar": "Annuler"
-  }
-},
-
+    "titulo": "Titre de l'incident",
+    "descripcion": "Description",
+    "crear": "Créer un incident",
+    "reserva": "ID de réservation",
+    "id": "ID de l'incident",
+    "tipo": "Type d'incident",
+    "usuario": "Utilisateur",
+    "plataforma": "Plateforme",
+    "misIncidencias": "Mes incidents",
+    "sinIncidencias": "Aucun incident signalé",
+    "estado": "État",
+    "fecha": "Date",
+    "categoria": "Catégorie",
+    "formatoFecha": "JJ/MM/AAAA",
+    "problema": "Décrivez le problème",
+    "enviar": "Envoyer",
+    "resolver": "Résoudre",
+    "denegar": "Nier",
+    "botones": {
+      "guardar": "Enregistrer",
+      "cancelar": "Annuler"
+    }
+  },
   "VerifyEmail": {
     "title": "Vérifiez votre e-mail!",
     "message": "Nous vous avons envoyé un e-mail de vérification. Veuillez vérifier votre boîte de réception pour compléter l'inscription.",
     "goToLogin": "Aller à la connexion"
   },
-
   "ModoAdmin": {
     "modoAdmin": "Mode Administrateur",
     "modoUsuario": "Mode Utilisateur"
   },
-
   "ResultadosFiltrados": {
     "title": "Résultats Filtrés",
     "notFound": "Aucun résultat trouvé.",
     "type": "Type",
     "price": "Prix journalier"
+  },
+  "Perfil": {
+    "perfil": "Profil de",
+    "vehiculos": {
+      "vehiculos": "Véhicules publiés",
+      "marca": "Marque : ",
+      "modelo": "Modèle : ",
+      "registro": "Date d'enregistrement : ",
+      "precio": "Prix par jour : ",
+      "sinVehiculos": "Cet utilisateur n'a publié aucun véhicule."
+    },
+    "reservas": {
+      "reservas": "Réservations",
+      "precio": "Prix total : ",
+      "estado": "Statut : ",
+      "fechaIn": "Date de début : ",
+      "fechaFin": "Date de fin : ",
+      "sinReservas": "Cet utilisateur n'a aucune réservation."
+    },
+    "incidencias": {
+      "incidencias": "Incidents",
+      "id": "ID de l'incident : ",
+      "descripcion": "Description : ",
+      "creado": "Créé le : ",
+      "sinIncidencias": "Cet utilisateur n'a aucun incident."
+    }
   }
-
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 
 const UserProfileScreen = () => {
   interface Vehicle {
@@ -37,6 +38,7 @@ const UserProfileScreen = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [incidences, setIncidences] = useState<Incidence[]>([]);
+  const { t } = useTranslation();
 
 
   const fetchUserData = async () => {
@@ -118,50 +120,50 @@ const UserProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Perfil de {userData.name}</Text>
+      <Text style={styles.title}> {t('Perfil.perfil')} {userData.name}</Text>
 
-      <Text style={styles.sectionTitle}>Vehículos publicados:</Text>
+      <Text style={styles.sectionTitle}>{t('Perfil.vehiculos.vehiculos')}</Text>
       <FlatList
         data={vehicles}
         renderItem={({ item }) => (
           <Text style={styles.itemText}>
-            Marca: {item.brand}{"\n"}
-            Model: {item.model}{"\n"}
-            Día de registro: {new Date(item.registration_date).toLocaleDateString()}{"\n"}
-            Precio al día: {item.daily_price}€
+            {t('Perfil.vehiculos.marca')}: {item.brand}{"\n"}
+            {t('Perfil.vehiculos.modelo')}: {item.model}{"\n"}
+            {t('Perfil.vehiculos.registro')} {new Date(item.registration_date).toLocaleDateString()}{"\n"}
+            {t('Perfil.vehiculos.precio')} {item.daily_price}€
           </Text>
         )}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text style={styles.emptyText}>No tienes vehículos publicados.</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>{t('Perfil.vehiculos.sinVehiculos')}</Text>}
       />
 
-      <Text style={styles.sectionTitle}>Reservas:</Text>
+      <Text style={styles.sectionTitle}>{t('Perfil.reservas.reservas')}</Text>
       <FlatList
         data={reservations}
         renderItem={({ item }) => (
           <Text style={styles.itemText}>
-            Precio total: {item.total_price}{"\n"}
-            Estado: {item.status}{"\n"}
-            Fecha de inicio: {new Date(item.start_date).toLocaleDateString()}{"\n"}
-            Fecha de fin: {new Date(item.end_date).toLocaleDateString()}
+            {t('Perfil.reservas.precio')} {item.total_price}{"\n"}
+            {t('Perfil.reservas.estado')} {item.status}{"\n"}
+            {t('Perfil.reservas.fechaIn')} {new Date(item.start_date).toLocaleDateString()}{"\n"}
+            {t('Perfil.reservas.fechaFin')} {new Date(item.end_date).toLocaleDateString()}
           </Text>
         )}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text style={styles.emptyText}>No tienes reservas.</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>{t('Perfil.reservas.sinReservas')}</Text>}
       />
 
-      <Text style={styles.sectionTitle}>Incidencias:</Text>
+      <Text style={styles.sectionTitle}>{t('Perfil.incidencias.incidencias')}</Text>
       <FlatList
         data={incidences}
         renderItem={({ item }) => (
           <Text style={styles.itemText}>
-            ID Incidencia: {item.id}{"\n"}
-            Descripción de la incidencia: {item.description}{"\n"}
-            Creada en: {new Date(item.created_at).toLocaleDateString()}
+            {t('Perfil.incidencias.id')} {item.id}{"\n"}
+            {t('Perfil.incidencias.descripcion')} {item.description}{"\n"}
+            {t('Perfil.incidencias.creado')} {new Date(item.created_at).toLocaleDateString()}
           </Text>
         )}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text style={styles.emptyText}>No tienes incidencias.</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>{t('Perfil.incidencias.sinIncidencias')}</Text>}
       />
     </View>
   );

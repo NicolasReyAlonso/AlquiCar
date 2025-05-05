@@ -166,19 +166,23 @@ const misCochesPublicados = () => {
 
             return (
               <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  router.push({
-                    pathname: "/(tabs)/reservaPropia",
-                    params: {
-                      vehicleName,
-                      customerId: reservation.customer_id,
-                      startDate: reservation.start_date,
-                      endDate: reservation.end_date,
-                      totalPrice: reservation.total_price,
-                    },
-                  });
-                }}
+  key={index}
+  onPress={() => {
+    console.log("Navegando a reservaPropia con:", reservation); // Agregar aquí
+    router.push({
+      pathname: "/(tabs)/reservaPropia",
+      params: {
+        id: reservation.id, // Agregar el ID de la reserva explícitamente
+        vehicleName,
+        customerId: reservation.customer_id,
+        startDate: reservation.start_date,
+        endDate: reservation.end_date,
+        totalPrice: reservation.total_price,
+      },
+    });
+  }}
+>
+
               >
                 <Text style={styles.notificationText}>
                   {`Tu vehículo "${vehicleName}" ha sido reservado.`}

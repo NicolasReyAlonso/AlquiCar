@@ -51,7 +51,26 @@ const ResultadosFiltrados = () => {
         setLoading(true);
         const response = await fetch(`http://localhost:3000/vehicles`);
         const data = await response.json();
-        setAllVehicles(data);
+
+        const vehiclesWithImages = await Promise.all(
+          data.map(async (vehicle) => {
+            let imageUrl = "http://via.placeholder.com/150";
+  
+            try {
+              const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+              const images = await imgRes.json();
+              if (images.length > 0 && images[0].data) {
+                imageUrl = images[0].data;
+              }
+            } catch (imgError) {
+              console.warn(`No se pudo cargar la imagen del vehículo ${vehicle.id}`, imgError);
+            }
+  
+            return { ...vehicle, imageUrl };
+          })
+        );
+
+        setAllVehicles(vehiclesWithImages);
         
         // Calcular precio máximo para el slider
         const maxVehiclePrice = Math.max(...data.map(v => parseFloat(v.daily_price) || 0));

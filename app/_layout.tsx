@@ -1,5 +1,5 @@
 import React, { useState, ReactNode, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert, Platform, ActivityIndicator, StyleSheet, useColorScheme, Image } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, Alert, Platform, ActivityIndicator, StyleSheet, useColorScheme, Image, ScrollView } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useNavigation } from 'expo-router';
 import { FontAwesome, FontAwesome5, Ionicons } from '@expo/vector-icons';
@@ -14,7 +14,7 @@ import i18n from '../assets/location/i18n';
 import { useTranslation } from 'react-i18next';
 import { Picker } from "@react-native-picker/picker";
 import { Pressable } from 'react-native';
-
+import Slider from '@react-native-community/slider';
 
 interface LayoutProps {
   children: ReactNode;
@@ -45,7 +45,10 @@ export default function Layout({ children }: LayoutProps) {
     type: "",
     transmission: "",
     fuel_type: "",
+    minPrice: 0,
+    maxPrice: 500,
   });
+  const [priceRange, setPriceRange] = useState([0, 500]);
 
   useEffect(() => {
     const init = async () => {
@@ -74,6 +77,26 @@ export default function Layout({ children }: LayoutProps) {
     }
   };
 
+  const applyFilters = () => {
+    console.log("Filtros aplicados:", filters);
+    setIsFilterMenuOpen(false);
+    navigation.navigate("resultadosFiltrados", { 
+      filters: JSON.stringify(filters) 
+    });
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      brand: "",
+      type: "",
+      transmission: "",
+      fuel_type: "",
+      minPrice: 0,
+      maxPrice: 500,
+    });
+    setPriceRange([0, 500]);
+  };
+
   if (!appIsReady) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -88,13 +111,12 @@ export default function Layout({ children }: LayoutProps) {
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
-            <TouchableOpacity onPress={() => navigation.navigate('index')}>
-              <Image
+              <TouchableOpacity onPress={() => navigation.navigate('index')}>
+                <Image
                   source={require('@/assets/images/logo2.png')}
                   style={styles.logo}
-                  
                 />
-            </TouchableOpacity>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.touchableButton}
                 onPress={() => setIsLangMenuOpen(!isLangMenuOpen)}
@@ -107,9 +129,6 @@ export default function Layout({ children }: LayoutProps) {
               <TouchableOpacity style={styles.touchableButton} onPress={() => setIsMenuOpen(!isMenuOpen)}>
                 <Text style={styles.touchableButtonText}>{t('layout.Menu')}</Text>
               </TouchableOpacity>
-
-
-              {/* Botón para abrir el menú de filtros */}
               <TouchableOpacity
                 style={styles.touchableButton}
                 onPress={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
@@ -117,124 +136,44 @@ export default function Layout({ children }: LayoutProps) {
                 <Ionicons name="filter-outline" size={26} color="white" />
               </TouchableOpacity>
             </View>
-
           </View>
         </SafeAreaView>
 
         {isFilterMenuOpen && (
           <>
-          <Pressable
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 999,
-            }}
-            onPress={() => setIsFilterMenuOpen(false)}
-          />
-          <View style={styles.filterMenu}>
-            <Text style={styles.filterTitle}>{t('layout.filter')}</Text>
+            <Pressable
+              style={styles.overlay}
+              onPress={() => setIsFilterMenuOpen(false)}
+            />
+            <View style={styles.filterMenu}>
+              <ScrollView>
+                <Text style={styles.filterTitle}>{t('layout.filter')}</Text>
 
-            {/* Filtro por Marca */}
-            <Text style={styles.filterLabel}>{t('layout.brand')}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setFilters({ ...filters, brand: "Hyundai" });
-                setIsFilterMenuOpen(false);
-                navigation.navigate("resultadosFiltrados", { filters: { ...filters, brand: "Hyundai" } });
-              }}
-            >
-              <Text style={styles.filterOption}>Hyundai</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setFilters({ ...filters, brand: "BMW" });
-                setIsFilterMenuOpen(false);
-                navigation.navigate("resultadosFiltrados", { filters: { ...filters, brand: "BMW" } });
-              }}
-            >
-              <Text style={styles.filterOption}>BMW</Text>
-            </TouchableOpacity>
+                {/* Filtro por Marca */}
+                <Text style={styles.filterLabel}>{t('layout.brand')}</Text>
+                <Picker
+                  selectedValue={filters.brand}
+                  onValueChange={(value) => setFilters({...filters, brand: value})}
+                  style={styles.picker}
+                >
+                  <Picker.Item label={t('layout.todas')} value="" />
+                  <Picker.Item label="Hyundai" value="Hyundai" />
+                  <Picker.Item label="Citroën" value="Citroën" />
+                  <Picker.Item label="Nissan" value="Nissan" />
+                  <Picker.Item label="BMW" value="BMW" />
+                  <Picker.Item label="Toyota" value="Toyota" />
+                  <Picker.Item label="Ford" value="Ford" />
+                  <Picker.Item label="Tesla" value="Tesla" />
+                </Picker>
 
-            <TouchableOpacity
-              onPress={() => {
-                setFilters({ ...filters, brand: "Citroën" });
-                setIsFilterMenuOpen(false);
-                navigation.navigate("resultadosFiltrados", { filters: { ...filters, brand: "Citroën" } });
-              }}
-            >
-              <Text style={styles.filterOption}>Citroën</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setFilters({ ...filters, brand: "Nissan" });
-                setIsFilterMenuOpen(false);
-                navigation.navigate("resultadosFiltrados", { filters: { ...filters, brand: "Nissan" } });
-              }}
-            >
-              <Text style={styles.filterOption}>Nissan</Text>
-            </TouchableOpacity>
-
-            {/* Filtro por Tipo */}
-            <Text style={styles.filterLabel}>{t('layout.type')}:</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setFilters({ ...filters, type: "SUV" });
-                setIsFilterMenuOpen(false);
-                navigation.navigate("resultadosFiltrados", { filters: { ...filters, type: "SUV" } });
-              }}
-            >
-              <Text style={styles.filterOption}>SUV</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setFilters({ ...filters, type: "Sedan" });
-                setIsFilterMenuOpen(false);
-                navigation.navigate("resultadosFiltrados", { filters: { ...filters, type: "Sedan" } });
-              }}
-            >
-              <Text style={styles.filterOption}>Sedan</Text>
-            </TouchableOpacity>
-          </View>
-          </>
-        )}
-
-
-        {isFilterMenuOpen && (
-          <View style={styles.filterMenu}>
-            <Text style={styles.filterTitle}>{t('layout.filter')}:</Text>
-
-            {/* Filtro por Marca */}
-            <Text style={styles.filterLabel}>{t('layout.brand')}:</Text>
-            <Picker
-              selectedValue={filters.brand}
-              onValueChange={(itemValue) => setFilters({ ...filters, brand: itemValue })}
-              style={styles.picker}
-            >
-              <Picker.Item label={t('layout.todas')} value="" />
-              <Picker.Item label="Hyundai" value="Hyundai" />
-              <Picker.Item label="Citroën" value="Citroën" />
-              <Picker.Item label="Nissan" value="Nissan" />
-              <Picker.Item label="BMW" value="BMW" />
-              <Picker.Item label="Toyota" value="Toyota" />
-              <Picker.Item label="Ford" value="Ford" />
-              <Picker.Item label="Tesla" value="Tesla" />
-              <Picker.Item label="Mercedes-Benz" value="Mercedes-Benz" />
-              <Picker.Item label="Volkswagen" value="Volkswagen" />
-              <Picker.Item label="Audi" value="Audi" />
-            </Picker>
-
-            {/* Filtro por Tipo */}
-            <Text style={styles.filterLabel}>{t('layout.type')}:</Text>
-            <Picker
-              selectedValue={filters.type}
-              onValueChange={(itemValue) => setFilters({ ...filters, type: itemValue })}
-              style={styles.picker}
-            >
-              <Picker.Item label={t('layout.todos')} value="" />
+                {/* Filtro por Tipo */}
+                <Text style={styles.filterLabel}>{t('layout.type')}</Text>
+                <Picker
+                  selectedValue={filters.type}
+                  onValueChange={(value) => setFilters({...filters, type: value})}
+                  style={styles.picker}
+                >
+             <Picker.Item label={t('layout.todos')} value="" />
               <Picker.Item label="Sedan" value="Sedan" />
               <Picker.Item label="SUV" value="SUV" />
               <Picker.Item label="Hatchback" value="Hatchback" />
@@ -244,47 +183,74 @@ export default function Layout({ children }: LayoutProps) {
               <Picker.Item label="Coupe" value="Coupe" />
               <Picker.Item label="Van" value="Van" />
               <Picker.Item label="Wagon" value="Wagon" />
-            </Picker>
+                </Picker>
 
-            {/* Filtro por Transmisión */}
-            <Text style={styles.filterLabel}>{t('layout.tramission')}:</Text>
-            <Picker
-              selectedValue={filters.transmission}
-              onValueChange={(itemValue) => setFilters({ ...filters, transmission: itemValue })}
-              style={styles.picker}
-            >
-              <Picker.Item label={t('layout.todas')} value="" />
-              <Picker.Item label={t('layout.auto')} value="Automatic" />
-              <Picker.Item label={t('layout.manual')} value="Manual" />
-            </Picker>
+                {/* Filtro por Transmisión */}
+                <Text style={styles.filterLabel}>{t('layout.tramission')}</Text>
+                <Picker
+                  selectedValue={filters.transmission}
+                  onValueChange={(value) => setFilters({...filters, transmission: value})}
+                  style={styles.picker}
+                >
+                  <Picker.Item label={t('layout.todas')} value="" />
+                  <Picker.Item label={t('layout.auto')} value="Automatic" />
+                  <Picker.Item label={t('layout.manual')} value="Manual" />
+                </Picker>
 
-            {/* Filtro por Tipo de Combustible */}
-            <Text style={styles.filterLabel}>{t('layout.fuel_type')}:</Text>
-            <Picker
-              selectedValue={filters.fuel_type}
-              onValueChange={(itemValue) => setFilters({ ...filters, fuel_type: itemValue })}
-              style={styles.picker}
-            >
-              <Picker.Item label={t('layout.todos')} value="" />
-              <Picker.Item label={t('layout.gasolina')} value="Gasoline" />
-              <Picker.Item label="Diésel" value="Diesel" />
-              <Picker.Item label={t('layout.eléctrico')} value="Electric" />
-            </Picker>
+                {/* Filtro por Combustible */}
+                <Text style={styles.filterLabel}>{t('layout.fuel_type')}</Text>
+                <Picker
+                  selectedValue={filters.fuel_type}
+                  onValueChange={(value) => setFilters({...filters, fuel_type: value})}
+                  style={styles.picker}
+                >
+                  <Picker.Item label={t('layout.todos')} value="" />
+                  <Picker.Item label={t('layout.gasolina')} value="Gasoline" />
+                  <Picker.Item label="Diésel" value="Diesel" />
+                  <Picker.Item label={t('layout.eléctrico')} value="Electric" />
+                </Picker>
 
-            {/* Botón para aplicar los filtros */}
-            <TouchableOpacity
-              style={styles.applyButton}
-              onPress={() => {
-                console.log("Filtros aplicados:", filters);
-                setIsFilterMenuOpen(false);
-                navigation.navigate("resultadosFiltrados", { filters: JSON.stringify(filters) });
-              }}
-            >
-              <Text style={styles.applyButtonText}>{t('layout.apply')}</Text>
-            </TouchableOpacity>
-          </View>
+                {/* Filtro por Rango de Precios */}
+                <Text style={styles.filterTitle}>Rango de Precios</Text> 
+                  <Text style={styles.filterLabel}>€{filters.minPrice} - €{filters.maxPrice}</Text>
+
+                <View style={styles.sliderContainer}>
+                  <Text>€{filters.minPrice}</Text>
+                  <Slider
+                    style={styles.slider}
+                    minimumValue={0}
+                    maximumValue={1000}
+                    minimumTrackTintColor="#4472C4"
+                    maximumTrackTintColor="#d3d3d3"
+                    thumbTintColor="#4472C4"
+                    value={filters.maxPrice}
+                    onValueChange={(value) => setFilters({...filters, maxPrice: value})}
+                  />
+                  <Text>€{filters.maxPrice}</Text>
+                </View>
+
+                {/* Botones de acción */}
+                <View style={styles.filterButtons}>
+                <TouchableOpacity
+                    style={[styles.applyButton, styles.resetButton]}
+                    onPress={resetFilters}
+                  >
+                    <Text style={styles.filterButtonText}>Borrar</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.filterButton, styles.applyButton]}
+                    onPress={applyFilters}
+                  >
+                    <Text style={styles.filterButtonText}>{t('layout.apply')}</Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+            </View>
+          </>
         )}
-        {isLangMenuOpen && (
+
+{isLangMenuOpen && (
           <>
           <Pressable
             style={{
@@ -333,19 +299,19 @@ export default function Layout({ children }: LayoutProps) {
             <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
               <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => {setIsMenuOpen(false); navigation.navigate('index')}}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('index')}>
               <FontAwesome name="home" size={24} color={color} />
               <Text style={styles.menuItemText}>{t('layout.menuButtons.home')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => {setIsMenuOpen(false); navigation.navigate('misReservas')}}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misReservas')}>
               <FontAwesome5 name="shopping-cart" size={24} color={color} />
               <Text style={styles.menuItemText}>{t('layout.menuButtons.reservations')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => {setIsMenuOpen(false); navigation.navigate('misIncidencias')}}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misIncidencias')}>
               <FontAwesome5 name="exclamation-circle" size={24} color={color} />
               <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => {setIsMenuOpen(false); navigation.navigate('chat')}}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('chat')}>
               <FontAwesome5 name="comments" size={24} color={color} solid/>
               <Text style={styles.menuItemText}>{t('layout.menuButtons.chat')}</Text>
             </TouchableOpacity>
@@ -420,12 +386,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     zIndex: 1000,
   },
-  picker: {
-    height: 50,
-    marginBottom: 20,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-  },
+
   languageOption: {
     fontSize: 18,
     color: 'white',
@@ -451,32 +412,41 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 60,
     right: 15,
-    backgroundColor: "#4472C4",
+    width: 250, // Aumentamos el ancho para mejor visualización
+    backgroundColor: "#ffffff", // Color de fondo más claro
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 12, // Bordes redondeados más suaves
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8, // Sombra más pronunciada
     zIndex: 1000,
   },
   filterTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
-    color: "white",
-    marginBottom: 10,
+    color: "#333", // Color oscuro para mejor legibilidad
+    marginBottom: 12,
+    textAlign: "center",
   },
   filterLabel: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "white",
-    marginTop: 10,
+    fontWeight: "600",
+    color: "#555", // Color neutro
+    marginTop: 12,
   },
-  filterOption: {
-    fontSize: 14,
-    color: "#FFD700",
-    marginVertical: 5,
+  picker: {
+    height: 40,
+    marginBottom: 15,
+    backgroundColor: "#EFEFEF", // Fondo más claro en los selects
+    borderRadius: 8,
+    paddingHorizontal: 10, // Espaciado interno
   },
   applyButton: {
     backgroundColor: "#4472C4",
-    padding: 10,
-    borderRadius: 5,
+    padding: 8,
+    borderRadius: 8,
     marginTop: 15,
     alignItems: "center",
   },
@@ -485,6 +455,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
+  filterButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  }
+  
 
 });
+

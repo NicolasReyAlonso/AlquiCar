@@ -169,7 +169,10 @@
   },
   "ModoAdmin": {
     "modoAdmin": "Administrator-Modus",
-    "modoUsuario": "Benutzermodus"
+    "modoUsuario": "Benutzermodus",
+    "usuarios": "Registrierte Benutzer",
+    "ver": "Sehen",
+    "eliminar": "Löschen"
   },
   "ResultadosFiltrados": {
     "title": "Gefilterte Ergebnisse",

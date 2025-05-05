@@ -1,51 +1,72 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, View, ActivityIndicator } from "react-native"; // Añadido View y ActivityIndicator
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import VehicleCard from "@/components/templates/VehicleCard"; // Importa el componente VehicleCard
+import VehicleCard from "@/components/templates/VehicleCard";
 
 const ResultadosFiltrados = () => {
-  const { filters } = useLocalSearchParams(); // Recibe los filtros como parámetros
+  const { filters } = useLocalSearchParams();
   const { t } = useTranslation();
-  const router = useRouter(); // Para navegar a la pantalla de detalles
+  const router = useRouter();
 
-  // Memoriza los filtros para evitar bucles infinitos
   const parsedFilters = useMemo(() => {
-    return typeof filters === "string" ? JSON.parse(filters) : filters || {};
+    try {
+      return typeof filters === "string" ? JSON.parse(filters) : {};
+    } catch (error) {
+      console.error("Error parsing filters:", error);
+      return {};
+    }
   }, [filters]);
 
   const [filteredResults, setFilteredResults] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Filtros procesados en useEffect:", parsedFilters); // Verifica los filtros procesados
-
     const fetchFilteredResults = async () => {
       try {
+        setLoading(true);
         const response = await fetch(`http://localhost:3000/vehicles`);
         const vehicles = await response.json();
-        console.log("Datos recibidos del backend:", vehicles); // Verifica los datos del backend
 
-        // Aplica los filtros localmente
         const results = vehicles.filter((vehicle) => {
-          const matchesBrand = !parsedFilters.brand || vehicle.brand.toLowerCase() === parsedFilters.brand.toLowerCase();
-          const matchesType = !parsedFilters.type || vehicle.type.toLowerCase() === parsedFilters.type.toLowerCase();
+          const matchesBrand = !parsedFilters.brand || 
+            vehicle.brand?.toLowerCase() === parsedFilters.brand.toLowerCase();
+          
+          const matchesType = !parsedFilters.type || 
+            vehicle.type?.toLowerCase() === parsedFilters.type.toLowerCase();
+          
+          const matchesTransmission = !parsedFilters.transmission || 
+            vehicle.transmission?.toLowerCase() === parsedFilters.transmission.toLowerCase();
+          
+          const matchesFuelType = !parsedFilters.fuel_type || 
+            vehicle.fuel_type?.toLowerCase() === parsedFilters.fuel_type.toLowerCase();
 
-          return matchesBrand && matchesType; // Ambas condiciones deben cumplirse
+          return matchesBrand && matchesType && matchesTransmission && matchesFuelType;
         });
 
-        console.log("Resultados filtrados:", results); // Verifica los resultados filtrados
         setFilteredResults(results);
       } catch (error) {
         console.error("Error al obtener los resultados filtrados:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchFilteredResults();
-  }, [parsedFilters]); // Solo se ejecuta cuando `parsedFilters` cambia
+  }, [parsedFilters]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4472C4" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>{t("ResultadosFiltrados.title")}</Text>
+      
       {filteredResults.length === 0 ? (
         <Text style={styles.noResults}>{t("ResultadosFiltrados.notFound")}</Text>
       ) : (
@@ -66,7 +87,7 @@ const ResultadosFiltrados = () => {
             vehicleId={result.id}
             price={`${result.daily_price}€`}
             imageUrl={result.imageUrl || "http://via.placeholder.com/150"}
-            onReserve={() => console.log("Reserva para el vehículo con ID:", result.id)}
+            onReserve={() => router.push(`/reservarCoche?id=${result.id}`)}
           />
         ))
       )}
@@ -79,6 +100,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
     backgroundColor: "#f5f5f5",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
@@ -93,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ResultadosFiltrados;
+export default ResultadosFiltrados

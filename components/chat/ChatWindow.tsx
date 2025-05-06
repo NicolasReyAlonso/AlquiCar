@@ -8,17 +8,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import chatWindowStyles from '../../css/ChatWindow.styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { use } from 'i18next';
-
+import { TFunction } from 'i18next';
 
 interface ChatWindowProps {
     chat: ChatInterface,
     socket: Socket,
     updateContacts: (id: string, messages: MessageInterface[]) => void,
+      t: TFunction;
 }
 
 
-export default function ChatWindow({ chat, socket, updateContacts }: ChatWindowProps) {
+export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWindowProps) {
     const [messageInput, setMessageInput] = useState('');
     const [messages, setMessages] = useState<MessageInterface[]>([]);
     const [user, setUser] = useState<UserInterface | null>(null);
@@ -86,7 +86,9 @@ export default function ChatWindow({ chat, socket, updateContacts }: ChatWindowP
                     scrollViewRef.current?.scrollToEnd({ animated: scrollToEndAnimation });
                 }}>
 
-                {
+                {messages.length < 1 ? (
+                    <Text style={chatWindowStyles.noMessages}>{t('Chat.noMessages')}</Text>
+                    ) : (
                     user && messages.map((message, index) => {
                         return (
                         <View
@@ -105,18 +107,18 @@ export default function ChatWindow({ chat, socket, updateContacts }: ChatWindowP
                             <Text style={chatWindowStyles.messageTime}>{formatDate(message.created_at)}</Text>
                         </View>
                     )})
-                }
+                )}
             </ScrollView>
 
             <View style={chatWindowStyles.inputContainer}>
                 <TextInput
                     style={chatWindowStyles.inputField}
-                    placeholder="Escribe un mensaje"
+                    placeholder={t('Chat.write')}
                     onChangeText={(text) => setMessageInput(text)}
                     value={messageInput}
                 />
                 <TouchableOpacity style={chatWindowStyles.sendButton} onPress={() => handleSendMessage()}>
-                    <Text style={chatWindowStyles.sendButtonText}>Enviar</Text>
+                    <Text style={chatWindowStyles.sendButtonText}>{t('Chat.send')}</Text>
                 </TouchableOpacity>
             </View>
         </View>

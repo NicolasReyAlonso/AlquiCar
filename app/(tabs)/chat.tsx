@@ -8,6 +8,8 @@ import mainChatStyles from "../../css/MainChat.styles";
 import { MessageInterface } from "@/interfaces/Message";
 import ChatWindow from "@/components/chat/ChatWindow";
 import { useLocalSearchParams } from "expo-router";
+import { useTranslation } from 'react-i18next';
+
 
 
 
@@ -18,6 +20,7 @@ export default function Chat() {
     const [selectedContact, setSelectedChat] = useState<ChatInterface | null>(null);
     const selectedContactRef = useRef<ChatInterface | null>(null);
     const { contactId } = useLocalSearchParams();
+    const { t } = useTranslation();
 
     useEffect(() => {
 
@@ -95,8 +98,8 @@ export default function Chat() {
 
     return (
         <View style={mainChatStyles.appContainer}>
-            <ChatSidebar chats={contacts} setSelectedChat={setSelectedChat} />
-            {socket && selectedContact && <ChatWindow chat={selectedContact} updateContacts={updateContacts} socket={socket} />}
+            <ChatSidebar chats={contacts} setSelectedChat={setSelectedChat} t={t}/>
+            {socket && selectedContact && <ChatWindow chat={selectedContact} updateContacts={updateContacts} socket={socket} t={t}/>}
         </View>
 
     );

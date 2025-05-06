@@ -7,14 +7,17 @@ import chatSidebarStyles from '../../css/ChatSidebar.styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MessageInterface } from '@/interfaces/Message';
+import { TFunction } from 'i18next';
+
 
 interface ChatSidebarProps {
   chats: ChatInterface[];
   setSelectedChat: (chat: ChatInterface) => void;
+  t: TFunction;
 }
 
 
-export default function ChatSidebar({ chats, setSelectedChat }: ChatSidebarProps) {
+export default function ChatSidebar({ chats, setSelectedChat, t }: ChatSidebarProps) {
   const [user, setUser] = useState<UserInterface | null>(null);
   const [lastMessage, setLastMessage] = useState<MessageInterface | null>(null);
 
@@ -50,7 +53,7 @@ export default function ChatSidebar({ chats, setSelectedChat }: ChatSidebarProps
               (chat.messages.length > 0) ?
                 <Text style={chatSidebarStyles.lastMessage}>{getSenderAndLastMessage(chat.messages)}</Text>
                 :
-              <Text style={chatSidebarStyles.lastMessage}>No hay mensajes todavía</Text>
+              <Text style={chatSidebarStyles.lastMessage}>{t("Chat.noMessages")}</Text>
               
               }
           </TouchableOpacity>

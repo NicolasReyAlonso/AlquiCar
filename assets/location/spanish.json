@@ -257,6 +257,13 @@
         "cliente": "Cliente",
         "activas": "Activas",
         "canceladas": "Canceladas"
+      },
+      
+      "Chat":{
+        "chat": "Chat",
+        "noMessages": "No hay mensajes en esta conversación.",
+        "write": "Escribe un mensaje...",
+        "send": "Enviar"
       }
 
   }

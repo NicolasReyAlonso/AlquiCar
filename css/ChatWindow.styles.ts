@@ -106,7 +106,14 @@ const chatWindowStyles = StyleSheet.create({
       fontWeight: 'bold',
       color: 'white',
       backgroundColor: '#2d2d2d',
-    }
+    },
+    noMessages: {
+      color: 'white',
+      fontSize: 16,
+      textAlign: 'center',
+      marginTop: 20,
+    },
+
   });
   
   export default chatWindowStyles;

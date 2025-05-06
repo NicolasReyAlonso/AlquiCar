@@ -14,7 +14,6 @@
       "brand": "Select a brand"
     }
   },
-
   "Account": {
     "title": "Account Details",
     "name": "Name",
@@ -25,7 +24,6 @@
     },
     "changePhoto": "Change profile photo"
   },
-
   "Login": {
     "title": "Log In",
     "password": "Password",
@@ -34,7 +32,6 @@
       "register": "REGISTER"
     }
   },
-
   "Register": {
     "title": "Create Account",
     "password": "Password",
@@ -47,33 +44,31 @@
       "address": "Address",
       "phone": "Phone",
       "city": "City",
-      "dni" : "ID Card",
+      "dni": "ID Card",
       "password": "Password",
       "repeatPassword": "Repeat Password"
     }
   },
-
   "RentYourVehicle": {
-  "title": "List Your Car",
-  "card": {
-    "brand": "Car brand",
-    "model": "Car model",
-    "year": "Car year",
-    "address": "Address",
-    "type": "Car type",
-    "transmission": "Transmission",
-    "fuel_type": "Fuel type",
-    "capacity": "Seating capacity",
-    "num_doors": "Number of doors",
-    "price": "Price per day",
-    "deposit": "Security deposit"
+    "title": "List Your Car",
+    "card": {
+      "brand": "Car brand",
+      "model": "Car model",
+      "year": "Car year",
+      "address": "Address",
+      "type": "Car type",
+      "transmission": "Transmission",
+      "fuel_type": "Fuel type",
+      "capacity": "Seating capacity",
+      "num_doors": "Number of doors",
+      "price": "Price per day",
+      "deposit": "Security deposit"
+    },
+    "buttons": {
+      "image": "Attach image",
+      "publish": "Publish"
+    }
   },
-  "buttons": {
-    "image": "Attach image",
-    "publish": "Publish"
-  }
-},
-
   "MyReservationCard": {
     "day": "day",
     "date": "Date",
@@ -82,7 +77,6 @@
       "chat": "Contact Owner"
     }
   },
-
   "MyPublishedVehicles": {
     "day": "day",
     "city": "City",
@@ -90,7 +84,6 @@
       "remove": "Remove Vehicle"
     }
   },
-
   "VehicleCard": {
     "places": "Seats",
     "day": "day",
@@ -102,7 +95,6 @@
     "doors": "Doors",
     "price": "Daily price"
   },
-
   "reserveVehicle": {
     "title": "Reservation Summary",
     "places": "seats",
@@ -123,9 +115,7 @@
     },
     "cancelDate": "Maximum cancellation date:",
     "selecciona": "Select the date:"
-
   },
-
   "layout": {
     "search": "Search...",
     "Menu": "MENU",
@@ -134,7 +124,7 @@
       "home": "Home Page",
       "reservations": "My Reservations",
       "publications": "My Listings",
-      "incidences" : "My Issues",
+      "incidences": "My Issues",
       "chat": "Chat"
     },
     "filter": "Filter by",
@@ -161,10 +151,10 @@
     "plataforma": "Platform",
     "misIncidencias": "My Issues",
     "sinIncidencias": "No issues reported",
-    "estado" : "State",
-    "fecha" : "Date",
-    "categoria" : "Category",
-    "formatoFecha" : "DD/MM/YYYY",
+    "estado": "State",
+    "fecha": "Date",
+    "categoria": "Category",
+    "formatoFecha": "DD/MM/YYYY",
     "problema": "Explain the problem",
     "resolver": "Resolve",
     "denegar": "Deny",
@@ -174,13 +164,11 @@
       "cancelar": "Cancel"
     }
   },
-
   "VerifyEmail": {
     "title": "Verify your email!",
     "message": "We have sent you a verification email. Please check your inbox to complete the registration.",
     "goToLogin": "Go to login"
   },
-
   "ModoAdmin": {
     "modoAdmin": "Administrator Mode",
     "modoUsuario": "User Mode",
@@ -188,7 +176,6 @@
     "ver": "See",
     "eliminar": "Delete"
   },
-
   "ResultadosFiltrados": {
     "title": "Filtered Results",
     "notFound": "No results found.",
@@ -196,9 +183,7 @@
     "price": "Daily price",
     "search": "Vehicles found",
     "noSearch": "No vehicles available with the selected criteria."
-
   },
-
   "Perfil": {
     "perfil": "Profile of",
     "vehiculos": {
@@ -225,7 +210,6 @@
       "sinIncidencias": "This user has no incidents."
     }
   },
-
   "reservaPropia": {
     "activa": "Active",
     "cancelada": "Cancelled",
@@ -258,5 +242,11 @@
     "cliente": "Customer",
     "activas": "Active",
     "canceladas": "Cancelled"
+  },
+  "Chat": {
+    "chat": "Chat",
+    "noMessages": "There are no messages in this conversation.",
+    "write": "Write a message...",
+    "send": "Send"
   }
 }

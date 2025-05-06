@@ -256,5 +256,11 @@
     "cliente": "Cliente",
     "activas": "Attive",
     "canceladas": "Cancellate"
+  },
+  "Chat": {
+    "chat": "Chat",
+    "noMessages": "Non ci sono messaggi in questa conversazione.",
+    "write": "Scrivi un messaggio...",
+    "send": "Inviare"
   }
 }

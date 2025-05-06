@@ -63,7 +63,8 @@
       "fuel_type": "Tipo di carburante",
       "capacity": "Numero di posti",
       "num_doors": "Numero di porte",
-      "deposit": "Deposito"
+      "deposit": "Deposito",
+      "ejemplo": "Via, Numero, Città"
     },
     "buttons": {
       "image": "Allega immagine",
@@ -146,7 +147,9 @@
     "gasolina": "Benzina",
     "eléctrico": "Elettrico",
     "todas": "Tutte",
-    "todos": "Tutti"
+    "todos": "Tutti",
+    "rango": "Fascia di prezzo",
+    "borrar": "Cancella"
   },
 
   "Incidencias": {
@@ -255,12 +258,10 @@
     "vehículo": "Veicolo",
     "cliente": "Cliente",
     "activas": "Attive",
-    "canceladas": "Cancellate"
-  },
-  "Chat": {
-    "chat": "Chat",
-    "noMessages": "Non ci sono messaggi in questa conversazione.",
-    "write": "Scrivi un messaggio...",
-    "send": "Inviare"
+    "canceladas": "Cancellate",
+    "datos": "Dati del cliente",
+    "noActivas": "Non hai prenotazioni attive.",
+    "noCanceladas": "Non hai prenotazioni cancellate."
+
   }
 }

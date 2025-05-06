@@ -211,7 +211,7 @@ export default function Layout({ children }: LayoutProps) {
                 </Picker>
 
                 {/* Filtro por Rango de Precios */}
-                <Text style={styles.filterTitle}>Rango de Precios</Text> 
+                <Text style={styles.filterTitle}>{t('layout.rango')}</Text> 
                   <Text style={styles.filterLabel}>€{filters.minPrice} - €{filters.maxPrice}</Text>
 
                 <View style={styles.sliderContainer}>
@@ -235,7 +235,7 @@ export default function Layout({ children }: LayoutProps) {
                     style={[styles.applyButton, styles.resetButton]}
                     onPress={resetFilters}
                   >
-                    <Text style={styles.filterButtonText}>Borrar</Text>
+                    <Text style={styles.filterButtonText}>{t('layout.borrar')}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity

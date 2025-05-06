@@ -158,8 +158,10 @@ const MisReservas = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {filteredReservations.length === 0 ? (
           <Text style={styles.emptyText}>
-            {activeTab === "Activas" ? "No tienes reservas activas." : "No tienes reservas canceladas."}
-          </Text>
+          {activeTab === "Activas"
+            ? t('reservaPropia.noActivas')
+            : t('reservaPropia.noCanceladas')}
+        </Text>
         ) : (
           filteredReservations.map((reservation) => (
             <View key={reservation.id} style={styles.cardWrapper}>

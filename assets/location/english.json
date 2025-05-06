@@ -62,7 +62,8 @@
       "capacity": "Seating capacity",
       "num_doors": "Number of doors",
       "price": "Price per day",
-      "deposit": "Security deposit"
+      "deposit": "Security deposit",
+    "ejemplo": "Street, Number, City"
     },
     "buttons": {
       "image": "Attach image",
@@ -138,7 +139,9 @@
     "gasolina": "Petrol",
     "eléctrico": "Electric",
     "todas": "All",
-    "todos": "All"
+    "todos": "All",
+    "rango": "Price Range",
+    "borrar": "Clear"
   },
   "Incidencias": {
     "titulo": "Issue Title",
@@ -241,12 +244,9 @@
     "vehículo": "Vehicle",
     "cliente": "Customer",
     "activas": "Active",
-    "canceladas": "Cancelled"
-  },
-  "Chat": {
-    "chat": "Chat",
-    "noMessages": "There are no messages in this conversation.",
-    "write": "Write a message...",
-    "send": "Send"
+    "canceladas": "Cancelled",
+    "datos": "Customer Information",
+    "noActivas": "You have no active reservations.",
+    "noCanceladas": "You have no cancelled reservations."
   }
 }

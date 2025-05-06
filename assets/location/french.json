@@ -59,7 +59,9 @@
       "fuel_type": "Type de carburant",
       "capacity": "Nombre de sièges",
       "num_doors": "Nombre de portes",
-      "deposit": "Dépôt"
+      "deposit": "Dépôt",
+      "ejemplo": "Rue, Numéro, Ville"
+
     },
     "buttons": {
       "image": "Joindre une image",
@@ -136,7 +138,9 @@
     "gasolina": "Essence",
     "eléctrico": "Électrique",
     "todas": "Toutes",
-    "todos": "Tous"
+    "todos": "Tous",
+    "rango": "Fourchette de prix",
+    "borrar": "Effacer"
   },
   "Incidencias": {
     "titulo": "Titre de l'incident",
@@ -241,6 +245,9 @@
       "vehículo": "Véhicule",
       "cliente": "Client",
       "activas": "Actives",
-      "canceladas": "Annulées"
+      "canceladas": "Annulées",
+      "datos": "Informations du client",
+      "noActivas": "Vous n'avez aucune réservation active.",
+      "noCanceladas": "Vous n'avez aucune réservation annulée."
     }
 }

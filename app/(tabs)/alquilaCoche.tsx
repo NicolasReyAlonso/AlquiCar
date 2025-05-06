@@ -281,7 +281,7 @@ export default function AlquilarCoche() {
         <Text>{t('RentYourVehicle.card.year')}</Text>
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} keyboardType="numeric" placeholderTextColor="grey"/>
         <Text>{t('RentYourVehicle.card.address')}</Text>
-        <TextInput style={styles.input} placeholder="Calle, Número, Ciudad" value={address} onChangeText={setAddress} placeholderTextColor="grey"/>
+        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.ejemplo')} value={address} onChangeText={setAddress} placeholderTextColor="grey"/>
 
         <Text>{t('RentYourVehicle.card.type')}</Text>
         <Picker selectedValue={type} onValueChange={setType} style={styles.input}>

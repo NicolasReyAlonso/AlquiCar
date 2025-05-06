@@ -66,7 +66,8 @@
         "fuel_type": "Tipo de combustible",
         "capacity": "Número de asientos",
         "num_doors": "Número de puertas",
-        "deposit": "Déposito"
+        "deposit": "Déposito",
+        "ejemplo": "Calle, Número, Ciudad"
       },
       "buttons": {
         "image": "Adjuntar imagen",
@@ -147,7 +148,9 @@
       "gasolina": "Gasolina",
       "eléctrico": "Eléctrico",
       "todas": "Todas",
-      "todos": "Todos"
+      "todos": "Todos",
+      "rango": "Rango de Precios",
+      "borrar": "Borrar"
     },
 
     "Incidencias": {
@@ -256,7 +259,10 @@
         "vehículo": "Vehículo",
         "cliente": "Cliente",
         "activas": "Activas",
-        "canceladas": "Canceladas"
+        "canceladas": "Canceladas",
+        "datos": "Datos del Cliente",
+        "noActivas": "No tienes reservas activas.",
+        "noCanceladas": "No tienes reservas canceladas."
       }
 
   }

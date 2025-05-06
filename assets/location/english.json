@@ -248,5 +248,11 @@
     "datos": "Customer Information",
     "noActivas": "You have no active reservations.",
     "noCanceladas": "You have no cancelled reservations."
+  },
+  "Chat": {
+    "chat": "Chat",
+    "noMessages": "There are no messages in this conversation.",
+    "write": "Write a message...",
+    "send": "Send"
   }
 }

@@ -263,6 +263,12 @@
         "datos": "Datos del Cliente",
         "noActivas": "No tienes reservas activas.",
         "noCanceladas": "No tienes reservas canceladas."
+      },
+      "Chat":{
+        "chat": "Chat",
+        "noMessages": "No hay mensajes en esta conversación.",
+        "write": "Escribe un mensaje...",
+        "send": "Enviar"
       }
 
   }

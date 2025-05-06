@@ -58,7 +58,7 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
         socket.emit("send message", {
             newMessage,
         });
-        updateContacts(chat.contact_id, nuevo)
+        updateContacts(chat.contact_id, [newMessage])
 
     }
 

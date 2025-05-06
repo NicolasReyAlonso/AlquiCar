@@ -76,10 +76,12 @@ export default function Chat() {
             return prevContacts.map(contact => {
                 console.log("Contact", contact.contact_id === id, contact.contact_id, id);
                 if (contact.contact_id === id) {
-                    return {
+                    const newcontact = {
                         ...contact,
-                        messages: [...messages],
+                        messages: [...contact.messages,...messages],
                     };
+                    setSelectedChat(newcontact);
+                    return newcontact;
                 }
                 return contact;
             });

@@ -138,7 +138,7 @@ export default function VehicleDetailsPage() {
         {owner ? (
           <>
             <Text style={styles.detailText}>{t("reservaPropia.nombre")}: {owner.name}</Text>
-            <Text style={styles.detailText}>{t("reservaPropia.dirección")}: {owner.email}</Text>
+            <Text style={styles.detailText}>Email: {owner.email}</Text>
             <Text style={styles.detailText}>{t("reservaPropia.teléfono")}: {owner.phone}</Text>
           </>
         ) : (

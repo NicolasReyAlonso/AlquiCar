@@ -41,7 +41,6 @@ export default function RegisterScreen() {
     if (
       !name ||
       !birthYear ||
-      !address ||
       !city ||
       !phone ||
       !dni ||
@@ -59,10 +58,6 @@ export default function RegisterScreen() {
     const numericBirthYear = Number(birthYear);
     if (isNaN(numericBirthYear) || numericBirthYear < 1925 || numericBirthYear >= 2007) {
       alert('Debe ser un año válido');
-      return;
-    }
-    if (address.length < 5) {
-      alert('La dirección debe tener al menos 5 caracteres');
       return;
     }
     if (city.length < 3) {
@@ -140,12 +135,6 @@ export default function RegisterScreen() {
           value={birthYear}
           onChangeText={setBirthYear}
           keyboardType="numeric"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={t('Register.card.address')}
-          value={address}
-          onChangeText={setAddress}
         />
         <TextInput
           style={styles.input}

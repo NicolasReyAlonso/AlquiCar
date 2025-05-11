@@ -9,6 +9,7 @@ import { MessageInterface } from "@/interfaces/Message";
 import ChatWindow from "@/components/chat/ChatWindow";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from 'react-i18next';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 
@@ -49,9 +50,9 @@ export default function Chat() {
         socketResponse.on('disconnect', () => {
             console.log('Desconectado del servidor de WebSocket');
         });
-        socketResponse.on('get chats', (contacts) => { 
-            setContacts(contacts.chats); 
-            
+        socketResponse.on('get chats', (contacts) => {
+            setContacts(contacts.chats);
+
         });
         socketResponse.on('new message', (message) => {
             //addMessage(message[0]);
@@ -78,30 +79,22 @@ export default function Chat() {
                 if (contact.contact_id === id) {
                     const newcontact = {
                         ...contact,
-                        messages: [...contact.messages,...messages],
+                        messages: [...contact.messages, ...messages],
                     };
-                    setSelectedChat(newcontact);
+                    if (selectedContactRef.current?.contact_id === id) setSelectedChat(newcontact);
                     return newcontact;
                 }
                 return contact;
             });
         });
-
-        if (selectedContactRef.current?.contact_id === id) {
-            const newSelectedContact = {
-                ...selectedContactRef.current,
-                messages: [...selectedContactRef.current!.messages, ...messages],
-            };
-            setSelectedChat(newSelectedContact);
-
-        }
     }
 
 
     return (
+
         <View style={mainChatStyles.appContainer}>
-            <ChatSidebar chats={contacts} setSelectedChat={setSelectedChat} t={t}/>
-            {socket && selectedContact && <ChatWindow chat={selectedContact} updateContacts={updateContacts} socket={socket} t={t}/>}
+            <ChatSidebar chats={contacts} setSelectedChat={setSelectedChat} t={t} />
+            {socket && selectedContact && <ChatWindow chat={selectedContact} updateContacts={updateContacts} socket={socket} t={t} />}
         </View>
 
     );

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import VehicleCard from "@/components/templates/VehicleCard"; 
 import { useRouter } from 'expo-router';
 import { useTranslation } from "react-i18next";
+import { getApiUrl } from "@/utils/getApiUrl";
 
 
 export default function VehicleDetails() {
@@ -17,7 +18,7 @@ export default function VehicleDetails() {
   useEffect(() => {
     const fetchImageUrl = async (ownerId: string, vehicleId: string) => {
       try {
-        const res = await fetch(`http://localhost:3000/media/vehicles/${ownerId}/${vehicleId}`);
+        const res = await fetch(`${getApiUrl()}/media/vehicles/${ownerId}/${vehicleId}`);
         const images = await res.json();
         return images.length > 0 && images[0].data ? images[0].data : "http://via.placeholder.com/150";
       } catch (err) {
@@ -60,7 +61,7 @@ export default function VehicleDetails() {
     if (id) {
       const fetchVehicle = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/vehicles/${id}`);
+          const response = await fetch(`${getApiUrl()}/vehicles/${id}`);
           const data = await response.json();
           if (data && data.length > 0) {
             loadSingleVehicleWithImage(data[0]); // ← AQUÍ también se llama correctamente

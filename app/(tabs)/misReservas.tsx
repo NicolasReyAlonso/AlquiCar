@@ -6,6 +6,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { use } from "i18next";
 import { useTranslation } from 'react-i18next';
+import { getApiUrl } from "@/utils/getApiUrl";
 
 
 interface Reservation {
@@ -42,7 +43,7 @@ const MisReservas = () => {
 
   const handleCancelReservation = async (reservationId: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/reservations/${reservationId}`, {
+      const response = await fetch(`${getApiUrl()}/reservations/${reservationId}`, {
         method: "PATCH",
         credentials: "include", //cookies
         headers: { "Content-Type": "application/json" },
@@ -73,7 +74,7 @@ const MisReservas = () => {
   useEffect(() => {
     const cargarReservas = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/reservations/customer`, {
+        const response = await fetch(`${getApiUrl()}/reservations/customer`, {
           method: "GET",
           credentials: "include", 
         });
@@ -90,12 +91,12 @@ const MisReservas = () => {
           reservas.map(async (reserva: Reservation) => {
             let imageUrl = "http://via.placeholder.com/150";
             try {
-              const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reserva.vehicle_id}`);
+              const vehicleResponse = await fetch(`${getApiUrl()}/vehicles/${reserva.vehicle_id}`);
               const vehicleData = await vehicleResponse.json();
     
               const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
 
-              const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+              const imgRes = await fetch(`${getApiUrl()}/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
               const images = await imgRes.json();
               if (images.length > 0 && images[0].data) {
                 imageUrl = images[0].data;

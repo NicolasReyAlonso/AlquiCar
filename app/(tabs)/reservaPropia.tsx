@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
+import { getApiUrl } from "@/utils/getApiUrl";
 
 const ReservaDetalles = () => {
   const params = useLocalSearchParams();
@@ -16,7 +17,7 @@ const ReservaDetalles = () => {
 
     const fetchReservation = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/reservations/${params.id}`);
+        const response = await fetch(`${getApiUrl()}/reservations/${params.id}`);
         const data = await response.json();
         console.log("Datos de la reserva:", data);
 
@@ -41,7 +42,7 @@ const ReservaDetalles = () => {
         console.log("Customer ID recibido:", customerId);
 
         const token = await AsyncStorage.getItem("token");
-        const customerResponse = await fetch(`http://localhost:3000/users/${customerId}`, {
+        const customerResponse = await fetch(`${getApiUrl()}/users/${customerId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

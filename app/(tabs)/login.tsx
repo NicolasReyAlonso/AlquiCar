@@ -6,6 +6,7 @@ import theme from "@/components/Theme";
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { useTranslation } from 'react-i18next';
 import { useFonts } from 'expo-font';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 const { width } = Dimensions.get('window');
 
@@ -23,7 +24,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://localhost:3000/auth/login', {
+      const response = await fetch(`${getApiUrl()}/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -33,6 +34,7 @@ export default function LoginScreen() {
       });
   
       const data = await response.json();
+      console.log(data)
     
 
       if (!response.ok) {

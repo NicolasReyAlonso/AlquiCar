@@ -8,6 +8,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MessageInterface } from '@/interfaces/Message';
 import { TFunction } from 'i18next';
+import { NativeViewGestureHandler } from 'react-native-gesture-handler';
+
 
 
 interface ChatSidebarProps {
@@ -28,7 +30,7 @@ export default function ChatSidebar({ chats, setSelectedChat, t }: ChatSidebarPr
 
   const getSenderAndLastMessage = (messages: MessageInterface[]) => {
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage.from_id === user?.id) return `Tú: ${lastMessage.content}`; 
+    if (lastMessage.from_id === user?.id) return `Tú: ${lastMessage.content}`;
     return `${lastMessage.sender_name}: ${lastMessage.content}`;
   }
 
@@ -39,26 +41,29 @@ export default function ChatSidebar({ chats, setSelectedChat, t }: ChatSidebarPr
 
   return (
     <View style={chatSidebarStyles.sidebar}>
-      <ScrollView style={chatSidebarStyles.scrollView}>
-        {chats.map((chat, index) => (
-          <TouchableOpacity
-            key={index}
-            style={chatSidebarStyles.contactCard}
-            onPress={() => {
-              setSelectedChat(chat);
-            }}
-          >
-            <Text style={chatSidebarStyles.contactName}>{chat.contact_name}</Text>
-            {
-              (chat.messages.length > 0) ?
-                <Text style={chatSidebarStyles.lastMessage}>{getSenderAndLastMessage(chat.messages)}</Text>
-                :
-              <Text style={chatSidebarStyles.lastMessage}>{t("Chat.noMessages")}</Text>
-              
+      <NativeViewGestureHandler>
+
+        <ScrollView style={chatSidebarStyles.scrollView}>
+          {chats.map((chat, index) => (
+            <TouchableOpacity
+              key={index}
+              style={chatSidebarStyles.contactCard}
+              onPress={() => {
+                setSelectedChat(chat);
+              }}
+            >
+              <Text style={chatSidebarStyles.contactName}>{chat.contact_name}</Text>
+              {
+                (chat.messages.length > 0) ?
+                  <Text style={chatSidebarStyles.lastMessage}>{getSenderAndLastMessage(chat.messages)}</Text>
+                  :
+                  <Text style={chatSidebarStyles.lastMessage}>{t("Chat.noMessages")}</Text>
+
               }
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </NativeViewGestureHandler>
     </View>
   );
 }

@@ -4,6 +4,7 @@ import MyPublishedVehicles from "@/components/templates/MyPublishedVehicles";
 import theme from "@/components/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { getApiUrl } from "@/utils/getApiUrl";
 
 const { width } = Dimensions.get('window');
 
@@ -34,21 +35,21 @@ const misCochesPublicados = () => {
         return;
       }
 
-      const userRes = await fetch('http://localhost:3000/users/getdata/', {
+      const userRes = await fetch(`${getApiUrl()}/users/getdata/`, {
         method: 'GET',
         credentials: 'include',
       });
       const userData = await userRes.json();
       const userId = userData[0].id;
 
-      const response = await fetch(`http://localhost:3000/vehicles/`);
+      const response = await fetch(`${getApiUrl()}/vehicles/`);
       const allVehicles = await response.json();
 
       const userVehicles = await Promise.all(
         allVehicles
           .filter(v => v.owner_id === userId)
           .map(async (vehicle) => {
-            const vImgRes = await fetch(`http://localhost:3000/media/vehicles/${userId}/${vehicle.id}`);
+            const vImgRes = await fetch(`${getApiUrl()}/media/vehicles/${userId}/${vehicle.id}`);
             const images = await vImgRes.json();
             const imageUrl = images.length > 0 ? images[0].data : null;
 
@@ -68,7 +69,7 @@ const misCochesPublicados = () => {
 
   const handleDeleteVehicle = async (vehicleId: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/vehicles/${vehicleId}`, {
+      const response = await fetch(`${getApiUrl()}/vehicles/${vehicleId}`, {
         method: "DELETE",
       });
 
@@ -85,22 +86,22 @@ const misCochesPublicados = () => {
 
   const checkReservations = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/reservations/`);
+      const response = await fetch(`${getApiUrl()}/reservations/`);
       const allReservations = await response.json();
-  
+
       const userReservations = allReservations.filter(reservation =>
         vehicles.some(vehicle => vehicle.id === reservation.vehicle_id)
       );
-  
+
       const newNotifications = [];
-  
+
       userReservations.forEach(reservation => {
         const vehicle = vehicles.find(v => v.id === reservation.vehicle_id);
         const vehicleName = vehicle ? vehicle.brand : "Vehículo desconocido";
-  
+
         // Buscar la reserva anterior en la lista de notificadas
         const previousReservation = notifiedReservations.find(r => r.id === reservation.id);
-  
+
         if (!previousReservation) {
           // Nueva reserva
           newNotifications.push(`Tu vehículo "${vehicleName}" ha sido reservado.`);
@@ -112,36 +113,36 @@ const misCochesPublicados = () => {
               : `El estado de la reserva de "${vehicleName}" ha cambiado a ${reservation.status}.`;
             newNotifications.push(statusMessage);
           }
-  
+
           // Detectar cambios en fechas
           if (previousReservation.start_date !== reservation.start_date || previousReservation.end_date !== reservation.end_date) {
             newNotifications.push(`Las fechas de la reserva de "${vehicleName}" han sido modificadas.`);
           }
-  
+
           // Detectar cambios en precio
           if (previousReservation.total_price !== reservation.total_price) {
             newNotifications.push(`El precio de la reserva de "${vehicleName}" ha cambiado a €${reservation.total_price}.`);
           }
         }
       });
-  
+
       console.log("Nueva notificación generada:", newNotifications); // Verificar qué cambios se están detectando
-  
+
       if (newNotifications.length > 0) {
         setNotifications(prev => [...prev, ...newNotifications]);
       }
-  
+
       // Solo actualizar `notifiedReservations` después de verificar los cambios
       setNotifiedReservations(userReservations);
       setReservations(userReservations);
-  
+
     } catch (error) {
       console.error("Error al verificar las reservas:", error);
     }
   };
-  
-  
-  
+
+
+
 
   useEffect(() => {
     cargarVehiculos();
@@ -151,7 +152,7 @@ const misCochesPublicados = () => {
     const interval = setInterval(() => {
       checkReservations();
     }, 1000); // Verificar cada 30 segundos
-  
+
     return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
   }, [vehicles]);
 
@@ -166,24 +167,24 @@ const misCochesPublicados = () => {
 
             return (
               <TouchableOpacity
-  key={index}
-  onPress={() => {
-    console.log("Navegando a reservaPropia con:", reservation); // Agregar aquí
-    router.push({
-      pathname: "/(tabs)/reservaPropia",
-      params: {
-        id: reservation.id, // Agregar el ID de la reserva explícitamente
-        vehicleName,
-        customerId: reservation.customer_id,
-        startDate: reservation.start_date,
-        endDate: reservation.end_date,
-        totalPrice: reservation.total_price,
-      },
-    });
-  }}
->
-
+                key={index}
+                onPress={() => {
+                  console.log("Navegando a reservaPropia con:", reservation); // Agregar aquí
+                  router.push({
+                    pathname: "/(tabs)/reservaPropia",
+                    params: {
+                      id: reservation.id, // Agregar el ID de la reserva explícitamente
+                      vehicleName,
+                      customerId: reservation.customer_id,
+                      startDate: reservation.start_date,
+                      endDate: reservation.end_date,
+                      totalPrice: reservation.total_price,
+                    },
+                  });
+                }}
               >
+
+              
                 <Text style={styles.notificationText}>
                   {`Tu vehículo "${vehicleName}" ha sido reservado.`}
                 </Text>
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
-  
+
 
   cardWrapper: {
     width: width < 500 ? "100%" : "48%",

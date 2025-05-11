@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 export default function AccountPage() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -25,7 +26,7 @@ export default function AccountPage() {
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/media/profile/${userId}`);
+        const response = await fetch(`http://${getApiUrl()}/media/profile/${userId}`);
         const data = await response.json();
 
         if (data.length > 0) {
@@ -45,7 +46,7 @@ export default function AccountPage() {
           return;
         }
 
-        const response = await fetch('http://localhost:3000/users/getdata/', {
+        const response = await fetch(`${getApiUrl()}/users/getdata/`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json',
@@ -53,6 +54,7 @@ export default function AccountPage() {
            },
         });
         const data = await response.json();
+        console.log("Datos del usuario:", data);
 
         if (!response.ok) {
           throw new Error(data.message || "Error al obtener los datos");
@@ -65,14 +67,14 @@ export default function AccountPage() {
         
         await AsyncStorage.setItem("userId", data[0].id);
 
-        const profileRes = await fetch(`http://localhost:3000/media/profile/${data[0].id}`);
+        const profileRes = await fetch(`${getApiUrl()}/media/profile/${data[0].id}`);
         const profileImages = await profileRes.json();
         if (profileImages.length > 0) {
             setProfileImageUri(profileImages[0].data);
         }
 
         if (data[0].role === 'admin') {
-          const usersResponse = await fetch('http://localhost:3000/users', {
+          const usersResponse = await fetch(`${getApiUrl()}/users`, {
             method: 'GET',
             credentials: 'include',
           });
@@ -117,7 +119,7 @@ export default function AccountPage() {
     const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
     if (confirmDelete) {
       try {
-        const response = await fetch(`http://localhost:3000/users/${userId}`, {
+        const response = await fetch(`${getApiUrl()}/users/${userId}`, {
           method: 'DELETE',
           credentials: 'include',
         });
@@ -153,7 +155,7 @@ export default function AccountPage() {
     }
   
     try {
-      const uploadRes = await fetch(`http://localhost:3000/media/upload/${userId}`, {
+      const uploadRes = await fetch(`${getApiUrl()}/media/upload/${userId}`, {
         method: "POST",
         body: formData,
       });
@@ -164,7 +166,7 @@ export default function AccountPage() {
       console.log("Imagen subida:", uploadData);
   
       // Actualizar imagen de perfil
-      const newImgRes = await fetch(`http://localhost:3000/media/profile/${userId}`);
+      const newImgRes = await fetch(`${getApiUrl()}/media/profile/${userId}`);
       const newImgData = await newImgRes.json();
   
       if (newImgData.length > 0) {
@@ -179,7 +181,7 @@ export default function AccountPage() {
     try {
       const token = await AsyncStorage.getItem('token');
       console.log(token);
-      const response = await fetch(`http://localhost:3000/users/${userId}`, {
+      const response = await fetch(`http://${getApiUrl()}/users/${userId}`, {
         credentials: 'include',
         method: 'PATCH',
         headers: {

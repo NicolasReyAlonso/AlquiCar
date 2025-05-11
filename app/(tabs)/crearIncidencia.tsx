@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import theme from '@/components/Theme';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 const CrearIncidencia = () => {
   const { t } = useTranslation();
@@ -62,7 +63,7 @@ const CrearIncidencia = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/incidences/', {
+      const response = await fetch(`${getApiUrl()}/incidences/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -95,7 +96,7 @@ const CrearIncidencia = () => {
           return;
         }
 
-        const userResponse = await fetch('http://localhost:3000/users/getdata/', {
+        const userResponse = await fetch(`${getApiUrl()}/users/getdata/`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -109,7 +110,7 @@ const CrearIncidencia = () => {
         setUserId(userId);
 
         // Obtener reservas del usuario
-        const resResponse = await fetch(`http://localhost:3000/reservations/customer/`, {
+        const resResponse = await fetch(`${getApiUrl()}/reservations/customer/`, {
           method: 'GET',
           credentials: 'include',
         });

@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 export default function ConfirmacionReserva() {
   const params = useLocalSearchParams();
@@ -23,7 +24,7 @@ export default function ConfirmacionReserva() {
   const [vehicle, setVehicle] = useState<any>(null);
   const fetchImageUrl = async (ownerId: string, vehicleId: string) => {
     try {
-      const res = await fetch(`http://localhost:3000/media/vehicles/${ownerId}/${vehicleId}`);
+      const res = await fetch(`${getApiUrl()}/media/vehicles/${ownerId}/${vehicleId}`);
       const images = await res.json();
       return images.length > 0 && images[0].data ? images[0].data : "http://via.placeholder.com/150";
     } catch (err) {
@@ -100,7 +101,7 @@ export default function ConfirmacionReserva() {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/reservations", {
+      const response = await fetch(`${getApiUrl()}/reservations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nuevaReserva),
@@ -133,7 +134,7 @@ export default function ConfirmacionReserva() {
 
     const cargarDatosVehiculo = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/vehicles/${params.vehicleId}`);
+        const response = await fetch(`${getApiUrl()}/vehicles/${params.vehicleId}`);
         const data = await response.json();
     
         if (data && data.length > 0) {
@@ -157,7 +158,7 @@ export default function ConfirmacionReserva() {
 
     const cargarFechasReservadas = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/reservations?vehicle_id=${params.vehicleId}`);
+        const response = await fetch(`${getApiUrl()}/reservations?vehicle_id=${params.vehicleId}`);
         const data = await response.json();
   
         const reservasActivas = data.filter((reserva: any) => reserva.status !== "Cancelled");

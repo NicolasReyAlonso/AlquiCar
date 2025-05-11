@@ -25,7 +25,7 @@ export default function DetallesReserva() {
   useEffect(() => {
     const fetchReservationDetails = async () => {
       try {
-        const reservationResponse = await fetch(`http://localhost:3000/reservations/${id}`);
+        const reservationResponse = await fetch(`http://192.168.1.130:3000/reservations/${id}`);
         const reservationData = await reservationResponse.json();
 
         const reservation = Array.isArray(reservationData) ? reservationData[0] : reservationData;
@@ -38,14 +38,14 @@ export default function DetallesReserva() {
         }
 
         if (reservation && reservation.vehicle_id) {
-          const vehicleResponse = await fetch(`http://localhost:3000/vehicles/${reservation.vehicle_id}`);
+          const vehicleResponse = await fetch(`http://192.168.1.130:3000/vehicles/${reservation.vehicle_id}`);
           const vehicleData = await vehicleResponse.json();
 
           const vehicle = Array.isArray(vehicleData) ? vehicleData[0] : vehicleData;
 
           let imageUrl = "http://via.placeholder.com/150";
           try {
-            const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+            const imgRes = await fetch(`http://192.168.1.130:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
             const images = await imgRes.json();
             if (images.length > 0 && images[0].data) {
               imageUrl = images[0].data;
@@ -59,7 +59,7 @@ export default function DetallesReserva() {
 
           // Propietario del coche
           if (vehicle && vehicle.owner_id) {
-            const ownerResponse = await fetch(`http://localhost:3000/users/${vehicle.owner_id}`, {
+            const ownerResponse = await fetch(`http://192.168.1.130:3000/users/${vehicle.owner_id}`, {
               method: 'GET',
               credentials: 'include',
             });
@@ -87,7 +87,7 @@ export default function DetallesReserva() {
 
   const handleCancelReservation = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/reservations/${id}`, {
+      const response = await fetch(`http://192.168.1.130:3000/reservations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -112,7 +112,7 @@ export default function DetallesReserva() {
 
 const handleUpdateReservation = async () => {
   try {
-    const response = await fetch(`http://localhost:3000/reservations/${id}`, {
+    const response = await fetch(`http://192.168.1.130:3000/reservations/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

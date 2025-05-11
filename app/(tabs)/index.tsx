@@ -9,6 +9,7 @@ import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import VehicleCard from '@/components/templates/VehicleCard';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 const { width } = Dimensions.get('window');
 
@@ -47,7 +48,7 @@ const index = () => {
 
   const handleBuscar = async () => {
     try {
-      const response = await fetch('http://localhost:3000/vehicles/');
+      const response = await fetch(`${getApiUrl()}/vehicles/`);
       if (!response.ok) throw new Error('Error en la respuesta del servidor');
       
       const allVehicles = await response.json();

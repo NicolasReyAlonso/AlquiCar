@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-nativ
 import { useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 const UserProfileScreen = () => {
   interface Vehicle {
@@ -50,7 +51,7 @@ const UserProfileScreen = () => {
       }
 
       // Obtener datos del usuario
-      const userUrl = `http://localhost:3000/users/${userId}`;
+      const userUrl = `${getApiUrl()}/users/${userId}`;
       const userResponse = await fetch(userUrl, {
         method: 'GET',
         credentials: 'include',
@@ -63,7 +64,7 @@ const UserProfileScreen = () => {
       setUserData(user[0]);
 
       // Vehículos del usuario
-      const vehicleResponse = await fetch(`http://localhost:3000/vehicles`, {
+      const vehicleResponse = await fetch(`${getApiUrl()}/vehicles`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -76,7 +77,7 @@ const UserProfileScreen = () => {
       setVehicles(userVehicles);
 
       // Reservas del usuario
-      const reservationsResponse = await fetch(`http://localhost:3000/reservations`, {
+      const reservationsResponse = await fetch(`${getApiUrl()}/reservations`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -89,7 +90,7 @@ const UserProfileScreen = () => {
       setReservations(userReservations);
 
       // Incidencias del usuario
-      const incidencesResponse = await fetch(`http://localhost:3000/incidences`, {
+      const incidencesResponse = await fetch(`${getApiUrl()}/incidences`, {
         method: 'GET',
         credentials: 'include',
         headers: {

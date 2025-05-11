@@ -12,6 +12,7 @@ import {
 import theme from '@/components/Theme';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 const { width } = Dimensions.get('window');
 
@@ -86,7 +87,7 @@ export default function RegisterScreen() {
     }
 
     console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Dirección: ${address}, Ciudad: ${city}, Teléfono: ${phone}, DNI: ${dni}, Email: ${email}, Contraseña: ${password}`);
-    fetch('http://localhost:3000/auth/register', {
+    fetch(`${getApiUrl()}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -4,6 +4,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Para obtener el userId del usuario actual
 import { useTranslation } from "react-i18next";
+import { getApiUrl } from "@/utils/getApiUrl";
 
 export default function VehicleDetailsPage() {
   const { id } = useLocalSearchParams();
@@ -38,7 +39,7 @@ export default function VehicleDetailsPage() {
     const fetchVehicle = async () => {
       try {
         console.log("ID del vehículo recibido:", id);
-        const response = await fetch(`http://localhost:3000/vehicles/${id}`, {
+        const response = await fetch(`${getApiUrl()}/vehicles/${id}`, {
           method: "GET",
           credentials: "include", // Usar credenciales para autenticación
         });
@@ -48,7 +49,7 @@ export default function VehicleDetailsPage() {
 
           let imageUrl = "http://via.placeholder.com/150";
           try {
-            const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicleData.owner_id}/${vehicleData.id}`);
+            const imgRes = await fetch(`${getApiUrl()}/media/vehicles/${vehicleData.owner_id}/${vehicleData.id}`);
             const images = await imgRes.json();
             if (images.length > 0 && images[0].data) {
               imageUrl = images[0].data;
@@ -68,7 +69,7 @@ export default function VehicleDetailsPage() {
 
           // Obtener datos del propietario
           if (vehicleData.owner_id) {
-            const ownerResponse = await fetch(`http://localhost:3000/users/${vehicleData.owner_id}`, {
+            const ownerResponse = await fetch(`${getApiUrl()}/users/${vehicleData.owner_id}`, {
               method: "GET",
               credentials: "include", // Usar credenciales para autenticación
             });

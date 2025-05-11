@@ -3,6 +3,7 @@ import { View, ScrollView, Text } from "react-native";
 import VehicleCard from "@/components/templates/VehicleCard";
 import theme from "@/components/Theme";
 import { useRouter } from "expo-router";
+import { getApiUrl } from "@/utils/getApiUrl";
 
 const Ofertas = () => {
   const router = useRouter();
@@ -14,7 +15,7 @@ const Ofertas = () => {
     const fetchVehicles = async () => {
       try {
         // Asegúrate de que HTTPS está configurado correctamente en el backend
-        const response = await fetch("http://localhost:3000/vehicles");
+        const response = await fetch(`${getApiUrl()}/vehicles`);
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -25,7 +26,7 @@ const Ofertas = () => {
               let imageUrl = "http://via.placeholder.com/150"; // predeterminada
 
               try {
-                const imgRes = await fetch(`http://localhost:3000/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
+                const imgRes = await fetch(`${getApiUrl()}/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
                 const images = await imgRes.json();
                 if (images.length > 0 && images[0].data) {
                   imageUrl = images[0].data;

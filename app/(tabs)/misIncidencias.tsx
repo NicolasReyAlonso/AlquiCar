@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from '@/components/Theme';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 const { width } = Dimensions.get('window');
 
@@ -45,7 +46,7 @@ export default function MisIncidencias() {
 
   const fetchIncidencias = async (token: string, isAdminUser: boolean, uid: string, viewAll: boolean) => {
     try {
-      let url = 'http://localhost:3000/incidences/';
+      let url = `${getApiUrl()}/incidences/`;
       if (!isAdminUser || (isAdminUser && !viewAll)) {
         url += 'my-incidences';
       }
@@ -79,7 +80,7 @@ export default function MisIncidencias() {
           return;
         }
 
-        const userResponse = await fetch('http://localhost:3000/users/getdata/', {
+        const userResponse = await fetch(`${getApiUrl()}/users/getdata/`, {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json',
@@ -122,7 +123,7 @@ export default function MisIncidencias() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/incidences/${id}`, {
+      const response = await fetch(`${getApiUrl()}/incidences/${id}`, {
         method: 'PATCH',
         credentials: 'include',
         headers: {

@@ -10,10 +10,18 @@ import ChatWindow from "@/components/chat/ChatWindow";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useWindowDimensions, Platform } from 'react-native';
+import LargeScreenView from "@/components/chat/LargeScreenView";
+import MobileView from "@/components/chat/MobileView";
+import { getApiUrl } from "@/utils/getApiUrl";
 
 
 
 
+const isMobieleDevice = () => {
+    const width = useWindowDimensions();
+    return Platform.OS !== 'web' && width.width < 768; 
+}
 
 export default function Chat() {
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -23,14 +31,15 @@ export default function Chat() {
     const { contactId } = useLocalSearchParams();
     const { t } = useTranslation();
 
+    const isMobile = isMobieleDevice();
+
     useEffect(() => {
 
         if (!socket) {
-            const socketResponse: Socket = io('http://localhost:3000',
+            const socketResponse: Socket = io(`${getApiUrl()}`, 
                 {
                     withCredentials: true
                 });
-            console.log("Socket response", socketResponse.id);
             setSocket(socketResponse);
             setSocketEvents(socketResponse);
             socketResponse.emit('get chats', {});
@@ -91,11 +100,13 @@ export default function Chat() {
 
 
     return (
-
-        <View style={mainChatStyles.appContainer}>
-            <ChatSidebar chats={contacts} setSelectedChat={setSelectedChat} t={t} />
-            {socket && selectedContact && <ChatWindow chat={selectedContact} updateContacts={updateContacts} socket={socket} t={t} />}
-        </View>
-
+        /*<GestureHandlerRootView style={{ flex: 1 }}>
+            <View style={mainChatStyles.appContainer}>
+                <ChatSidebar chats={contacts} setSelectedChat={setSelectedChat} t={t} />
+                {socket && selectedContact && <ChatWindow chat={selectedContact} updateContacts={updateContacts} socket={socket} t={t} />}
+            </View>
+        </GestureHandlerRootView>*/
+        isMobile ? <MobileView contacts={contacts} selectedContact={selectedContact} setSelectedChat={setSelectedChat} socket={socket} updateContacts={updateContacts} t={t} /> :
+        <LargeScreenView contacts={contacts} selectedContact={selectedContact} setSelectedChat={setSelectedChat} socket={socket} updateContacts={updateContacts} t={t} />
     );
 }

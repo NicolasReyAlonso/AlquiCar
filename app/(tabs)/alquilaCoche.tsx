@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
+import { getApiUrl } from '@/utils/getApiUrl';
 
 const carModels = {
   Toyota: ['Corolla', 'Yaris', 'Camry'],
@@ -116,7 +117,7 @@ export default function AlquilarCoche() {
         return;
       }
 
-      const userRes = await fetch('http://localhost:3000/users/getdata/', {
+      const userRes = await fetch(`${getApiUrl()}/users/getdata/`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -153,7 +154,7 @@ export default function AlquilarCoche() {
         try {
           const userId = await AsyncStorage.getItem("userId");
           console.log("vehicle id, vehicleId");
-          const uploadRes = await fetch(`http://localhost:3000/media/upload/${userId}/${id}`, {
+          const uploadRes = await fetch(`${getApiUrl()}/media/upload/${userId}/${id}`, {
             method: "POST",
             body: formData,
           });
@@ -185,7 +186,7 @@ export default function AlquilarCoche() {
       };
 
       console.log(vehicle)
-      const response = await fetch('http://localhost:3000/vehicles/', {
+      const response = await fetch(`${getApiUrl()}/vehicles/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

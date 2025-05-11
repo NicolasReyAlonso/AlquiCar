@@ -7,14 +7,15 @@ import { MessageInterface } from '../../interfaces/Message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import chatWindowStyles from '../../css/ChatWindow.styles';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { TFunction } from 'i18next';
+
 
 interface ChatWindowProps {
     chat: ChatInterface,
     socket: Socket,
     updateContacts: (id: string, messages: MessageInterface[]) => void,
-      t: TFunction;
+    t: TFunction;
 }
 
 
@@ -79,36 +80,40 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
             <View style={chatWindowStyles.header}>
                 <Text style={chatWindowStyles.contactName}>{chat.contact_name}</Text>
             </View>
-            <ScrollView
-                ref={scrollViewRef}
-                style={chatWindowStyles.chatMessages}
-                onContentSizeChange={() => {
-                    scrollViewRef.current?.scrollToEnd({ animated: scrollToEndAnimation });
-                }}>
+            <NativeViewGestureHandler>
 
-                {messages.length < 1 ? (
-                    <Text style={chatWindowStyles.noMessages}>{t('Chat.noMessages')}</Text>
+                <ScrollView
+                    ref={scrollViewRef}
+                    style={chatWindowStyles.chatMessages}
+                    onContentSizeChange={() => {
+                        scrollViewRef.current?.scrollToEnd({ animated: scrollToEndAnimation });
+                    }}>
+
+                    {messages.length < 1 ? (
+                        <Text style={chatWindowStyles.noMessages}>{t('Chat.noMessages')}</Text>
                     ) : (
-                    user && messages.map((message, index) => {
-                        return (
-                        <View
-                            key={index}
-                            style={[
-                                chatWindowStyles.message,
-                                message.from_id === user.id ? chatWindowStyles.mine : chatWindowStyles.other
-                            ]}
-                        >
-                            {message.from_id === user.id ? (
-                                <Text style={chatWindowStyles.senderName}>Tú</Text>
-                            ) : (
-                                <Text style={chatWindowStyles.senderName}>{message.sender_name}</Text>
-                            )}
-                            <Text style={chatWindowStyles.messageContent}>{message.content}</Text>
-                            <Text style={chatWindowStyles.messageTime}>{formatDate(message.created_at)}</Text>
-                        </View>
-                    )})
-                )}
-            </ScrollView>
+                        user && messages.map((message, index) => {
+                            return (
+                                <View
+                                    key={index}
+                                    style={[
+                                        chatWindowStyles.message,
+                                        message.from_id === user.id ? chatWindowStyles.mine : chatWindowStyles.other
+                                    ]}
+                                >
+                                    {message.from_id === user.id ? (
+                                        <Text style={chatWindowStyles.senderName}>Tú</Text>
+                                    ) : (
+                                        <Text style={chatWindowStyles.senderName}>{message.sender_name}</Text>
+                                    )}
+                                    <Text style={chatWindowStyles.messageContent}>{message.content}</Text>
+                                    <Text style={chatWindowStyles.messageTime}>{formatDate(message.created_at)}</Text>
+                                </View>
+                            )
+                        })
+                    )}
+                </ScrollView>
+            </NativeViewGestureHandler>
 
             <View style={chatWindowStyles.inputContainer}>
                 <TextInput
@@ -121,6 +126,7 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
                     <Text style={chatWindowStyles.sendButtonText}>{t('Chat.send')}</Text>
                 </TouchableOpacity>
             </View>
+            
         </View>
     );
 }

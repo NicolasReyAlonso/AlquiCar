@@ -80,7 +80,8 @@
     "day": "jour",
     "city": "Ville",
     "buttons": {
-      "remove": "Supprimer le véhicule"
+      "remove": "Supprimer le véhicule",
+      "edit": "Modifier"
     }
   },
   "VehicleCard": {

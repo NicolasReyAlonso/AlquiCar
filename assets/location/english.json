@@ -82,7 +82,8 @@
     "day": "day",
     "city": "City",
     "buttons": {
-      "remove": "Remove Vehicle"
+      "remove": "Remove Vehicle",
+      "edit": "Edit"
     }
   },
   "VehicleCard": {

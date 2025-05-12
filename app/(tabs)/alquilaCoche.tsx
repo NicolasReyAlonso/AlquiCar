@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect} from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image, Platform} from 'react-native'
 import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
@@ -10,6 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import { getApiUrl } from '@/utils/getApiUrl';
+import { useRoute } from '@react-navigation/native';
 
 const carModels = {
   Toyota: ['Corolla', 'Yaris', 'Camry'],
@@ -69,6 +70,27 @@ export default function AlquilarCoche() {
   const [vehicleImageUri, setVehicleImageUri] = useState<string | null>(null);
   const [vehicleFileName, setVehicleFileName] = useState<string | null>(null);
   const [vehicleId, setVehicleId] = useState(null);
+
+  const route = useRoute();
+  const { vehicleId: routeVehicleId, vehicleData } = route.params || {};
+
+  useEffect(() => {
+    if (vehicleData) {
+      setVehicleId(routeVehicleId || null);
+      setBrand(vehicleData.brand);
+      setModel(vehicleData.model);
+      setYear(String(vehicleData.year));
+      setAddress(vehicleData.address || '');
+      setType(vehicleData.type);
+      setTransmission(vehicleData.transmission);
+      setFuelType(vehicleData.fuel_type);
+      setCapacity(String(vehicleData.capacity));
+      setNumDoors(String(vehicleData.num_doors));
+      setPrice(String(vehicleData.daily_price));
+      setDeposit(String(vehicleData.deposit || ''));
+      setVehicleImageUri(vehicleData.imageUrl || null);
+    }
+  }, [vehicleData]);
 
   const handleSubmit = async () => {
     if (!brand || !model || !year || !address || !type || !transmission || !fuelType || !capacity || !numDoors || !price) {
@@ -150,7 +172,7 @@ export default function AlquilarCoche() {
             type: fileType,
           } as any);
         }
-      
+
         try {
           const userId = await AsyncStorage.getItem("userId");
           console.log("vehicle id, vehicleId");
@@ -169,11 +191,12 @@ export default function AlquilarCoche() {
         }
       };
 
-      const vehicle = {
-        owner_id,
+      const vehiclePayload = {
         brand,
         model,
         year: numericYear,
+        latitude: coords.lat,
+        longitude: coords.lon,
         type,
         transmission,
         fuel_type: fuelType,
@@ -181,36 +204,29 @@ export default function AlquilarCoche() {
         num_doors: numericNumDoors,
         daily_price: numericPrice,
         deposit: numericDeposit,
-        latitude: coords.lat,
-        longitude: coords.lon
+        owner_id: userId,
       };
-
-      console.log(vehicle)
-      const response = await fetch(`${getApiUrl()}/vehicles/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(vehicle),
-      });
-      console.log("resppppuesta: ", response);
-      const vehicleData = await response.json();
-      console.log("iddddddddddd: ", vehicleData.vehicle[0].id);
-
-      if (!response.ok) {
-        const responseText = await response.text();
-        console.log('Respuesta del servidor:', responseText);
-      }
-
-      await handleImageUpload(String(vehicleImageUri), String(vehicleFileName), vehicleData.vehicle[0].id);
-
-      
-
-
+    
+        const url = `${getApiUrl()}/vehicles${vehicleId ? `/${vehicleId}` : ''}`;
+        const method = vehicleId ? 'PATCH' : 'POST';
+    
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(vehiclePayload),
+        });
+    
+    
+        const savedVehicle = await res.json();
     
 
-      alert('Vehículo publicado correctamente');
+    
+        alert(vehicleId ? 'Vehículo actualizado' : 'Vehículo publicado');
+
+        await handleImageUpload(String(vehicleImageUri), String(vehicleFileName), savedVehicle.vehicle[0].id);
+      
       setYear('');
       setAddress('');
       setCapacity('');
@@ -219,7 +235,12 @@ export default function AlquilarCoche() {
       setDeposit('');
       scrollRef.current?.scrollTo({ y: 0, animated: true });
 
-      navigation.navigate("misCochesPublicados");
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'misCochesPublicados' }],
+        })
+      );
       
     } catch (err: any) {
       console.log(err);

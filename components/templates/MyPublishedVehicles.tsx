@@ -10,6 +10,7 @@ interface MyPublishedVehiclesProps {
   city: string;
   imageUrl?: string;
   onCancel: () => void;
+  onEdit: () => void;
 }
 
 const PublishedVehicles: React.FC<MyPublishedVehiclesProps> = ({
@@ -18,6 +19,7 @@ const PublishedVehicles: React.FC<MyPublishedVehiclesProps> = ({
   city,
   imageUrl,
   onCancel,
+  onEdit
 }) => {
   const { width } = useWindowDimensions();
   const isDesktop = width > 768;
@@ -48,6 +50,14 @@ const PublishedVehicles: React.FC<MyPublishedVehiclesProps> = ({
             <MaterialIcons name="location-on" size={16} color={theme.colors.gray} />
             <Text style={styles.cityText}>{city}</Text>
           </View>
+
+          <TouchableOpacity 
+            style={styles.editButton} 
+            onPress={onEdit}
+          >
+            <MaterialIcons name="edit" size={16} color="white" />
+            <Text style={styles.buttonText}>{t('MyPublishedVehicles.buttons.edit')}</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.removeButton} 
@@ -81,7 +91,7 @@ const getStyles = (isDesktop: boolean, width: number) =>
       backgroundColor: theme.colors.white,
       borderRadius: 12,
       overflow: 'hidden',
-      height: isDesktop ? 180 : 'auto',
+      height: isDesktop ? 210 : 'auto',
     },
     imageContainer: {
       position: 'relative',
@@ -159,6 +169,18 @@ const getStyles = (isDesktop: boolean, width: number) =>
       fontFamily: theme.fonts.bold,
       marginLeft: 8,
     },
+
+    editButton: {
+      backgroundColor: '#2196F3',
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'flex-end',
+      marginBottom: 8,
+    }
   });
 
 export default PublishedVehicles;

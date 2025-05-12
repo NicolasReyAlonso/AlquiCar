@@ -5,11 +5,14 @@ import theme from "@/components/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getApiUrl } from "@/utils/getApiUrl";
+import { useNavigation } from '@react-navigation/native';
+
 
 const { width } = Dimensions.get('window');
 
 const misCochesPublicados = () => {
   const router = useRouter();
+  const navigation = useNavigation();
   const [vehicles, setVehicles] = useState([]);
   const [addresses, setAddresses] = useState<{ [id: number]: string }>({});
   const [reservations, setReservations] = useState([]);
@@ -206,6 +209,7 @@ const misCochesPublicados = () => {
               city={vehicle.address || "Dirección desconocida"}
               imageUrl={vehicle.imageUrl}
               onCancel={() => handleDeleteVehicle(vehicle.id)}
+              onEdit={() => navigation.navigate('alquilaCoche', { vehicleId: vehicle.id, vehicleData: vehicle })}
             />
           </View>
         ))

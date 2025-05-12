@@ -86,7 +86,8 @@
     "day": "giorno",
     "city": "Città",
     "buttons": {
-      "remove": "Rimuovi veicolo"
+      "remove": "Rimuovi veicolo",
+      "edit": "Modifica"
     }
   },
 

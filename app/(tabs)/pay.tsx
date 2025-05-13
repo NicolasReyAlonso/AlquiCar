@@ -8,11 +8,11 @@ import * as Linking from 'expo-linking';
 const StripeCheckoutTest = () => {
   const handleCheckout = async () => {
   try {
-    const response = await axios.post('http://localhost:3000/create-checkout-session', {
+    const response = await axios.post('http://localhost:3000/pay', {
       price: '100',
       product: {
         name: 'coche de prueba',
-        price: 0,
+        price: 10,
       },
       quantity: 1,
     });

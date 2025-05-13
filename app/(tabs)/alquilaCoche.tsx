@@ -56,13 +56,13 @@ export default function AlquilarCoche() {
   const navigation = useNavigation();
   const scrollRef = useRef<ScrollView>(null);
 
-  const [brand, setBrand] = useState<keyof typeof carModels>('Toyota');
-  const [model, setModel] = useState(carModels['Toyota'][0]);
+  const [brand, setBrand] = useState<keyof typeof carModels | ''>('');
+  const [model, setModel] = useState('');
+  const [type, setType] = useState('');
+  const [transmission, setTransmission] = useState('');
+  const [fuelType, setFuelType] = useState('');
   const [year, setYear] = useState('');
   const [address, setAddress] = useState('');
-  const [type, setType] = useState(types[0]);
-  const [transmission, setTransmission] = useState(transmissions[0]);
-  const [fuelType, setFuelType] = useState(fuelTypes[0]);
   const [capacity, setCapacity] = useState('');
   const [numDoors, setNumDoors] = useState('');
   const [price, setPrice] = useState('');
@@ -70,6 +70,9 @@ export default function AlquilarCoche() {
   const [vehicleImageUri, setVehicleImageUri] = useState<string | null>(null);
   const [vehicleFileName, setVehicleFileName] = useState<string | null>(null);
   const [vehicleId, setVehicleId] = useState(null);
+  const years = Array.from({length: 50}, (_, i) => (new Date().getFullYear() - i).toString());
+  const capacities = ['2', '4', '5', '7', '8'];
+  const numDoorsOptions = ['2', '3', '4', '5'];
 
   const route = useRoute();
   const { vehicleId: routeVehicleId, vehicleData } = route.params || {};
@@ -248,6 +251,44 @@ export default function AlquilarCoche() {
     }
   };
 
+  const CustomPicker = ({
+  selectedValue,
+  onValueChange,
+  items,
+  placeholder,
+  style,
+  invalid
+}: {
+  selectedValue: string;
+  onValueChange: (value: string) => void;
+  items: string[];
+  placeholder: string;
+  style?: any;
+  invalid?: boolean;
+}) => {
+  return (
+    <Picker
+      selectedValue={selectedValue}
+      onValueChange={onValueChange}
+      style={[
+        styles.input,
+        style,
+        invalid && styles.invalidInput
+      ]}
+      
+    >
+      <Picker.Item 
+        label={placeholder} 
+        value="" 
+        style={!selectedValue ? styles.pickerPlaceholder : undefined}
+      />
+      {items.map((item) => (
+        <Picker.Item key={item} label={item} value={item} />
+      ))}
+    </Picker>
+    );
+};
+
   const isFieldValid = (value: string | number) => {
     return value !== '' && value !== null && value !== undefined;
   };
@@ -287,55 +328,41 @@ export default function AlquilarCoche() {
       <ThemedView style={styles.form}>
         <ThemedText style={styles.title} type="title">{vehicleId ? t('RentYourVehicle.editCar') : t('RentYourVehicle.title')}</ThemedText>
 
-        <Text>
-          {t('RentYourVehicle.card.brand')} <Text style={{ color: 'red' }}>*</Text>
-        </Text>
-        <Picker
-          selectedValue={brand}
-          onValueChange={(item) => {
-            setBrand(item as keyof typeof carModels);
-            setModel(carModels[item as keyof typeof carModels][0]);
-          }}
-          style={[
-            styles.input,
-            !isFieldValid(brand) && styles.invalidInput
-          ]}
-        >
-          {Object.keys(carModels).map((brand) => (
-            <Picker.Item key={brand} label={brand} value={brand} />
-          ))}
-        </Picker>
+      <Text>
+        {t('RentYourVehicle.card.brand')} <Text style={{ color: 'red' }}>*</Text>
+      </Text>
+      <CustomPicker
+        selectedValue={brand}
+        onValueChange={(item) => {
+          setBrand(item as keyof typeof carModels);
+          setModel(''); 
+        }}
+        items={Object.keys(carModels)}
+        placeholder={t('RentYourVehicle.card.selectBrand')}
+        invalid={!isFieldValid(brand)}
+      />
 
 
-        <Text>
-          {t('RentYourVehicle.card.model')} <Text style={{ color: 'red' }}>*</Text>
-        </Text>
-        <Picker
-          selectedValue={model}
-          onValueChange={setModel}
-          style={[
-            styles.input,
-            !isFieldValid(model) && styles.invalidInput
-          ]}
-        >
-          {carModels[brand].map((model) => (
-            <Picker.Item key={model} label={model} value={model} />
-          ))}
-        </Picker>
+      <Text>
+        {t('RentYourVehicle.card.model')} <Text style={{ color: 'red' }}>*</Text>
+      </Text>
+      <CustomPicker
+        selectedValue={model}
+        onValueChange={setModel}
+        items={brand ? carModels[brand] : []}
+        placeholder={brand ? t('RentYourVehicle.card.selectModel') : t('RentYourVehicle.card.selectBrandFirst')}
+        invalid={!isFieldValid(model)}
+      />
         
       <Text>
         {t('RentYourVehicle.card.year')} <Text style={{ color: 'red' }}>*</Text>
       </Text>
-      <TextInput
-        style={[
-          styles.input,
-          !isFieldValid(year) && styles.invalidInput
-        ]}
-        placeholder={t('RentYourVehicle.card.year')}
-        value={year}
-        onChangeText={setYear}
-        keyboardType="numeric"
-        placeholderTextColor="grey"
+      <CustomPicker
+        selectedValue={year}
+        onValueChange={setYear}
+        items={years}
+        placeholder="Seleccione año"
+        invalid={!isFieldValid(year)}
       />
 
         <Text>
@@ -355,75 +382,58 @@ export default function AlquilarCoche() {
         <Text>
           {t('RentYourVehicle.card.type')} <Text style={{ color: 'red' }}>*</Text>
         </Text>
-        <Picker
+        <CustomPicker
           selectedValue={type}
           onValueChange={setType}
-          style={[
-            styles.input,
-            !isFieldValid(type) && styles.invalidInput
-          ]}
-        >
-          {types.map((type) => <Picker.Item key={type} label={type} value={type} />)}
-        </Picker>
+          items={types}
+          placeholder={t('RentYourVehicle.card.selectType')}
+          invalid={!isFieldValid(type)}
+        />
 
         <Text>
           {t('RentYourVehicle.card.transmission')} <Text style={{ color: 'red' }}>*</Text>
         </Text>
-        <Picker
+        <CustomPicker
           selectedValue={transmission}
           onValueChange={setTransmission}
-          style={[
-            styles.input,
-            !isFieldValid(transmission) && styles.invalidInput
-          ]}
-        >
-          {transmissions.map((t) => <Picker.Item key={t} label={t} value={t} />)}
-        </Picker>
+          items={transmissions}
+          placeholder={t('RentYourVehicle.card.selectTransmission')}
+          invalid={!isFieldValid(transmission)}
+        />
 
 
         <Text>
           {t('RentYourVehicle.card.fuel_type')} <Text style={{ color: 'red' }}>*</Text>
         </Text>
-        <Picker
+        <CustomPicker
           selectedValue={fuelType}
           onValueChange={setFuelType}
-          style={[
-            styles.input,
-            !isFieldValid(fuelType) && styles.invalidInput
-          ]}
-        >
-          {fuelTypes.map((f) => <Picker.Item key={f} label={f} value={f} />)}
-        </Picker>
+          items={fuelTypes}
+          placeholder={t('RentYourVehicle.card.selectFuelType')}
+          invalid={!isFieldValid(fuelType)}
+        />
 
         <Text>
           {t('RentYourVehicle.card.capacity')} <Text style={{ color: 'red' }}>*</Text>
         </Text>
-        <TextInput
-          style={[
-            styles.input,
-            !isFieldValid(capacity) && styles.invalidInput
-          ]}
-          placeholder={t('RentYourVehicle.card.capacity')}
-          value={capacity}
-          onChangeText={setCapacity}
-          keyboardType="numeric"
-          placeholderTextColor="grey"
+        <CustomPicker
+          selectedValue={capacity}
+          onValueChange={setCapacity}
+          items={capacities}
+          placeholder="Seleccione número de asientos"
+          invalid={!isFieldValid(capacity)}
         />
 
-        <Text>
-          {t('RentYourVehicle.card.num_doors')} <Text style={{ color: 'red' }}>*</Text>
-        </Text>
-        <TextInput
-          style={[
-            styles.input,
-            !isFieldValid(numDoors) && styles.invalidInput
-          ]}
-          placeholder={t('RentYourVehicle.card.num_doors')}
-          value={numDoors}
-          onChangeText={setNumDoors}
-          keyboardType="numeric"
-          placeholderTextColor="grey"
-        />
+      <Text>
+        {t('RentYourVehicle.card.num_doors')} <Text style={{ color: 'red' }}>*</Text>
+      </Text>
+      <CustomPicker
+        selectedValue={numDoors}
+        onValueChange={setNumDoors}
+        items={numDoorsOptions}
+        placeholder="Seleccione número de puertas"
+        invalid={!isFieldValid(numDoors)}
+      />
         
         <Text>
           {t('RentYourVehicle.card.price')} <Text style={{ color: 'red' }}>*</Text>
@@ -485,6 +495,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+    pickerPlaceholder: {
+    color: 'grey',
   },
   input: {
     backgroundColor: 'white',

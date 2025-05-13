@@ -48,6 +48,8 @@
   },
   "RentYourVehicle": {
     "title": "Publier votre voiture",
+    "editCar": "Modifie ta voiture",
+    "edit": "Modifier",
     "card": {
       "brand": "Marque de la voiture",
       "model": "Modèle de la voiture",

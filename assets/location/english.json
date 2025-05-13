@@ -51,6 +51,8 @@
   },
   "RentYourVehicle": {
     "title": "List Your Car",
+    "editCar": "Edit your car",
+    "edit": "Edit",
     "card": {
       "brand": "Car brand",
       "model": "Car model",

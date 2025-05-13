@@ -281,7 +281,7 @@ export default function AlquilarCoche() {
   return (
     <ScrollView contentContainerStyle={styles.formContainer} ref={scrollRef}>
       <ThemedView style={styles.form}>
-        <ThemedText style={styles.title} type="title">{t('RentYourVehicle.title')}</ThemedText>
+        <ThemedText style={styles.title} type="title">{vehicleId ? t('RentYourVehicle.editCar') : t('RentYourVehicle.title')}</ThemedText>
 
         <Text>{t('RentYourVehicle.card.brand')}</Text>
         <Picker selectedValue={brand} onValueChange={(item) => {
@@ -338,7 +338,7 @@ export default function AlquilarCoche() {
         )}
 
         <TouchableOpacity style={styles.buttonPub} onPress={handleSubmit}>
-          <Text style={styles.buttonTextPub}>{t('RentYourVehicle.buttons.publish')}</Text>
+          <Text style={styles.buttonTextPub}>{vehicleId ? t('RentYourVehicle.edit') : t('RentYourVehicle.buttons.publish')}</Text>
         </TouchableOpacity>
       </ThemedView>
     </ScrollView>

@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import VehicleCard from '@/components/templates/VehicleCard';
 import { getApiUrl } from '@/utils/getApiUrl';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const { width } = Dimensions.get('window');
 
@@ -44,6 +46,24 @@ const index = () => {
     }
     closeReturnDatePicker();
   };
+
+  const checkAuthAndNavigate = async (destination: string) => {
+  try {
+    const user = await AsyncStorage.getItem('user');
+    if (user) {
+      if (destination == 'ofertas'){
+        router.push('/(tabs)/ofertas');
+      } else if(destination == 'alquilaCoche'){
+        router.push('/(tabs)/alquilaCoche');
+      }
+    } else {
+      router.push('/login');
+    }
+  } catch (error) {
+    console.error('Error checking auth:', error);
+    router.push('/login');
+  }
+};
 
 
   const handleBuscar = async () => {
@@ -194,13 +214,13 @@ const index = () => {
           <View style={styles.footerButtons}>
             <TouchableOpacity 
               style={styles.button}
-              onPress={() => router.push('/(tabs)/alquilaCoche')}
+              onPress={() => checkAuthAndNavigate('alquilaCoche')}
             >
               <Text style={styles.buttonText}>{t('Index.buttons.rent')}</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.button}
-              onPress={() => router.push('/(tabs)/ofertas')}
+              onPress={() => checkAuthAndNavigate('ofertas')}
             >
               <Text style={styles.buttonText}>{t('Index.buttons.offers')}</Text>
             </TouchableOpacity>

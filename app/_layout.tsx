@@ -16,6 +16,7 @@ import { Picker } from "@react-native-picker/picker";
 import { Pressable } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {isUserUploaded} from '@/utils/isUserUploaded';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface LayoutProps {
   children: ReactNode;
@@ -52,14 +53,14 @@ export default function Layout({ children }: LayoutProps) {
   const [priceRange, setPriceRange] = useState([0, 500]);
   const [userUploaded, setUserUploaded] = useState(false);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const init = async () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       setAppIsReady(true);
       fetchUserUpload();
     };
     init();
-  }, []);
+  });
 
   const fetchUserUpload = async () =>{
     const userIsUploaded = await isUserUploaded()

@@ -22,7 +22,8 @@
       "publications": "My Listings",
       "logout": "Log Out"
     },
-    "changePhoto": "Change profile photo"
+    "changePhoto": "Change profile photo",
+    "eliminar": "Delete my account"
   },
   "Login": {
     "title": "Log In",

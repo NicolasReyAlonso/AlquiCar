@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'; 
-import { View, Text, StyleSheet, TextInput, Button, Image, TouchableOpacity, Alert, FlatList, ScrollView, Platform} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TextInput, Button, Image, TouchableOpacity, Alert, FlatList, ScrollView, Platform } from 'react-native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from "@/components/Theme";
@@ -36,8 +36,8 @@ export default function AccountPage() {
         console.error("Error al cargar imagen de perfil:", error);
       }
     };
-  
-    
+
+
     const fetchUserData = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
@@ -49,9 +49,10 @@ export default function AccountPage() {
         const response = await fetch(`${getApiUrl()}/users/getdata/`, {
           method: 'GET',
           credentials: 'include',
-          headers: { 'Content-Type': 'application/json',
+          headers: {
+            'Content-Type': 'application/json',
             'Authorization': 'Bearer ${token}'
-           },
+          },
         });
         const data = await response.json();
         console.log("Datos del usuario:", data);
@@ -64,13 +65,13 @@ export default function AccountPage() {
         setEmail(data[0].email);
         setRole(data[0].role);
         setUserId(data[0].id);
-        
+
         await AsyncStorage.setItem("userId", data[0].id);
 
         const profileRes = await fetch(`${getApiUrl()}/media/profile/${data[0].id}`);
         const profileImages = await profileRes.json();
         if (profileImages.length > 0) {
-            setProfileImageUri(profileImages[0].data);
+          setProfileImageUri(profileImages[0].data);
         }
 
         if (data[0].role === 'admin') {
@@ -99,7 +100,8 @@ export default function AccountPage() {
     navigation.navigate("misCochesPublicados");
   };
 
-  const handleCerrarSesion = async () => {
+  const handleCerrarSesion = async (id: string) => {
+    if (id == userId){
     await AsyncStorage.setItem("isLoggedIn", "false");
     navigation.navigate("index");
 
@@ -109,6 +111,7 @@ export default function AccountPage() {
         routes: [{ name: 'index' }],
       })
     );
+  }
   };
 
   const handleViewUser = (userId: string) => {
@@ -116,16 +119,17 @@ export default function AccountPage() {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar esta cuenta?');
     if (confirmDelete) {
       try {
         const response = await fetch(`${getApiUrl()}/users/${userId}`, {
           method: 'DELETE',
           credentials: 'include',
         });
-  
+
         if (response.ok) {
           setUsers(users.filter(user => user.id !== userId));
+          handleCerrarSesion(userId);
         } else {
           window.alert('Error: No se pudo eliminar el usuario');
         }
@@ -134,41 +138,41 @@ export default function AccountPage() {
       }
     }
   };
-  
+
   const handleImageUpload = async (imageUri: string, imageName: string) => {
     const formData = new FormData();
-  
+
     if (Platform.OS === "web") {
       const response = await fetch(imageUri);
       const blob = await response.blob();
-  
+
       formData.append("image", blob, imageName);
     } else {
       const match = /\.(\w+)$/.exec(imageUri);
       const fileType = match ? `image/${match[1]}` : `image`;
-  
+
       formData.append("image", {
         uri: imageUri,
         name: imageName,
         type: fileType,
       } as any);
     }
-  
+
     try {
       const uploadRes = await fetch(`${getApiUrl()}/media/upload/${userId}`, {
         method: "POST",
         body: formData,
       });
-  
+
       if (!uploadRes.ok) throw new Error("Error al subir imagen");
-  
+
       const uploadData = await uploadRes.json();
       console.log("Imagen subida:", uploadData);
-  
+
       // Actualizar imagen de perfil
       const newImgRes = await fetch(`${getApiUrl()}/media/profile/${userId}`);
       const newImgData = await newImgRes.json();
-  
+
       if (newImgData.length > 0) {
         setProfileImageUri(newImgData[0].data);
       }
@@ -176,7 +180,7 @@ export default function AccountPage() {
       console.error("Error al subir imagen:", error);
     }
   };
-  
+
   const handleUpdateName = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -190,18 +194,18 @@ export default function AccountPage() {
         },
         body: JSON.stringify({ name: userName }),
       });
-  
+
       if (!response.ok) {
         throw new Error('No se pudo actualizar el nombre');
       }
-  
+
       alert('Nombre actualizado correctamente');
       setIsEditingName(false); // salir del modo edición
     } catch (error) {
       alert('Error');
     }
   };
-  
+
 
   const handleToggleAdminMode = () => {
     setIsAdminMode(!isAdminMode);
@@ -212,13 +216,13 @@ export default function AccountPage() {
       const input = document.createElement("input");
       input.type = "file";
       input.accept = "image/*";
-  
+
       input.onchange = (e: any) => {
         const file = e.target.files[0];
         const uri = URL.createObjectURL(file);
         handleImageUpload(uri, file.name);
       };
-  
+
       input.click();
     } else {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -226,7 +230,7 @@ export default function AccountPage() {
         allowsEditing: true,
         quality: 1,
       });
-  
+
       if (!result.canceled) {
         const uri = result.assets[0].uri;
         const fileName = uri.split("/").pop() || "image.jpg";
@@ -234,8 +238,8 @@ export default function AccountPage() {
       }
     }
   };
-  
-  
+
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>{t('Account.title')}</Text>
@@ -275,11 +279,17 @@ export default function AccountPage() {
         </View>
 
         <Text style={styles.info}>Email: {userEmail}</Text>
+        <TouchableOpacity
+          onPress={() => handleDeleteUser(userId)}
+          style={[styles.actionButton]}
+        >
+          <Text style={styles.buttonText}>{t('Account.eliminar')}</Text>
+        </TouchableOpacity>
       </View>
 
       {role === 'admin' && (
-        <TouchableOpacity 
-          style={styles.toggleButton} 
+        <TouchableOpacity
+          style={styles.toggleButton}
           onPress={handleToggleAdminMode}
         >
           <Text style={styles.buttonText}>
@@ -321,7 +331,7 @@ export default function AccountPage() {
           <TouchableOpacity style={styles.button} onPress={handlePublicaciones}>
             <Text style={styles.buttonText}>{t('Account.buttons.publications')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleCerrarSesion}>
+          <TouchableOpacity style={styles.button} onPress={() => handleCerrarSesion(userId)}>
             <Text style={styles.buttonText}>{t('Account.buttons.logout')}</Text>
           </TouchableOpacity>
         </View>
@@ -463,5 +473,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: theme.colors.text,
   }
-  
+
 });

@@ -22,7 +22,8 @@
       "publications": "Mes Annonces",
       "logout": "Se Déconnecter"
     },
-    "changePhoto": "Changer la photo de profil"
+    "changePhoto": "Changer la photo de profil",
+    "eliminar": "Supprimer mon compte"
   },
   "Login": {
     "title": "Connexion",

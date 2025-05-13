@@ -103,6 +103,7 @@ export default function AccountPage() {
   const handleCerrarSesion = async (id: string) => {
     if (id == userId){
     await AsyncStorage.setItem("isLoggedIn", "false");
+    await AsyncStorage.removeItem('user');
     navigation.navigate("index");
 
     navigation.dispatch(

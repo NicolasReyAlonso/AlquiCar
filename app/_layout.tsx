@@ -315,6 +315,10 @@ export default function Layout({ children }: LayoutProps) {
               <FontAwesome5 name="comments" size={24} color={color} solid/>
               <Text style={styles.menuItemText}>{t('layout.menuButtons.chat')}</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('pagoFallido')}>
+              <FontAwesome5 name="comments" size={24} color={color} solid/>
+              <Text style={styles.menuItemText}>PagoPrueba</Text>
+            </TouchableOpacity>
           </View>
           </>
         )}

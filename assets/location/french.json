@@ -250,5 +250,12 @@
       "datos": "Informations du client",
       "noActivas": "Vous n'avez aucune réservation active.",
       "noCanceladas": "Vous n'avez aucune réservation annulée."
-    }
+    },
+    "Payment": {
+      "fallido": "Paiement échoué !",
+      "error": "Une erreur s'est produite lors du traitement de votre paiement. Vous allez être redirigé vers l'accueil...",
+      "ir": "Aller maintenant",
+      "exitoso": "Paiement réussi !",
+      "exito": "Vous allez être redirigé vers l'accueil dans quelques secondes..."
+    }    
 }

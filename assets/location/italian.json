@@ -266,6 +266,13 @@
     "datos": "Dati del cliente",
     "noActivas": "Non hai prenotazioni attive.",
     "noCanceladas": "Non hai prenotazioni cancellate."
+  },
 
+  "Payment": {
+    "fallido": "Pagamento fallito!",
+    "error": "Si è verificato un errore durante l'elaborazione del pagamento. Verrai reindirizzato alla home...",
+    "ir": "Vai ora",
+    "exitoso": "Pagamento riuscito!",
+    "exito": "Verrai reindirizzato alla home tra qualche secondo..."
   }
 }

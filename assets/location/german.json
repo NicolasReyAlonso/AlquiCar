@@ -22,7 +22,8 @@
       "publications": "Meine Inserate",
       "logout": "Abmelden"
     },
-    "changePhoto": "Profilfoto ändern"
+    "changePhoto": "Profilfoto ändern",
+    "eliminar": "Mein Konto löschen"
   },
   "Login": {
     "title": "Anmelden",

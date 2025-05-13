@@ -23,7 +23,8 @@
         "publications": "Mis Publicaciones",
         "logout": "Cerrar Sesión"
       },
-      "changePhoto":"Cambiar foto de perfil"
+      "changePhoto":"Cambiar foto de perfil",
+      "eliminar": "Eliminar mi cuenta"
     },
   
     "Login": {

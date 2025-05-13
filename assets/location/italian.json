@@ -23,7 +23,8 @@
       "publications": "Le Mie Pubblicazioni",
       "logout": "Esci"
     },
-    "changePhoto": "Cambia foto profilo"
+    "changePhoto": "Cambia foto profilo",
+    "eliminar": "Eliminare il mio account"
   },
 
   "Login": {

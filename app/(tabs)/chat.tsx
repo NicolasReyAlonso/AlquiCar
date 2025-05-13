@@ -28,7 +28,6 @@ export default function Chat() {
     const [contacts, setContacts] = useState<ChatInterface[]>([]);
     const [selectedContact, setSelectedChat] = useState<ChatInterface | null>(null);
     const selectedContactRef = useRef<ChatInterface | null>(null);
-    const { contactId } = useLocalSearchParams();
     const { t } = useTranslation();
 
     const isMobile = isMobieleDevice();
@@ -64,27 +63,16 @@ export default function Chat() {
 
         });
         socketResponse.on('new message', (message) => {
-            //addMessage(message[0]);
             updateContacts(message[0].from_id, message);
         })
 
     }
 
-    /*
-    useEffect(() => {
-        if (!contactId || contacts.length === 0) return;
-      
-        const foundChat = contacts.find((chat: ChatInterface) => chat.contact_id === contactId);
-        if (foundChat) {
-          setSelectedChat(foundChat);
-        }
-      }, [contactId, contacts]);*/
 
 
     const updateContacts = (id: string, messages: MessageInterface[]) => {
         setContacts((prevContacts) => {
             return prevContacts.map(contact => {
-                console.log("Contact", contact.contact_id === id, contact.contact_id, id);
                 if (contact.contact_id === id) {
                     const newcontact = {
                         ...contact,
@@ -100,12 +88,6 @@ export default function Chat() {
 
 
     return (
-        /*<GestureHandlerRootView style={{ flex: 1 }}>
-            <View style={mainChatStyles.appContainer}>
-                <ChatSidebar chats={contacts} setSelectedChat={setSelectedChat} t={t} />
-                {socket && selectedContact && <ChatWindow chat={selectedContact} updateContacts={updateContacts} socket={socket} t={t} />}
-            </View>
-        </GestureHandlerRootView>*/
         isMobile ? <MobileView contacts={contacts} selectedContact={selectedContact} setSelectedChat={setSelectedChat} socket={socket} updateContacts={updateContacts} t={t} /> :
         <LargeScreenView contacts={contacts} selectedContact={selectedContact} setSelectedChat={setSelectedChat} socket={socket} updateContacts={updateContacts} t={t} />
     );

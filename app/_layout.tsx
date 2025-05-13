@@ -15,6 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { Picker } from "@react-native-picker/picker";
 import { Pressable } from 'react-native';
 import Slider from '@react-native-community/slider';
+import {isUserUploaded} from '@/utils/isUserUploaded';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface LayoutProps {
   children: ReactNode;
@@ -49,14 +51,22 @@ export default function Layout({ children }: LayoutProps) {
     maxPrice: 500,
   });
   const [priceRange, setPriceRange] = useState([0, 500]);
+  const [userUploaded, setUserUploaded] = useState(false);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const init = async () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       setAppIsReady(true);
+      fetchUserUpload();
     };
     init();
-  }, []);
+  });
+
+  const fetchUserUpload = async () =>{
+    const userIsUploaded = await isUserUploaded()
+    setUserUploaded(userIsUploaded)
+    console.log(userIsUploaded);
+  }
 
   const handleLogin = async () => {
     const isLoggedIn = await checkLoginStatus();
@@ -126,9 +136,27 @@ export default function Layout({ children }: LayoutProps) {
             </View>
             <View style={styles.headerRight}>
               <Ionicons name="person-circle-outline" onPress={handleLogin} size={30} color="white" />
-              <TouchableOpacity style={styles.touchableButton} onPress={() => setIsMenuOpen(!isMenuOpen)}>
+              {userUploaded && (<View style={{ position: 'relative' }}>
+                <TouchableOpacity
+                  style={styles.touchableButton}
+                  onPress={() => Alert.alert('Notificaciones', 'Aquí irían las notificaciones')}
+                >
+                  <Ionicons name="notifications-outline" size={26} color="white" />
+                  <View style={{
+                    position: 'absolute',
+                    top: 3,
+                    right: 5,
+                    backgroundColor: 'red',
+                    borderRadius: 10,
+                    paddingHorizontal: 5,
+                  }}>
+                    <Text style={{ color: 'white', fontSize: 10 }}>3</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>)}
+              {userUploaded && (<TouchableOpacity style={styles.touchableButton} onPress={() => setIsMenuOpen(!isMenuOpen)}>
                 <Text style={styles.touchableButtonText}>{t('layout.Menu')}</Text>
-              </TouchableOpacity>
+              </TouchableOpacity>)}
               <TouchableOpacity
                 style={styles.touchableButton}
                 onPress={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
@@ -463,4 +491,3 @@ const styles = StyleSheet.create({
   
 
 });
-

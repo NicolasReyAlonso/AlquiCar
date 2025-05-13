@@ -22,7 +22,8 @@
       "publications": "My Listings",
       "logout": "Log Out"
     },
-    "changePhoto": "Change profile photo"
+    "changePhoto": "Change profile photo",
+    "eliminar": "Delete my account"
   },
   "Login": {
     "title": "Log In",
@@ -257,5 +258,13 @@
     "noMessages": "There are no messages in this conversation.",
     "write": "Write a message...",
     "send": "Send"
+  },
+
+  "Payment": {
+    "fallido": "Payment failed!",
+    "error": "There was an error processing your payment. You will be redirected to the home screen...",
+    "ir": "Go now",
+    "exitoso": "Payment successful!",
+    "exito": "You will be redirected to the home screen in a few seconds..."
   }
 }

@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import theme from '@/components/Theme';
+import { useTranslation } from 'react-i18next';
 
 export default function PagoFallido() {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -22,11 +24,11 @@ export default function PagoFallido() {
       />
 
       <View style={styles.card}>
-        <Text style={styles.title}>¡Pago fallido!</Text>
-        <Text style={styles.subtitle}>Hubo un error al procesar tu pago. Serás redirigido al inicio...</Text>
+        <Text style={styles.title}>{t('Payment.fallido')}</Text>
+        <Text style={styles.subtitle}>{t('Payment.error')}</Text>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('index')}>
-          <Text style={styles.buttonText}>Ir ahora</Text>
+          <Text style={styles.buttonText}>{t('Payment.ir')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#dc3545', // rojo para error
+    color: '#dc3545',
     marginBottom: 10,
     textAlign: 'center',
   },

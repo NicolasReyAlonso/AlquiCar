@@ -273,6 +273,14 @@
         "noMessages": "No hay mensajes en esta conversación.",
         "write": "Escribe un mensaje...",
         "send": "Enviar"
+      },
+
+      "Payment":{
+        "fallido": "¡Pago fallido!",
+        "error": "Hubo un error al procesar tu pago. Serás redirigido al inicio...",
+        "ir": "Ir ahora",
+        "exitoso": "¡Pago realizado con éxito!",
+        "exito": "Serás redirigido al inicio en unos segundos..."
       }
 
   }

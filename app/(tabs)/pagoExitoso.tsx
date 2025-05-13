@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import theme from '@/components/Theme';
+import { useTranslation } from 'react-i18next';
 
 export default function PagoExitoso() {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -22,11 +24,11 @@ export default function PagoExitoso() {
       />
 
       <View style={styles.card}>
-        <Text style={styles.title}>¡Pago realizado con éxito!</Text>
-        <Text style={styles.subtitle}>Serás redirigido al inicio en unos segundos...</Text>
+        <Text style={styles.title}>{t('Payment.exitoso')}</Text>
+        <Text style={styles.subtitle}>{t('Payment.exito')}</Text>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('index')}>
-          <Text style={styles.buttonText}>Ir ahora</Text>
+          <Text style={styles.buttonText}>{t('Payment.ir')}</Text>
         </TouchableOpacity>
       </View>
     </View>

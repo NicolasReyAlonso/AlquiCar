@@ -84,7 +84,6 @@ export default function Chat() {
     const updateContacts = (id: string, messages: MessageInterface[]) => {
         setContacts((prevContacts) => {
             return prevContacts.map(contact => {
-                console.log("Contact", contact.contact_id === id, contact.contact_id, id);
                 if (contact.contact_id === id) {
                     const newcontact = {
                         ...contact,

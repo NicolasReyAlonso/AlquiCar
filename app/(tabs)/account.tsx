@@ -331,7 +331,7 @@ export default function AccountPage() {
           <TouchableOpacity style={styles.button} onPress={handlePublicaciones}>
             <Text style={styles.buttonText}>{t('Account.buttons.publications')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handleDeleteUser(userId)}>
+          <TouchableOpacity style={styles.button} onPress={() => handleCerrarSesion(userId)}>
             <Text style={styles.buttonText}>{t('Account.buttons.logout')}</Text>
           </TouchableOpacity>
         </View>

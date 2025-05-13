@@ -248,6 +248,10 @@ export default function AlquilarCoche() {
     }
   };
 
+  const isFieldValid = (value: string | number) => {
+    return value !== '' && value !== null && value !== undefined;
+  };
+
   const handleImagePicker = async () => {
     if (Platform.OS === "web") {
       const input = document.createElement("input");
@@ -283,50 +287,162 @@ export default function AlquilarCoche() {
       <ThemedView style={styles.form}>
         <ThemedText style={styles.title} type="title">{vehicleId ? t('RentYourVehicle.editCar') : t('RentYourVehicle.title')}</ThemedText>
 
-        <Text>{t('RentYourVehicle.card.brand')}</Text>
-        <Picker selectedValue={brand} onValueChange={(item) => {
-          setBrand(item as keyof typeof carModels);
-          setModel(carModels[item as keyof typeof carModels][0]);
-        }} style={styles.input}>
+        <Text>
+          {t('RentYourVehicle.card.brand')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <Picker
+          selectedValue={brand}
+          onValueChange={(item) => {
+            setBrand(item as keyof typeof carModels);
+            setModel(carModels[item as keyof typeof carModels][0]);
+          }}
+          style={[
+            styles.input,
+            !isFieldValid(brand) && styles.invalidInput
+          ]}
+        >
           {Object.keys(carModels).map((brand) => (
             <Picker.Item key={brand} label={brand} value={brand} />
           ))}
         </Picker>
 
-        <Text>{t('RentYourVehicle.card.model')}</Text>
-        <Picker selectedValue={model} onValueChange={setModel} style={styles.input}>
+
+        <Text>
+          {t('RentYourVehicle.card.model')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <Picker
+          selectedValue={model}
+          onValueChange={setModel}
+          style={[
+            styles.input,
+            !isFieldValid(model) && styles.invalidInput
+          ]}
+        >
           {carModels[brand].map((model) => (
             <Picker.Item key={model} label={model} value={model} />
           ))}
         </Picker>
         
-        <Text>{t('RentYourVehicle.card.year')}</Text>
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.year')} value={year} onChangeText={setYear} keyboardType="numeric" placeholderTextColor="grey"/>
-        <Text>{t('RentYourVehicle.card.address')}</Text>
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.ejemplo')} value={address} onChangeText={setAddress} placeholderTextColor="grey"/>
+      <Text>
+        {t('RentYourVehicle.card.year')} <Text style={{ color: 'red' }}>*</Text>
+      </Text>
+      <TextInput
+        style={[
+          styles.input,
+          !isFieldValid(year) && styles.invalidInput
+        ]}
+        placeholder={t('RentYourVehicle.card.year')}
+        value={year}
+        onChangeText={setYear}
+        keyboardType="numeric"
+        placeholderTextColor="grey"
+      />
 
-        <Text>{t('RentYourVehicle.card.type')}</Text>
-        <Picker selectedValue={type} onValueChange={setType} style={styles.input}>
+        <Text>
+          {t('RentYourVehicle.card.address')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <TextInput
+          style={[
+            styles.input,
+            !isFieldValid(address) && styles.invalidInput
+          ]}
+          placeholder={t('RentYourVehicle.card.ejemplo')}
+          value={address}
+          onChangeText={setAddress}
+          placeholderTextColor="grey"
+        />
+
+        <Text>
+          {t('RentYourVehicle.card.type')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <Picker
+          selectedValue={type}
+          onValueChange={setType}
+          style={[
+            styles.input,
+            !isFieldValid(type) && styles.invalidInput
+          ]}
+        >
           {types.map((type) => <Picker.Item key={type} label={type} value={type} />)}
         </Picker>
 
-        <Text>{t('RentYourVehicle.card.transmission')}</Text>
-        <Picker selectedValue={transmission} onValueChange={setTransmission} style={styles.input}>
+        <Text>
+          {t('RentYourVehicle.card.transmission')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <Picker
+          selectedValue={transmission}
+          onValueChange={setTransmission}
+          style={[
+            styles.input,
+            !isFieldValid(transmission) && styles.invalidInput
+          ]}
+        >
           {transmissions.map((t) => <Picker.Item key={t} label={t} value={t} />)}
         </Picker>
 
-        <Text>{t('RentYourVehicle.card.fuel_type')}</Text>
-        <Picker selectedValue={fuelType} onValueChange={setFuelType} style={styles.input}>
+
+        <Text>
+          {t('RentYourVehicle.card.fuel_type')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <Picker
+          selectedValue={fuelType}
+          onValueChange={setFuelType}
+          style={[
+            styles.input,
+            !isFieldValid(fuelType) && styles.invalidInput
+          ]}
+        >
           {fuelTypes.map((f) => <Picker.Item key={f} label={f} value={f} />)}
         </Picker>
 
-        <Text>{t('RentYourVehicle.card.capacity')}</Text>
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.capacity')} value={capacity} onChangeText={setCapacity} keyboardType="numeric" placeholderTextColor="grey"/>
-        <Text>{t('RentYourVehicle.card.num_doors')}</Text>
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.num_doors')} value={numDoors} onChangeText={setNumDoors} keyboardType="numeric" placeholderTextColor="grey"/>
-        <Text>{t('RentYourVehicle.card.price')}</Text>
-        <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.price')} value={price} onChangeText={setPrice} keyboardType="numeric" placeholderTextColor="grey"/>
-        <Text>{t('RentYourVehicle.card.deposit')}</Text>
+        <Text>
+          {t('RentYourVehicle.card.capacity')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <TextInput
+          style={[
+            styles.input,
+            !isFieldValid(capacity) && styles.invalidInput
+          ]}
+          placeholder={t('RentYourVehicle.card.capacity')}
+          value={capacity}
+          onChangeText={setCapacity}
+          keyboardType="numeric"
+          placeholderTextColor="grey"
+        />
+
+        <Text>
+          {t('RentYourVehicle.card.num_doors')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <TextInput
+          style={[
+            styles.input,
+            !isFieldValid(numDoors) && styles.invalidInput
+          ]}
+          placeholder={t('RentYourVehicle.card.num_doors')}
+          value={numDoors}
+          onChangeText={setNumDoors}
+          keyboardType="numeric"
+          placeholderTextColor="grey"
+        />
+        
+        <Text>
+          {t('RentYourVehicle.card.price')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
+        <TextInput
+          style={[
+            styles.input,
+            !isFieldValid(price) && styles.invalidInput
+          ]}
+          placeholder={t('RentYourVehicle.card.price')}
+          value={price}
+          onChangeText={setPrice}
+          keyboardType="numeric"
+          placeholderTextColor="grey"
+        />
+
+        <Text>
+          {t('RentYourVehicle.card.deposit')} <Text style={{ color: 'red' }}>*</Text>
+        </Text>
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.deposit')} value={deposit} onChangeText={setDeposit} keyboardType="numeric" placeholderTextColor="grey"/>
 
         <TouchableOpacity style={styles.buttonAd} onPress={handleImagePicker}>
@@ -422,6 +538,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
     width: '100%',
+  },
+    invalidInput: {
+    borderColor: 'red',
+    borderWidth: 1,
   },
   buttonTextAd: {
     color: '#333',

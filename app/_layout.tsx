@@ -173,8 +173,11 @@ export default function Layout({ children }: LayoutProps) {
               style={styles.overlay}
               onPress={() => setIsFilterMenuOpen(false)}
             />
-            <View style={styles.filterMenu}>
-              <ScrollView>
+              <View style={[
+                  styles.filterMenu,
+                  Platform.OS === 'web' ? styles.filterMenuWeb : styles.filterMenuMobile
+                ]}>
+              <ScrollView contentContainerStyle={styles.filterScroll}>
                 <Text style={styles.filterTitle}>{t('layout.filter')}</Text>
 
                 {/* Filtro por Marca */}
@@ -248,11 +251,12 @@ export default function Layout({ children }: LayoutProps) {
                     style={styles.slider}
                     minimumValue={0}
                     maximumValue={1000}
+                    step={1} // Esto fuerza valores enteros
                     minimumTrackTintColor="#4472C4"
                     maximumTrackTintColor="#d3d3d3"
                     thumbTintColor="#4472C4"
                     value={filters.maxPrice}
-                    onValueChange={(value) => setFilters({...filters, maxPrice: value})}
+                    onValueChange={(value) => setFilters({...filters, maxPrice: Math.round(value)})}
                   />
                   <Text>€{filters.maxPrice}</Text>
                 </View>
@@ -270,13 +274,13 @@ export default function Layout({ children }: LayoutProps) {
                     style={[styles.filterButton, styles.applyButton]}
                     onPress={applyFilters}
                   >
-                    <Text style={styles.filterButtonText}>{t('layout.apply')}</Text>
-                  </TouchableOpacity>
-                </View>
-              </ScrollView>
-            </View>
-          </>
-        )}
+            <Text style={styles.filterButtonText}>{t('layout.apply')}</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
+  </>
+)}
 
 {isLangMenuOpen && (
           <>
@@ -360,6 +364,78 @@ export default function Layout({ children }: LayoutProps) {
 const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: '#4472C4',
+  },
+    overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 999,
+  },
+  filterMenuMobile: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    maxHeight: '80%',
+    backgroundColor: "#ffffff",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+    zIndex: 1000,
+  },
+  filterScroll: {
+    paddingBottom: 80, // Espacio para los botones
+  },
+  sliderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 15,
+    paddingHorizontal: 10,
+  },
+  slider: {
+    flex: 1,
+    height: 40,
+    marginHorizontal: 10,
+  },
+  filterButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  filterButton: {
+    flex: 1,
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  resetButton: {
+    backgroundColor: '#f44336',
+  },
+  priceRangeText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4472C4',
+    textAlign: 'center',
+    marginVertical: 5,
   },
   header: {
     flexDirection: 'row',

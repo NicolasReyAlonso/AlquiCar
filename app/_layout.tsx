@@ -91,7 +91,11 @@ export default function Layout({ children }: LayoutProps) {
     console.log("Filtros aplicados:", filters);
     setIsFilterMenuOpen(false);
     navigation.navigate("resultadosFiltrados", { 
-      filters: JSON.stringify(filters) 
+      filters: JSON.stringify({
+        ...filters,
+        minPrice: Number(filters.minPrice),
+        maxPrice: Number(filters.maxPrice)
+      }) 
     });
   };
 
@@ -104,7 +108,6 @@ export default function Layout({ children }: LayoutProps) {
       minPrice: 0,
       maxPrice: 500,
     });
-    setPriceRange([0, 500]);
   };
 
   if (!appIsReady) {
@@ -243,7 +246,11 @@ export default function Layout({ children }: LayoutProps) {
 
                 {/* Filtro por Rango de Precios */}
                 <Text style={styles.filterTitle}>{t('layout.rango')}</Text> 
-                  <Text style={styles.filterLabel}>€{filters.minPrice} - €{filters.maxPrice}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                  <Text style={styles.priceDisplay}>€{filters.minPrice}</Text>
+                  <Text style={{marginHorizontal: 10}}>-</Text>
+                  <Text style={styles.priceDisplay}>€{filters.maxPrice}</Text>
+                </View>
 
                 <View style={styles.sliderContainer}>
                   <Text>€{filters.minPrice}</Text>
@@ -251,7 +258,7 @@ export default function Layout({ children }: LayoutProps) {
                     style={styles.slider}
                     minimumValue={0}
                     maximumValue={1000}
-                    step={1} // Esto fuerza valores enteros
+                    step={10} // Incrementos de 10 en 10 para mejor usabilidad
                     minimumTrackTintColor="#4472C4"
                     maximumTrackTintColor="#d3d3d3"
                     thumbTintColor="#4472C4"
@@ -406,6 +413,8 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     marginHorizontal: 10,
+
+
   },
   filterButtons: {
     flexDirection: 'row',
@@ -579,6 +588,12 @@ const styles = StyleSheet.create({
   pickerItem: {
     height: 50, // Asegura suficiente espacio para cada opción
     fontSize: 16, // Tamaño de fuente adecuado
+  },
+
+  priceDisplay: {
+    width: 60,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   
 

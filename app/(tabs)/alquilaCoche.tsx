@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect} from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image, Platform} from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image, Platform, Dimensions} from 'react-native'
 import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import { getApiUrl } from '@/utils/getApiUrl';
 import { useRoute } from '@react-navigation/native';
+
 
 const carModels = {
   Toyota: ['Corolla', 'Yaris', 'Camry'],
@@ -46,6 +47,7 @@ const carModels = {
   McLaren: ['570S', '720S'],
 };
 
+const { width } = Dimensions.get('window');
 const types = ['Sedan', 'SUV', 'Truck', 'Sports', 'Hatchback', 'Convertible'];
 const transmissions = ['Manual', 'Automatic'];
 const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
@@ -324,8 +326,8 @@ export default function AlquilarCoche() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.formContainer} ref={scrollRef}>
-      <ThemedView style={styles.form}>
+    <ScrollView contentContainerStyle={styles.outerContainer} ref={scrollRef}>
+      <ThemedView style={styles.container}>
         <ThemedText style={styles.title} type="title">{vehicleId ? t('RentYourVehicle.editCar') : t('RentYourVehicle.title')}</ThemedText>
 
       <Text>
@@ -477,6 +479,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
     backgroundColor: theme.colors.background,
+  },
+    outerContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
+    paddingVertical: 20,
+  },
+  container: {
+    width: width < 500 ? '90%' : 600, // Responsivo
+    backgroundColor: theme.colors.secondary,
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#4472C4', // Borde azul como en RegisterScreen
   },
   title: {
     color: theme.colors.titles,

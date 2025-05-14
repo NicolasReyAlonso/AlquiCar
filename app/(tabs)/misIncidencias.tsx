@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import theme from '@/components/Theme';
 import { getApiUrl } from '@/utils/getApiUrl';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
@@ -71,7 +72,7 @@ export default function MisIncidencias() {
     }
   };
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const init = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
@@ -103,7 +104,7 @@ export default function MisIncidencias() {
     };
 
     init();
-  }, []);
+  });
 
   const toggleAdminView = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: theme.colors.titles,
     borderRadius: 10,
-    backgroundColor: theme.colors.secondary,
+    backgroundColor: '#FFF',
     marginBottom: 16,
   },
   label: {
@@ -273,7 +274,7 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 15,
-    color: theme.colors.text,
+    color: '#000',
     fontFamily: theme.fonts.regular,
   },
   fab: {

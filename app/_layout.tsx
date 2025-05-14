@@ -530,22 +530,24 @@ const styles = StyleSheet.create({
   filterTitle: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#333", // Color oscuro para mejor legibilidad
+    color: "#333", 
     marginBottom: 1,
     textAlign: "center",
   },
   filterLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#555", // Color neutro
+    color: "#555",
     marginTop: 5,
   },
   picker: {
-    height: 40,
+    height: 50,
     marginBottom: 4,
-    backgroundColor: "#EFEFEF", // Fondo más claro en los selects
+    backgroundColor: "#EFEFEF",
     borderRadius: 8,
     paddingHorizontal: 10, // Espaciado interno
+    width: '100%',
+    color: theme.lightTemplate.textColor,
   },
   applyButton: {
     backgroundColor: "#4472C4",
@@ -563,7 +565,21 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
-  }
+  },
+    pickerContainer: {
+    width: '100%',
+    marginBottom: 15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#4472C4',
+    backgroundColor: 'white',
+    overflow: 'hidden',
+
+  },
+  pickerItem: {
+    height: 50, // Asegura suficiente espacio para cada opción
+    fontSize: 16, // Tamaño de fuente adecuado
+  },
   
 
 });

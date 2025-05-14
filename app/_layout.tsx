@@ -258,7 +258,7 @@ export default function Layout({ children }: LayoutProps) {
                     style={styles.slider}
                     minimumValue={0}
                     maximumValue={1000}
-                    step={10} // Incrementos de 10 en 10 para mejor usabilidad
+                    step={5} 
                     minimumTrackTintColor="#4472C4"
                     maximumTrackTintColor="#d3d3d3"
                     thumbTintColor="#4472C4"

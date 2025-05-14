@@ -11,7 +11,7 @@ import i18n from 'i18next';
 import VehicleCard from '@/components/templates/VehicleCard';
 import { getApiUrl } from '@/utils/getApiUrl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as Location from 'expo-location';
 
 const { width } = Dimensions.get('window');
 
@@ -47,18 +47,48 @@ const index = () => {
     closeReturnDatePicker();
   };
 
-  const checkAuthAndNavigate = async (destination: string) => {
+  const getCityFromCoords = async (latitude: number, longitude: number) => {
+  try {
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+    const data = await response.json();
+    return data?.address?.city || data?.address?.town || data?.address?.village || '';
+  } catch (error) {
+    console.error('Error al obtener la ciudad desde las coordenadas:', error);
+    return '';
+  }
+};
+
+const checkAuthAndNavigate = async (destination: string) => {
   try {
     const user = await AsyncStorage.getItem('user');
-    if (user) {
-      if (destination == 'ofertas'){
-        router.push('/(tabs)/ofertas');
-      } else if(destination == 'alquilaCoche'){
-        router.push('/(tabs)/alquilaCoche');
-      }
-    } else {
+    if (!user) {
       router.push('/login');
+      return;
     }
+
+    if (destination === 'ofertas') {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Se necesita acceder a la ubicación para mostrar ofertas cercanas.');
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      const city = await getCityFromCoords(location.coords.latitude, location.coords.longitude);
+
+      if (!city) {
+        Alert.alert('Error', 'No se pudo determinar la ciudad actual.');
+        return;
+      }
+
+      router.push({
+        pathname: '/(tabs)/ofertas',
+        params: { lat: location.coords.latitude, lon: location.coords.longitude },
+      });
+    } else if (destination === 'alquilaCoche') {
+      router.push('/(tabs)/alquilaCoche');
+    }
+
   } catch (error) {
     console.error('Error checking auth:', error);
     router.push('/login');

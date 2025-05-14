@@ -2,11 +2,23 @@ import React, { useEffect, useState } from "react";
 import { View, ScrollView, Text } from "react-native";
 import VehicleCard from "@/components/templates/VehicleCard";
 import theme from "@/components/Theme";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { getApiUrl } from "@/utils/getApiUrl";
+
+const haversineDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371;
+  const toRad = deg => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
 
 const Ofertas = () => {
   const router = useRouter();
+  const { lat, lon } = useLocalSearchParams();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,17 +26,36 @@ const Ofertas = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        // Asegúrate de que HTTPS está configurado correctamente en el backend
+        const userLat = parseFloat(lat);
+        const userLon = parseFloat(lon);
+
+        if (isNaN(userLat) || isNaN(userLon)) {
+          throw new Error("Ubicación inválida.");
+        }
+
         const response = await fetch(`${getApiUrl()}/vehicles`);
         const data = await response.json();
 
         if (Array.isArray(data)) {
-          console.log("Datos de vehículos recibidos:", data); // Depuración
-          // Obtener imágenes para cada vehículo
-          const vehiclesWithImages = await Promise.all(
-            data.map(async (vehicle) => {
-              let imageUrl = "http://via.placeholder.com/150"; // predeterminada
+          let filtered = data
+            .map(v => {
+              if (v.latitude && v.longitude) {
+                const distance = haversineDistance(
+                  userLat,
+                  userLon,
+                  parseFloat(v.latitude),
+                  parseFloat(v.longitude)
+                );
+                return { ...v, distance };
+              }
+              return null;
+            })
+            .filter(v => v && v.distance <= 30)
+            .sort((a, b) => a.distance - b.distance);
 
+          const vehiclesWithImages = await Promise.all(
+            filtered.map(async (vehicle) => {
+              let imageUrl = "http://via.placeholder.com/150";
               try {
                 const imgRes = await fetch(`${getApiUrl()}/media/vehicles/${vehicle.owner_id}/${vehicle.id}`);
                 const images = await imgRes.json();
@@ -39,18 +70,18 @@ const Ofertas = () => {
             })
           );
 
-        setVehicles(vehiclesWithImages);
-      }
+          setVehicles(vehiclesWithImages);
+        }
       } catch (err) {
         console.error("Error al cargar vehículos:", err);
-        setError("Hubo un problema al conectar con el servidor.");
+        alert("Hubo un problema al conectar con el servidor.");
       } finally {
         setLoading(false);
       }
     };
 
-  fetchVehicles();
-}, []);
+    fetchVehicles();
+  }, [lat, lon]);
 
   if (loading) {
     return (
@@ -84,8 +115,8 @@ const Ofertas = () => {
           deposit={vehicle.deposit || "0.00"}
           price={vehicle.daily_price ? `€${vehicle.daily_price}` : "Desconocido"}
           mileage={vehicle.mileage || "Sin información"}
-          pickupLocation={vehicle.city || "Ubicación no disponible"}
-          imageUrl={vehicle.imageUrl || "http://via.placeholder.com/150"} // Imagen predeterminada
+          pickupLocation={`${parseFloat(lat).toFixed(6)}, ${parseFloat(lon).toFixed(6)}`}
+          imageUrl={vehicle.imageUrl || "http://via.placeholder.com/150"} 
           vehicleId={vehicle.id}
           onReserve={() =>
             router.push({

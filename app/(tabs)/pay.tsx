@@ -9,12 +9,7 @@ const StripeCheckoutTest = () => {
   const handleCheckout = async () => {
   try {
     const response = await axios.post('http://localhost:3000/pay', {
-      price: '100',
-      product: {
-        name: 'coche de prueba',
-        price: 10,
-      },
-      quantity: 1,
+      reservationid: '3'
     });
 
     const checkoutUrl = response.data.url;

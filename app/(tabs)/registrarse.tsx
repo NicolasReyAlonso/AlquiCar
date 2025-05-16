@@ -42,7 +42,7 @@ export default function RegisterScreen() {
     if (
       !name ||
       !birthYear ||
-      !city ||
+      !address ||
       !phone ||
       !dni ||
       !email ||
@@ -61,7 +61,7 @@ export default function RegisterScreen() {
       alert('Debe ser un año válido');
       return;
     }
-    if (city.length < 3) {
+    if (address.length < 3) {
       alert('La ciudad debe tener al menos 3 caracteres');
       return;
     }
@@ -140,8 +140,8 @@ export default function RegisterScreen() {
         <TextInput
           style={styles.input}
           placeholder={t('Register.card.city')}
-          value={city}
-          onChangeText={setCity}
+          value={address}
+          onChangeText={setAddress}
         />
         <TextInput
           style={styles.input}

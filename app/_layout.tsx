@@ -139,7 +139,7 @@ export default function Layout({ children }: LayoutProps) {
               {userUploaded && (<View style={{ position: 'relative' }}>
                 <TouchableOpacity
                   style={styles.touchableButton}
-                  onPress={() => Alert.alert('Notificaciones', 'Aquí irían las notificaciones')}
+                  onPress={() => navigation.navigate('notificaciones')}
                 >
                   <Ionicons name="notifications-outline" size={26} color="white" />
                   <View style={{

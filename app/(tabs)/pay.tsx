@@ -9,7 +9,7 @@ import * as Linking from 'expo-linking';
 const StripeCheckoutTest = () => {
   const handleCheckout = async () => {
   try {
-    const response = await axios.post(`${getApiUrl()}t/pay`, {
+    const response = await axios.post(`${getApiUrl()}/pay`, {
       reservationid: '3'
     });
 

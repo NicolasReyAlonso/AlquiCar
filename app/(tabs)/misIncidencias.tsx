@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -72,39 +72,53 @@ export default function MisIncidencias() {
     }
   };
 
-  useFocusEffect(() => {
-    const init = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        if (!token) {
-          console.error('Usuario no autenticado');
-          return;
-        }
+const lastCallRef = useRef<number | null>(null);
+const FIVE_MINUTES = 5000;
 
-        const userResponse = await fetch(`${getApiUrl()}/users/getdata/`, {
-          method: 'GET',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json',
-            'Authorization': 'Bearer ${token}'
-           },
-        });
+useFocusEffect(() => {
+  const now = Date.now();
 
-        const user = await userResponse.json();
-        if (!userResponse.ok) {
-          throw new Error(user.message || 'Error al obtener datos del usuario');
-        }
-        const isAdminUser = user[0].role === 'admin';
-        setIsAdmin(isAdminUser);
-        setUserId(user[0].id);
+  if (lastCallRef.current && now - lastCallRef.current < FIVE_MINUTES) {
+    return;
+  }
 
-        await fetchIncidencias(token, isAdminUser, user[0].id, true);
-      } catch (error) {
-        console.error('Error inicial:', error);
+  const init = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        console.error('Usuario no autenticado');
+        return;
       }
-    };
 
-    init();
-  });
+      const userResponse = await fetch(`${getApiUrl()}/users/getdata/`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const user = await userResponse.json();
+      if (!userResponse.ok) {
+        throw new Error(user.message || 'Error al obtener datos del usuario');
+      }
+
+      const isAdminUser = user[0].role === 'admin';
+      setIsAdmin(isAdminUser);
+      setUserId(user[0].id);
+
+      await fetchIncidencias(token, isAdminUser, user[0].id, true);
+
+      lastCallRef.current = now; // Guardamos el tiempo de la llamada
+    } catch (error) {
+      console.error('Error inicial:', error);
+    }
+  };
+
+  init();
+});
+
 
   const toggleAdminView = async () => {
     const token = await AsyncStorage.getItem('token');

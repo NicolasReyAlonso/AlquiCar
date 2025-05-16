@@ -18,11 +18,29 @@ type RootStackParamList = {
 export default function LoginScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
+  
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const handleLogin = async () => {
+    setSubmitAttempted(true);
+  
+    const isEmailValid = email.trim() !== '';
+    const isPasswordValid = password.trim() !== '';
+    
+    setEmailError(!isEmailValid);
+    setPasswordError(!isPasswordValid);
+    
+    if (!isEmailValid || !isPasswordValid) {
+      alert('Por favor completa todos los campos');
+      return;
+    }
+
+
     try {
       const response = await fetch(`${getApiUrl()}/auth/login`, {
         method: 'POST',
@@ -66,21 +84,34 @@ export default function LoginScreen() {
       <View style={styles.formContainer}>
         <Text style={styles.title}>{t('Login.title')}</Text>
 
-        <TextInput
-          style={styles.input}
+       <TextInput
+          style={[
+            styles.input,
+            submitAttempted && emailError && styles.errorInput
+          ]}
           placeholder="Email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => {
+            setEmail(text);
+            if (submitAttempted) setEmailError(text.trim() === '');
+          }}
           keyboardType="email-address"
         />
 
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            submitAttempted && passwordError && styles.errorInput
+          ]}
           placeholder={t('Login.password')}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            setPassword(text);
+            if (submitAttempted) setPasswordError(text.trim() === '');
+          }}
           secureTextEntry
         />
+
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.touchableButton} onPress={handleLogin}>
@@ -103,6 +134,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.colors.background,
     padding: 20,
+  },
+    errorInput: {
+    borderColor: 'red',
+    borderWidth: 1.5,
   },
   formContainer: {
     width: width < 500 ? 300 : 600, 

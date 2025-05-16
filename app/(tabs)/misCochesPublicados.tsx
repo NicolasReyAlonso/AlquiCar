@@ -102,11 +102,9 @@ const misCochesPublicados = () => {
         const vehicle = vehicles.find(v => v.id === reservation.vehicle_id);
         const vehicleName = vehicle ? vehicle.brand : "Vehículo desconocido";
 
-        // Buscar la reserva anterior en la lista de notificadas
         const previousReservation = notifiedReservations.find(r => r.id === reservation.id);
 
         if (!previousReservation) {
-          // Nueva reserva
           newNotifications.push(`Tu vehículo "${vehicleName}" ha sido reservado.`);
         } else {
           // Detectar cambios en estado
@@ -129,13 +127,11 @@ const misCochesPublicados = () => {
         }
       });
 
-      console.log("Nueva notificación generada:", newNotifications); // Verificar qué cambios se están detectando
 
       if (newNotifications.length > 0) {
         setNotifications(prev => [...prev, ...newNotifications]);
       }
 
-      // Solo actualizar `notifiedReservations` después de verificar los cambios
       setNotifiedReservations(userReservations);
       setReservations(userReservations);
 
@@ -154,9 +150,9 @@ const misCochesPublicados = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       checkReservations();
-    }, 1000); // Verificar cada 30 segundos
+    }, 1000); 
 
-    return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
+    return () => clearInterval(interval); 
   }, [vehicles]);
 
   return (

@@ -4,7 +4,7 @@ export const getApiUrl = () => {
     if(Platform.OS === "web") {
         return "http://localhost:3000"
     } else {
-        return "http://192.168.196.30:3000"
+        return "http://172.20.10.4:3000"
     }
 
 }

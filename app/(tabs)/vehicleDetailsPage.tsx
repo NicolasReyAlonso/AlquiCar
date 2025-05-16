@@ -108,7 +108,11 @@ export default function VehicleDetailsPage() {
   const availabilityTextColor = vehicle.availability === 1 ? "#3C763D" : "#A94442";
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+    style={styles.container}
+    contentContainerStyle={styles.scrollContent} 
+    >
+    
       <Image source={{ uri: vehicle.imageUrl }} style={styles.mainImage} />
       <Text style={styles.title}>{vehicle.brand} {vehicle.model}</Text>
       <Text style={styles.subtitle}>{vehicle.year}</Text>
@@ -147,33 +151,35 @@ export default function VehicleDetailsPage() {
         )}
       </View>
 
-      {/* Botón de reservar (solo si el vehículo no pertenece al usuario actual) */}
-      {vehicle.owner_id !== userId && (
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() =>
-            router.push({
-              pathname: "reservarCoche",
-              params: {
-                vehicleId: vehicle.id,
-                brand: vehicle.brand,
-                model: vehicle.model,
-                year: vehicle.year,
-                seats: vehicle.capacity,
-                type: vehicle.type,
-                transmission: vehicle.transmission,
-                fuelType: vehicle.fuel_type,
-                numDoors: vehicle.num_doors,
-                deposit: vehicle.deposit,
-                price: vehicle.daily_price,
-                imageUrl: vehicle.imageUrl,
-              },
-            })
-          }
-        >
-          <Text style={styles.backButtonText}>{t("VehicleCard.buttons.reservation")}</Text>
-        </TouchableOpacity>
-      )}
+{/* Botón de reservar (solo si el vehículo no pertenece al usuario actual) */}
+{vehicle.owner_id !== userId && (
+  <View style={styles.buttonContainer}>
+    <TouchableOpacity
+      style={styles.reserveButton}
+      onPress={() =>
+        router.push({
+          pathname: "reservarCoche",
+          params: {
+            vehicleId: vehicle.id,
+            brand: vehicle.brand,
+            model: vehicle.model,
+            year: vehicle.year,
+            seats: vehicle.capacity,
+            type: vehicle.type,
+            transmission: vehicle.transmission,
+            fuelType: vehicle.fuel_type,
+            numDoors: vehicle.num_doors,
+            deposit: vehicle.deposit,
+            price: vehicle.daily_price,
+            imageUrl: vehicle.imageUrl,
+          },
+        })
+      }
+    >
+      <Text style={styles.reserveButtonText}>{t("VehicleCard.buttons.reservation")}</Text>
+    </TouchableOpacity>
+  </View>
+)}
     </ScrollView>
   );
 }
@@ -186,6 +192,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 15,
   },
+    scrollContent: {
+    padding: 15,
+    paddingBottom: 80, // Espacio extra para el botón
+  },
+  buttonContainer: {
+    paddingHorizontal: 15,
+    paddingBottom: 30, // Espacio adicional en dispositivos con notch
+  },
+  reserveButton: {
+    backgroundColor: "#3B6ED5",
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  reserveButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  
   availabilityContainer: {
     padding: 10,
     borderRadius: 8,

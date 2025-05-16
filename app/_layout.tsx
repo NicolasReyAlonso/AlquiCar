@@ -91,7 +91,11 @@ export default function Layout({ children }: LayoutProps) {
     console.log("Filtros aplicados:", filters);
     setIsFilterMenuOpen(false);
     navigation.navigate("resultadosFiltrados", { 
-      filters: JSON.stringify(filters) 
+      filters: JSON.stringify({
+        ...filters,
+        minPrice: Number(filters.minPrice),
+        maxPrice: Number(filters.maxPrice)
+      }) 
     });
   };
 
@@ -104,7 +108,6 @@ export default function Layout({ children }: LayoutProps) {
       minPrice: 0,
       maxPrice: 500,
     });
-    setPriceRange([0, 500]);
   };
 
   if (!appIsReady) {
@@ -173,8 +176,11 @@ export default function Layout({ children }: LayoutProps) {
               style={styles.overlay}
               onPress={() => setIsFilterMenuOpen(false)}
             />
-            <View style={styles.filterMenu}>
-              <ScrollView>
+              <View style={[
+                  styles.filterMenu,
+                  Platform.OS === 'web' ? styles.filterMenuWeb : styles.filterMenuMobile
+                ]}>
+              <ScrollView contentContainerStyle={styles.filterScroll}>
                 <Text style={styles.filterTitle}>{t('layout.filter')}</Text>
 
                 {/* Filtro por Marca */}
@@ -240,7 +246,11 @@ export default function Layout({ children }: LayoutProps) {
 
                 {/* Filtro por Rango de Precios */}
                 <Text style={styles.filterTitle}>{t('layout.rango')}</Text> 
-                  <Text style={styles.filterLabel}>€{filters.minPrice} - €{filters.maxPrice}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                  <Text style={styles.priceDisplay}>€{filters.minPrice}</Text>
+                  <Text style={{marginHorizontal: 10}}>-</Text>
+                  <Text style={styles.priceDisplay}>€{filters.maxPrice}</Text>
+                </View>
 
                 <View style={styles.sliderContainer}>
                   <Text>€{filters.minPrice}</Text>
@@ -248,11 +258,12 @@ export default function Layout({ children }: LayoutProps) {
                     style={styles.slider}
                     minimumValue={0}
                     maximumValue={1000}
+                    step={5} 
                     minimumTrackTintColor="#4472C4"
                     maximumTrackTintColor="#d3d3d3"
                     thumbTintColor="#4472C4"
                     value={filters.maxPrice}
-                    onValueChange={(value) => setFilters({...filters, maxPrice: value})}
+                    onValueChange={(value) => setFilters({...filters, maxPrice: Math.round(value)})}
                   />
                   <Text>€{filters.maxPrice}</Text>
                 </View>
@@ -270,13 +281,13 @@ export default function Layout({ children }: LayoutProps) {
                     style={[styles.filterButton, styles.applyButton]}
                     onPress={applyFilters}
                   >
-                    <Text style={styles.filterButtonText}>{t('layout.apply')}</Text>
-                  </TouchableOpacity>
-                </View>
-              </ScrollView>
-            </View>
-          </>
-        )}
+            <Text style={styles.filterButtonText}>{t('layout.apply')}</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
+  </>
+)}
 
 {isLangMenuOpen && (
           <>
@@ -360,6 +371,80 @@ export default function Layout({ children }: LayoutProps) {
 const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: '#4472C4',
+  },
+    overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 999,
+  },
+  filterMenuMobile: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    maxHeight: '80%',
+    backgroundColor: "#ffffff",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+    zIndex: 1000,
+  },
+  filterScroll: {
+    paddingBottom: 80, // Espacio para los botones
+  },
+  sliderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 15,
+    paddingHorizontal: 10,
+  },
+  slider: {
+    flex: 1,
+    height: 40,
+    marginHorizontal: 10,
+
+
+  },
+  filterButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  filterButton: {
+    flex: 1,
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  resetButton: {
+    backgroundColor: '#f44336',
+  },
+  priceRangeText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4472C4',
+    textAlign: 'center',
+    marginVertical: 5,
   },
   header: {
     flexDirection: 'row',
@@ -454,22 +539,24 @@ const styles = StyleSheet.create({
   filterTitle: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#333", // Color oscuro para mejor legibilidad
+    color: "#333", 
     marginBottom: 1,
     textAlign: "center",
   },
   filterLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#555", // Color neutro
+    color: "#555",
     marginTop: 5,
   },
   picker: {
-    height: 40,
+    height: 50,
     marginBottom: 4,
-    backgroundColor: "#EFEFEF", // Fondo más claro en los selects
+    backgroundColor: "#EFEFEF",
     borderRadius: 8,
     paddingHorizontal: 10, // Espaciado interno
+    width: '100%',
+    color: theme.lightTemplate.textColor,
   },
   applyButton: {
     backgroundColor: "#4472C4",
@@ -487,7 +574,27 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
-  }
+  },
+    pickerContainer: {
+    width: '100%',
+    marginBottom: 15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#4472C4',
+    backgroundColor: 'white',
+    overflow: 'hidden',
+
+  },
+  pickerItem: {
+    height: 50, // Asegura suficiente espacio para cada opción
+    fontSize: 16, // Tamaño de fuente adecuado
+  },
+
+  priceDisplay: {
+    width: 60,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
   
 
 });

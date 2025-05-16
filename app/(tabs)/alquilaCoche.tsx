@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect} from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image, Platform} from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, ScrollView, Alert, Image, Platform, Dimensions, View} from 'react-native'
 import { Picker } from '@react-native-picker/picker';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import { getApiUrl } from '@/utils/getApiUrl';
 import { useRoute } from '@react-navigation/native';
+
 
 const carModels = {
   Toyota: ['Corolla', 'Yaris', 'Camry'],
@@ -46,6 +47,7 @@ const carModels = {
   McLaren: ['570S', '720S'],
 };
 
+const { width } = Dimensions.get('window');
 const types = ['Sedan', 'SUV', 'Truck', 'Sports', 'Hatchback', 'Convertible'];
 const transmissions = ['Manual', 'Automatic'];
 const fuelTypes = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
@@ -73,6 +75,7 @@ export default function AlquilarCoche() {
   const years = Array.from({length: 50}, (_, i) => (new Date().getFullYear() - i).toString());
   const capacities = ['2', '4', '5', '7', '8'];
   const numDoorsOptions = ['2', '3', '4', '5'];
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const route = useRoute();
   const { vehicleId: routeVehicleId, vehicleData } = route.params || {};
@@ -96,6 +99,8 @@ export default function AlquilarCoche() {
   }, [vehicleData]);
 
   const handleSubmit = async () => {
+    setSubmitAttempted(true);
+
     if (!brand || !model || !year || !address || !type || !transmission || !fuelType || !capacity || !numDoors || !price) {
       alert('Faltan campos por rellenar');
       scrollRef.current?.scrollTo({ y: 0, animated: true });
@@ -251,47 +256,44 @@ export default function AlquilarCoche() {
     }
   };
 
-  const CustomPicker = ({
+const CustomPicker = ({
   selectedValue,
   onValueChange,
   items,
   placeholder,
-  style,
   invalid
 }: {
   selectedValue: string;
   onValueChange: (value: string) => void;
   items: string[];
   placeholder: string;
-  style?: any;
   invalid?: boolean;
 }) => {
   return (
-    <Picker
-      selectedValue={selectedValue}
-      onValueChange={onValueChange}
-      style={[
-        styles.input,
-        style,
-        invalid && styles.invalidInput
-      ]}
-      
-    >
-      <Picker.Item 
-        label={placeholder} 
-        value="" 
-        style={!selectedValue ? styles.pickerPlaceholder : undefined}
-      />
-      {items.map((item) => (
-        <Picker.Item key={item} label={item} value={item} />
-      ))}
-    </Picker>
-    );
+    <View style={[styles.pickerContainer, invalid && styles.invalidInput]}>
+      <Picker
+        selectedValue={selectedValue}
+        onValueChange={onValueChange}
+        style={styles.picker}
+        dropdownIconColor="#4472C4"
+      >
+        <Picker.Item 
+          label={placeholder} 
+          value="" 
+          style={!selectedValue ? styles.pickerPlaceholder : undefined}
+        />
+        {items.map((item) => (
+          <Picker.Item key={item} label={item} value={item} />
+        ))}
+      </Picker>
+    </View>
+  );
 };
-
-  const isFieldValid = (value: string | number) => {
-    return value !== '' && value !== null && value !== undefined;
-  };
+const isFieldValid = (value: string | number) => {
+  // Solo validar si se ha intentado enviar
+  if (!submitAttempted) return true;
+  return value !== '' && value !== null && value !== undefined;
+};
 
   const handleImagePicker = async () => {
     if (Platform.OS === "web") {
@@ -324,8 +326,8 @@ export default function AlquilarCoche() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.formContainer} ref={scrollRef}>
-      <ThemedView style={styles.form}>
+    <ScrollView contentContainerStyle={styles.outerContainer} ref={scrollRef}>
+      <ThemedView style={styles.container}>
         <ThemedText style={styles.title} type="title">{vehicleId ? t('RentYourVehicle.editCar') : t('RentYourVehicle.title')}</ThemedText>
 
       <Text>
@@ -339,7 +341,7 @@ export default function AlquilarCoche() {
         }}
         items={Object.keys(carModels)}
         placeholder={t('RentYourVehicle.card.selectBrand')}
-        invalid={!isFieldValid(brand)}
+        invalid={submitAttempted && !brand}
       />
 
 
@@ -351,7 +353,7 @@ export default function AlquilarCoche() {
         onValueChange={setModel}
         items={brand ? carModels[brand] : []}
         placeholder={brand ? t('RentYourVehicle.card.selectModel') : t('RentYourVehicle.card.selectBrandFirst')}
-        invalid={!isFieldValid(model)}
+        invalid={submitAttempted && !brand}
       />
         
       <Text>
@@ -362,7 +364,7 @@ export default function AlquilarCoche() {
         onValueChange={setYear}
         items={years}
         placeholder="Seleccione año"
-        invalid={!isFieldValid(year)}
+        invalid={submitAttempted && !brand}
       />
 
         <Text>
@@ -387,7 +389,7 @@ export default function AlquilarCoche() {
           onValueChange={setType}
           items={types}
           placeholder={t('RentYourVehicle.card.selectType')}
-          invalid={!isFieldValid(type)}
+        invalid={submitAttempted && !brand}
         />
 
         <Text>
@@ -398,7 +400,7 @@ export default function AlquilarCoche() {
           onValueChange={setTransmission}
           items={transmissions}
           placeholder={t('RentYourVehicle.card.selectTransmission')}
-          invalid={!isFieldValid(transmission)}
+        invalid={submitAttempted && !brand}
         />
 
 
@@ -410,7 +412,7 @@ export default function AlquilarCoche() {
           onValueChange={setFuelType}
           items={fuelTypes}
           placeholder={t('RentYourVehicle.card.selectFuelType')}
-          invalid={!isFieldValid(fuelType)}
+        invalid={submitAttempted && !brand}
         />
 
         <Text>
@@ -421,7 +423,7 @@ export default function AlquilarCoche() {
           onValueChange={setCapacity}
           items={capacities}
           placeholder="Seleccione número de asientos"
-          invalid={!isFieldValid(capacity)}
+          invalid={submitAttempted && !brand}
         />
 
       <Text>
@@ -432,7 +434,7 @@ export default function AlquilarCoche() {
         onValueChange={setNumDoors}
         items={numDoorsOptions}
         placeholder="Seleccione número de puertas"
-        invalid={!isFieldValid(numDoors)}
+          invalid={submitAttempted && !brand}
       />
         
         <Text>
@@ -477,6 +479,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
     backgroundColor: theme.colors.background,
+  },
+    outerContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
+    paddingVertical: 20,
+  },
+  container: {
+    width: width < 500 ? '90%' : 600, 
+    backgroundColor: theme.colors.secondary,
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#4472C4',
+  },
+    pickerContainer: {
+    width: '100%',
+    marginBottom: 15,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#4472C4', 
+    backgroundColor: 'white',
+    overflow: 'hidden',
   },
   title: {
     color: theme.colors.titles,
@@ -588,6 +614,6 @@ const styles = StyleSheet.create({
     borderColor: '#DDD',
     fontFamily: theme.fonts.regular,
     color: theme.lightTemplate.textColor,
-    width: '48%', // Mitad del ancho para inputs en fila
+    width: '48%', 
   },
 });

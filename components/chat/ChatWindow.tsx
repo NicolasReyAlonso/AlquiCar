@@ -5,10 +5,12 @@ import { UserInterface } from '../../interfaces/User';
 import { Socket } from 'socket.io-client';
 import { MessageInterface } from '../../interfaces/Message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, ScrollView } from 'react-native';
 import chatWindowStyles from '../../css/ChatWindow.styles';
 import { TouchableOpacity, NativeViewGestureHandler } from 'react-native-gesture-handler';
-import { TFunction } from 'i18next';
+import { TFunction, use } from 'i18next';
+import { useFocusEffect } from 'expo-router';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 
 interface ChatWindowProps {
@@ -16,10 +18,12 @@ interface ChatWindowProps {
     socket: Socket,
     updateContacts: (id: string, messages: MessageInterface[]) => void,
     t: TFunction;
+    isMobile: boolean;
+    setSelectedContact?: (contact: ChatInterface | null) => void;
 }
 
 
-export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWindowProps) {
+export default function ChatWindow({ chat, socket, updateContacts, t, isMobile, setSelectedContact }: ChatWindowProps) {
     const [messageInput, setMessageInput] = useState('');
     const [messages, setMessages] = useState<MessageInterface[]>([]);
     const [user, setUser] = useState<UserInterface | null>(null);
@@ -37,8 +41,10 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
     }, [chat]);
 
 
+
     const handleSendMessage = () => {
-        if (messageInput.length < 0) return;
+
+        if (messageInput.length < 1) return;
         if (!user) return;
 
         const newMessage = {
@@ -51,7 +57,6 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
         }
 
         const nuevo = [...messages, newMessage];
-        console.log("Nuevo", nuevo);
 
         setMessages(nuevo);
         setMessageInput('');
@@ -66,11 +71,11 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
         return new Date(dateString).toLocaleTimeString('es-ES', {
-            year: 'numeric', // 2024
-            month: 'long', // Mayo
-            day: 'numeric', // 1
-            hour: '2-digit', // 10
-            minute: '2-digit', // 00
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
         })
     }
 
@@ -78,6 +83,11 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
     return (
         <View style={chatWindowStyles.chatContainer}>
             <View style={chatWindowStyles.header}>
+                {isMobile && <TouchableOpacity onPress={() => {
+                    if (setSelectedContact) setSelectedContact(null);
+                }}>
+                    <FontAwesome5 name="arrow-left" size={24} color="white" />
+                </TouchableOpacity>}
                 <Text style={chatWindowStyles.contactName}>{chat.contact_name}</Text>
             </View>
             <NativeViewGestureHandler>
@@ -86,8 +96,10 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
                     ref={scrollViewRef}
                     style={chatWindowStyles.chatMessages}
                     onContentSizeChange={() => {
-                        scrollViewRef.current?.scrollToEnd({ animated: scrollToEndAnimation });
-                    }}>
+                        scrollViewRef.current?.scrollToEnd({ animated: false });
+                    }}
+                    contentContainerStyle={{ paddingBottom: 20 }}
+                >
 
                     {messages.length < 1 ? (
                         <Text style={chatWindowStyles.noMessages}>{t('Chat.noMessages')}</Text>
@@ -126,7 +138,7 @@ export default function ChatWindow({ chat, socket, updateContacts, t }: ChatWind
                     <Text style={chatWindowStyles.sendButtonText}>{t('Chat.send')}</Text>
                 </TouchableOpacity>
             </View>
-            
+
         </View>
     );
 }

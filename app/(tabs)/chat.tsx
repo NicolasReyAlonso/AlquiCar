@@ -1,27 +1,16 @@
-import ChatSidebar from "@/components/chat/ChatSidebar";
 import React from "react";
 import { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
-import { View } from 'react-native';
 import { ChatInterface } from "../../interfaces/Chat";
-import mainChatStyles from "../../css/MainChat.styles";
 import { MessageInterface } from "@/interfaces/Message";
-import ChatWindow from "@/components/chat/ChatWindow";
-import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from 'react-i18next';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useWindowDimensions, Platform } from 'react-native';
 import LargeScreenView from "@/components/chat/LargeScreenView";
 import MobileView from "@/components/chat/MobileView";
 import { getApiUrl } from "@/utils/getApiUrl";
+import { isMobileDevice } from "@/utils/isMobileDevice";
+import { sortChatsByLastMessage } from "@/utils/sortChatsByLastMessage";
 
-
-
-
-const isMobieleDevice = () => {
-    const width = useWindowDimensions();
-    return Platform.OS !== 'web' && width.width < 768; 
-}
 
 export default function Chat() {
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -30,12 +19,12 @@ export default function Chat() {
     const selectedContactRef = useRef<ChatInterface | null>(null);
     const { t } = useTranslation();
 
-    const isMobile = isMobieleDevice();
+    const isMobile = isMobileDevice();
 
     useEffect(() => {
 
         if (!socket) {
-            const socketResponse: Socket = io(`${getApiUrl()}`, 
+            const socketResponse: Socket = io(`${getApiUrl()}`,
                 {
                     withCredentials: true
                 });
@@ -59,8 +48,9 @@ export default function Chat() {
             console.log('Desconectado del servidor de WebSocket');
         });
         socketResponse.on('get chats', (contacts) => {
-            setContacts(contacts.chats);
-
+            console.log('get chats', contacts);
+            var sortedContacts = sortChatsByLastMessage(contacts.chats);
+            setContacts(sortedContacts);
         });
         socketResponse.on('new message', (message) => {
             updateContacts(message[0].from_id, message);
@@ -70,8 +60,10 @@ export default function Chat() {
 
 
 
+
+
     const updateContacts = (id: string, messages: MessageInterface[]) => {
-        setContacts((prevContacts) => {
+        /*setContacts((prevContacts) => {
             return prevContacts.map(contact => {
                 if (contact.contact_id === id) {
                     const newcontact = {
@@ -83,12 +75,31 @@ export default function Chat() {
                 }
                 return contact;
             });
+        });*/
+
+
+        setContacts((prevContacts) => {
+            const updatedContacts = prevContacts.map(contact => {
+                if (contact.contact_id === id) {
+                    const newContact = {
+                        ...contact,
+                        messages: [...contact.messages, ...messages],
+                    };
+                    if (selectedContactRef.current?.contact_id === id) setSelectedChat(newContact);
+                    return newContact;
+                }
+                return contact;
+            });
+
+            const sortedContacts = sortChatsByLastMessage(updatedContacts);
+            return sortedContacts;
         });
     }
 
 
     return (
-        isMobile ? <MobileView contacts={contacts} selectedContact={selectedContact} setSelectedChat={setSelectedChat} socket={socket} updateContacts={updateContacts} t={t} /> :
-        <LargeScreenView contacts={contacts} selectedContact={selectedContact} setSelectedChat={setSelectedChat} socket={socket} updateContacts={updateContacts} t={t} />
+        isMobile ?
+            <MobileView contacts={contacts} selectedContact={selectedContact} setSelectedChat={setSelectedChat} socket={socket} updateContacts={updateContacts} t={t} />
+            : <LargeScreenView contacts={contacts} selectedContact={selectedContact} setSelectedChat={setSelectedChat} socket={socket} updateContacts={updateContacts} t={t} />
     );
 }

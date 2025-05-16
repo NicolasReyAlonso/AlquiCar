@@ -29,6 +29,17 @@ export default function RegisterScreen() {
   const navigation = useNavigation();
 
   const { t } = useTranslation();
+  const [errors, setErrors] = useState({
+    name: '',
+    birthYear: '',
+    address: '',
+    phone: '',
+    dni: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const isValidEmail = (email: string) => {
     return /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/.test(email);
@@ -39,52 +50,95 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = () => {
-    if (
-      !name ||
-      !birthYear ||
-      !address ||
-      !phone ||
-      !dni ||
-      !email ||
-      !password ||
-      !confirmPassword
-    ) {
-      alert('Faltan campos por rellenar');
-      return;
-    }
-    if (name.length < 3) {
-      alert('El nombre debe tener al menos 3 caracteres');
-      return;
-    }
+   setSubmitAttempted(true);
+  let valid = true;
+  const newErrors = {
+    name: '',
+    birthYear: '',
+    address: '',
+    phone: '',
+    city: '', 
+    dni: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  };
+
+  if (!name) {
+    newErrors.name = 'Nombre requerido';
+    valid = false;
+  } else if (name.length < 3) {
+    newErrors.name = 'Mínimo 3 caracteres';
+    valid = false;
+  }
+
+  if (!birthYear) {
+    newErrors.birthYear = 'Año de nacimiento requerido';
+    valid = false;
+  } else {
     const numericBirthYear = Number(birthYear);
     if (isNaN(numericBirthYear) || numericBirthYear < 1925 || numericBirthYear >= 2007) {
-      alert('Debe ser un año válido');
-      return;
+      newErrors.birthYear = 'Año inválido (1925-2006)';
+      valid = false;
     }
-    if (address.length < 3) {
-      alert('La ciudad debe tener al menos 3 caracteres');
-      return;
-    }
-    if (!/^\d{9}$/.test(phone)) {
-      alert('El teléfono debe tener 9 dígitos');
-      return;
-    }
-    if (!/^\d{8}[A-Za-z]$/.test(dni)) {
-      alert('El DNI debe tener 8 números seguidos de una letra');
-      return;
-    }
-    if (!isValidEmail(email)) {
-      alert('Ingrese un email válido');
-      return;
-    }
-    if (!isValidPassword(password)) {
-      alert('La contraseña debe tener al menos 8 caracteres y contener al menos un número');
-      return;
-    }
-    if (password !== confirmPassword) {
-      alert('Las contraseñas no coinciden');
-      return;
-    }
+  }
+
+  if (!city) {
+  newErrors.city = 'Ciudad requerida';
+  valid = false;
+  } else if (city.length < 3) {
+    newErrors.city = 'Mínimo 3 caracteres';
+    valid = false;
+  }
+
+  if (!address) {
+    newErrors.address = 'Dirección requerida';
+    valid = false;
+  }
+
+  if (!phone) {
+    newErrors.phone = 'Teléfono requerido';
+    valid = false;
+  } else if (!/^\d{9}$/.test(phone)) {
+    newErrors.phone = '9 dígitos requeridos';
+    valid = false;
+  }
+
+  if (!dni) {
+    newErrors.dni = 'DNI requerido';
+    valid = false;
+  } else if (!/^\d{8}[A-Za-z]$/.test(dni)) {
+    newErrors.dni = 'Formato inválido (8 números + letra)';
+    valid = false;
+  }
+
+  if (!email) {
+    newErrors.email = 'Email requerido';
+    valid = false;
+  } else if (!isValidEmail(email)) {
+    newErrors.email = 'Email inválido';
+    valid = false;
+  }
+
+  if (!password) {
+    newErrors.password = 'Contraseña requerida';
+    valid = false;
+  } else if (!isValidPassword(password)) {
+    newErrors.password = 'Mínimo 8 caracteres con números';
+    valid = false;
+  }
+
+  if (!confirmPassword) {
+    newErrors.confirmPassword = 'Confirma tu contraseña';
+    valid = false;
+  } else if (password !== confirmPassword) {
+    newErrors.confirmPassword = 'Las contraseñas no coinciden';
+    valid = false;
+  }
+
+  setErrors(newErrors);
+
+  if (!valid) return;
 
     console.log(`Nombre: ${name}, Año de nacimiento: ${birthYear}, Dirección: ${address}, Ciudad: ${city}, Teléfono: ${phone}, DNI: ${dni}, Email: ${email}, Contraseña: ${password}`);
     fetch(`${getApiUrl()}/auth/register`, {
@@ -113,7 +167,7 @@ export default function RegisterScreen() {
       })
       .catch((error) => {
         console.error('Error en el registro:', error);
-        Alert.alert('Error', 'No se pudo completar el registro. Inténtalo más tarde.');
+        alert('No se pudo completar el registro. Inténtalo más tarde.');
       });
 
     // Luego de recibir respuesta positiva:
@@ -125,58 +179,177 @@ export default function RegisterScreen() {
       <View style={styles.container}>
         <Text style={styles.headerText}>{t('Register.title')}</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            submitAttempted && errors.name && styles.errorInput
+          ]}
           placeholder={t('Register.card.name')}
           value={name}
-          onChangeText={setName}
+          onChangeText={(text) => {
+            setName(text);
+            if (submitAttempted) {
+              setErrors({...errors, name: text ? '' : 'Nombre requerido'});
+            }
+          }}
         />
+        {submitAttempted && errors.name && (
+          <Text style={styles.errorText}>{errors.name}</Text>
+        )}
         <TextInput
-          style={styles.input}
-          placeholder={t('Register.card.birthday')}
+          style={[
+            styles.input,
+            submitAttempted && errors.birthYear && styles.errorInput
+          ]}
+          placeholder="Año de nacimiento"
           value={birthYear}
-          onChangeText={setBirthYear}
+          onChangeText={(text) => {
+            setBirthYear(text);
+            if (submitAttempted) {
+              const numeric = Number(text);
+              setErrors({
+                ...errors,
+                birthYear: !text ? 'Año requerido' : 
+                          isNaN(numeric) ? 'Debe ser un número' :
+                          numeric < 1925 || numeric >= 2007 ? 'Debe estar entre 1925-2006' : ''
+              });
+            }
+          }}
           keyboardType="numeric"
+          maxLength={4}
         />
+        {submitAttempted && errors.birthYear && (
+          <Text style={styles.errorText}>{errors.birthYear}</Text>
+        )}
         <TextInput
-          style={styles.input}
-          placeholder={t('Register.card.city')}
-          value={address}
-          onChangeText={setAddress}
+          style={[
+            styles.input,
+            submitAttempted && errors.city && styles.errorInput
+          ]}
+          placeholder="Ciudad"
+          value={city}
+          onChangeText={(text) => {
+            setCity(text);
+            if (submitAttempted) {
+              setErrors({
+                ...errors,
+                city: !text ? 'Ciudad requerida' : 
+                      text.length < 3 ? 'Mínimo 3 caracteres' : ''
+              });
+            }
+          }}
         />
+        {submitAttempted && errors.city && (
+          <Text style={styles.errorText}>{errors.city}</Text>
+        )}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            submitAttempted && errors.phone && styles.errorInput
+          ]}
           placeholder={t('Register.card.phone')}
           value={phone}
-          onChangeText={setPhone}
+          onChangeText={(text) => {
+            setPhone(text);
+            if (submitAttempted) {
+              setErrors({
+                ...errors,
+                phone: !text ? 'Teléfono requerido' : 
+                      !/^\d{9}$/.test(text) ? '9 dígitos requeridos' : ''
+              });
+            }
+          }}
           keyboardType="phone-pad"
         />
+        {submitAttempted && errors.phone && (
+          <Text style={styles.errorText}>{errors.phone}</Text>
+        )}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            submitAttempted && errors.dni && styles.errorInput
+          ]}
           placeholder={t('Register.card.dni')}
           value={dni}
-          onChangeText={setDni}
+          onChangeText={(text) => {
+            setDni(text);
+            if (submitAttempted) {
+              setErrors({
+                ...errors,
+                dni: !text ? 'DNI requerido' : 
+                    !/^\d{8}[A-Za-z]$/.test(text) ? 'Formato inválido (8 números + letra)' : ''
+              });
+            }
+          }}
         />
+        {submitAttempted && errors.dni && (
+          <Text style={styles.errorText}>{errors.dni}</Text>
+        )}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            submitAttempted && errors.email && styles.errorInput
+          ]}
           placeholder="Email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => {
+            setEmail(text);
+            if (submitAttempted) {
+              setErrors({
+                ...errors,
+                email: !text ? 'Email requerido' : 
+                      !isValidEmail(text) ? 'Email inválido' : ''
+              });
+            }
+          }}
           keyboardType="email-address"
         />
+        {submitAttempted && errors.email && (
+          <Text style={styles.errorText}>{errors.email}</Text>
+        )}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            submitAttempted && errors.password && styles.errorInput
+          ]}
           placeholder={t('Register.card.password')}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            setPassword(text);
+            if (submitAttempted) {
+              setErrors({
+                ...errors,
+                password: !text ? 'Contraseña requerida' : 
+                        !isValidPassword(text) ? 'Mínimo 8 caracteres con números' : ''
+              });
+            }
+          }}
           secureTextEntry
         />
+        {submitAttempted && errors.password && (
+          <Text style={styles.errorText}>{errors.password}</Text>
+        )}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            submitAttempted && errors.confirmPassword && styles.errorInput
+          ]}
           placeholder={t('Register.card.repeatPassword')}
           value={confirmPassword}
-          onChangeText={setConfirmPassword}
+          onChangeText={(text) => {
+            setConfirmPassword(text);
+            if (submitAttempted) {
+              setErrors({
+                ...errors,
+                confirmPassword: !text ? 'Confirma tu contraseña' : 
+                                password !== text ? 'Las contraseñas no coinciden' : ''
+              });
+            }
+          }}
           secureTextEntry
         />
+        {submitAttempted && errors.confirmPassword && (
+          <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+        )}
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>{t('Register.buttons.register')}</Text>
         </TouchableOpacity>
@@ -192,6 +365,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.colors.background,
     paddingVertical: 50,
+  },
+  errorInput: {
+  borderColor: 'red',
+  borderWidth: 1,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginBottom: 5,
+    fontFamily: theme.fonts.regular,
   },
   container: {
     width: width < 500 ? 300 : 600,

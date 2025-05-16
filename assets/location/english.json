@@ -145,7 +145,8 @@
     "todas": "All",
     "todos": "All",
     "rango": "Price Range",
-    "borrar": "Clear"
+    "borrar": "Clear",
+    "notificaciones": "Notifications"
   },
   "Incidencias": {
     "titulo": "Issue Title",
@@ -266,5 +267,9 @@
     "ir": "Go now",
     "exitoso": "Payment successful!",
     "exito": "You will be redirected to the home screen in a few seconds..."
+  },
+
+  "Ofertas":{
+    "radio": "Showing vehicles within a radius of 30 km"
   }
 }

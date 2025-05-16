@@ -4,6 +4,7 @@ import VehicleCard from "@/components/templates/VehicleCard";
 import theme from "@/components/Theme";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { getApiUrl } from "@/utils/getApiUrl";
+import { useTranslation } from 'react-i18next';
 
 const haversineDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371;
@@ -15,6 +16,8 @@ const haversineDistance = (lat1, lon1, lat2, lon2) => {
     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
+
+const { t } = useTranslation();
 
 const Ofertas = () => {
   const router = useRouter();
@@ -102,8 +105,7 @@ const Ofertas = () => {
   return (
     <ScrollView contentContainerStyle={{ alignItems: "center", padding: 20, backgroundColor: theme.colors.background }}>
       <Text style={{ fontSize: 16, color: theme.colors.primary, marginBottom: 10 }}>
-      Mostrando vehículos en un radio de 30 km
-      </Text>
+      {t('Mostrando vehículos en un radio de 30 km')} </Text>
 
       {vehicles.map((vehicle, index) => (
         <VehicleCard

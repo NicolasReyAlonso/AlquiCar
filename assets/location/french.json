@@ -64,7 +64,6 @@
       "num_doors": "Nombre de portes",
       "deposit": "Dépôt",
       "ejemplo": "Rue, Numéro, Ville"
-
     },
     "buttons": {
       "image": "Joindre une image",
@@ -143,7 +142,8 @@
     "todas": "Toutes",
     "todos": "Tous",
     "rango": "Fourchette de prix",
-    "borrar": "Effacer"
+    "borrar": "Effacer",
+    "notificaciones": "Notifications"
   },
   "Incidencias": {
     "titulo": "Titre de l'incident",
@@ -216,46 +216,49 @@
     }
   },
   "reservaPropia": {
-      "activa": "Active",
-      "cancelada": "Annulée",
-      "detallesReserva": "Détails de la réservation",
-      "id": "ID de la réservation",
-      "fechas": "Dates",
-      "precio": "Prix total",
-      "detallesVehículo": "Détails du véhicule",
-      "capacidad": "Capacité",
-      "pasajeros": "Passagers",
-      "tipo": "Type",
-      "transmisión": "Transmission",
-      "puertas": "Nombre de portes",
-      "depósito": "Dépôt",
-      "precioDia": "Prix par jour",
-      "propietario": "Propriétaire du véhicule",
-      "nombre": "Nom",
-      "teléfono": "Téléphone",
-      "cancelar": "Annuler la réservation",
-      "volver": "Retour",
-      "guardar": "Enregistrer les modifications",
-      "editar": "Modifier la réservation",
-      "fechaIn": "Date de début",
-      "fechaFin": "Date de fin",
-      "cancel": "Annuler",
-      "combustible": "Kraftstoff",
-      "dirección": "Adresse",
-      "noCarga": "Impossible de charger les informations du propriétaire.",
-      "vehículo": "Véhicule",
-      "cliente": "Client",
-      "activas": "Actives",
-      "canceladas": "Annulées",
-      "datos": "Informations du client",
-      "noActivas": "Vous n'avez aucune réservation active.",
-      "noCanceladas": "Vous n'avez aucune réservation annulée."
-    },
-    "Payment": {
-      "fallido": "Paiement échoué !",
-      "error": "Une erreur s'est produite lors du traitement de votre paiement. Vous allez être redirigé vers l'accueil...",
-      "ir": "Aller maintenant",
-      "exitoso": "Paiement réussi !",
-      "exito": "Vous allez être redirigé vers l'accueil dans quelques secondes..."
-    }    
+    "activa": "Active",
+    "cancelada": "Annulée",
+    "detallesReserva": "Détails de la réservation",
+    "id": "ID de la réservation",
+    "fechas": "Dates",
+    "precio": "Prix total",
+    "detallesVehículo": "Détails du véhicule",
+    "capacidad": "Capacité",
+    "pasajeros": "Passagers",
+    "tipo": "Type",
+    "transmisión": "Transmission",
+    "puertas": "Nombre de portes",
+    "depósito": "Dépôt",
+    "precioDia": "Prix par jour",
+    "propietario": "Propriétaire du véhicule",
+    "nombre": "Nom",
+    "teléfono": "Téléphone",
+    "cancelar": "Annuler la réservation",
+    "volver": "Retour",
+    "guardar": "Enregistrer les modifications",
+    "editar": "Modifier la réservation",
+    "fechaIn": "Date de début",
+    "fechaFin": "Date de fin",
+    "cancel": "Annuler",
+    "combustible": "Kraftstoff",
+    "dirección": "Adresse",
+    "noCarga": "Impossible de charger les informations du propriétaire.",
+    "vehículo": "Véhicule",
+    "cliente": "Client",
+    "activas": "Actives",
+    "canceladas": "Annulées",
+    "datos": "Informations du client",
+    "noActivas": "Vous n'avez aucune réservation active.",
+    "noCanceladas": "Vous n'avez aucune réservation annulée."
+  },
+  "Payment": {
+    "fallido": "Paiement échoué !",
+    "error": "Une erreur s'est produite lors du traitement de votre paiement. Vous allez être redirigé vers l'accueil...",
+    "ir": "Aller maintenant",
+    "exitoso": "Paiement réussi !",
+    "exito": "Vous allez être redirigé vers l'accueil dans quelques secondes..."
+  },
+  "Ofertas": {
+    "radio": "Affichage des véhicules dans un rayon de 30 km"
+  }
 }

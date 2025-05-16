@@ -164,7 +164,8 @@
       "todas": "Todas",
       "todos": "Todos",
       "rango": "Rango de Precios",
-      "borrar": "Borrar"
+      "borrar": "Borrar",
+      "notificaciones": "Notificaciones"
     },
 
     "Incidencias": {
@@ -291,6 +292,10 @@
         "ir": "Ir ahora",
         "exitoso": "¡Pago realizado con éxito!",
         "exito": "Serás redirigido al inicio en unos segundos..."
+      },
+
+      "Ofertas":{
+        "radio": "Mostrando vehículos en un radio de 30 km"
       }
 
   }

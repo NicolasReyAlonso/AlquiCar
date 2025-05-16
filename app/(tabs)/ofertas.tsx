@@ -105,7 +105,7 @@ const Ofertas = () => {
   return (
     <ScrollView contentContainerStyle={{ alignItems: "center", padding: 20, backgroundColor: theme.colors.background }}>
       <Text style={{ fontSize: 16, color: theme.colors.primary, marginBottom: 10 }}>
-      {t('Mostrando vehículos en un radio de 30 km')} </Text>
+      {t('Ofertas.radio')} </Text>
 
       {vehicles.map((vehicle, index) => (
         <VehicleCard

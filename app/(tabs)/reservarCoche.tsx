@@ -123,7 +123,15 @@ export default function ConfirmacionReserva() {
   useEffect(() => {
     const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+        const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
+        {
+          headers: {
+            'User-Agent': 'MiAppDeAlquiler/1.0 (contacto@tuapp.com)',
+            'Accept-Language': 'es',
+          },
+        }
+      );
         const data = await res.json();
         return data.display_name || "Dirección desconocida";
       } catch (error) {

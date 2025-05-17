@@ -54,7 +54,11 @@ export default function Chat() {
         });
         socketResponse.on('new message', (message) => {
             updateContacts(message[0].from_id, message);
-        })
+        });
+        socketResponse.on('new notification', (notification) => {
+            console.log('new notification: ', notification);
+            
+        });
 
     }
 

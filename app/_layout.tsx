@@ -36,6 +36,7 @@ export default function Layout({ children }: LayoutProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const colorScheme = useColorScheme();
   const color = colorScheme === 'dark' ? 'white' : 'black';
@@ -142,7 +143,7 @@ export default function Layout({ children }: LayoutProps) {
               {userUploaded && (<View style={{ position: 'relative' }}>
                 <TouchableOpacity
                   style={styles.touchableButton}
-                  onPress={() => navigation.navigate('notificaciones')}
+                  onPress={() => setIsNotificationsOpen(!isNotificationsOpen)}
                 >
                   <Ionicons name="notifications-outline" size={26} color="white" />
                   <View style={{
@@ -169,6 +170,30 @@ export default function Layout({ children }: LayoutProps) {
             </View>
           </View>
         </SafeAreaView>
+
+        {isNotificationsOpen && (
+          <>
+            <Pressable
+              style={styles.overlay}
+              onPress={() => setIsNotificationsOpen(false)}
+            />
+            <View style={styles.notificationsMenu}>
+              <ScrollView>
+                <Text style={styles.notificationTitle}>{t('layout.notificaciones')}</Text>
+
+                <View style={styles.notificationItem}>
+                  <Text style={styles.notificationText}>🔔 {'Ejemplo de notificación de incidencia'}</Text>
+                </View>
+                <View style={styles.notificationItem}>
+                  <Text style={styles.notificationText}>🚗 {'Ejemplo de notificación de reserva'}</Text>
+                </View>
+                <View style={styles.notificationItem}>
+                  <Text style={styles.notificationText}>📩 {'Ejemplo de notificación de mensaje'}</Text>
+                </View>
+              </ScrollView>
+            </View>
+          </>
+        )}
 
         {isFilterMenuOpen && (
           <>
@@ -600,5 +625,39 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   
+  notificationsMenu: {
+  position: 'absolute',
+  top: 70,
+  right: 10,
+  width: '50%',
+  maxHeight: '60%',
+  backgroundColor: 'white',
+  borderRadius: 10,
+  padding: 15,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+  elevation: 5,
+  zIndex: 1000,
+},
+
+notificationTitle: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  marginBottom: 10,
+},
+
+notificationItem: {
+  marginBottom: 10,
+  borderBottomWidth: 1,
+  borderBottomColor: '#ccc',
+  paddingBottom: 8,
+},
+
+notificationText: {
+  fontSize: 14,
+  color: '#333',
+},
 
 });

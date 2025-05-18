@@ -67,7 +67,16 @@
       "capacity": "Numero di posti",
       "num_doors": "Numero di porte",
       "deposit": "Deposito",
-      "ejemplo": "Via, Numero, Città"
+      "ejemplo": "Via, Numero, Città",
+      "selectBrand": "Seleziona una marca",
+      "selectModel": "Seleziona un modello",
+      "selectBrandFirst": "Seleziona prima una marca",
+      "selectFuelType": "Seleziona un tipo di carburante",
+      "selectYear": "Seleziona l'anno",
+      "selectCapacity": "Seleziona il numero di posti",
+      "selectDoors": "Seleziona il numero di porte",
+      "selectTransmission": "Seleziona il tipo di trasmissione",
+      "selectType": "Seleziona il tipo di auto"
     },
     "buttons": {
       "image": "Allega immagine",

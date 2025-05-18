@@ -66,7 +66,16 @@
       "num_doors": "Number of doors",
       "price": "Price per day",
       "deposit": "Security deposit",
-    "ejemplo": "Street, Number, City"
+      "ejemplo": "Street, Number, City",
+      "selectBrand": "Select a brand",
+      "selectModel": "Select a model",
+      "selectBrandFirst": "Select a brand first",
+      "selectFuelType": "Select a fuel type",
+      "selectYear": "Select year",
+      "selectCapacity": "Select number of seats",
+      "selectDoors": "Select number of doors",
+      "selectTransmission": "Select transmission",
+      "selectType": "Select car type"
     },
     "buttons": {
       "image": "Attach image",

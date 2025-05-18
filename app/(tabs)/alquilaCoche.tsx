@@ -371,7 +371,7 @@ const isFieldValid = (value: string | number) => {
         selectedValue={year}
         onValueChange={setYear}
         items={years}
-        placeholder="Seleccione año"
+        placeholder={t('RentYourVehicle.card.selectYear')}
         invalid={submitAttempted && !brand}
       />
 
@@ -430,7 +430,7 @@ const isFieldValid = (value: string | number) => {
           selectedValue={capacity}
           onValueChange={setCapacity}
           items={capacities}
-          placeholder="Seleccione número de asientos"
+          placeholder={t('RentYourVehicle.card.selectCapacity')}
           invalid={submitAttempted && !brand}
         />
 
@@ -441,7 +441,7 @@ const isFieldValid = (value: string | number) => {
         selectedValue={numDoors}
         onValueChange={setNumDoors}
         items={numDoorsOptions}
-        placeholder="Seleccione número de puertas"
+        placeholder={t('RentYourVehicle.card.selectDoors')}
           invalid={submitAttempted && !brand}
       />
         

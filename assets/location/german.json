@@ -63,7 +63,16 @@
       "capacity": "Anzahl der Sitze",
       "num_doors": "Anzahl der Türen",
       "deposit": "Kaution",
-      "ejemplo": "Straße, Nummer, Stadt"
+      "ejemplo": "Straße, Nummer, Stadt",
+      "selectBrand": "Wähle eine Marke",
+      "selectModel": "Wähle ein Modell",
+      "selectBrandFirst": "Wähle zuerst eine Marke",
+      "selectFuelType": "Wähle einen Kraftstofftyp",
+      "selectYear": "Wähle das Jahr",
+      "selectCapacity": "Wähle die Anzahl der Sitze",
+      "selectDoors": "Wähle die Anzahl der Türen",
+      "selectTransmission": "Wähle das Getriebe",
+      "selectType": "Wähle den Fahrzeugtyp"
     },
     "buttons": {
       "image": "Bild anhängen",

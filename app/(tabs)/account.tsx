@@ -215,7 +215,7 @@ const showAlert = (title: string, message: string) => {
     try {
       const token = await AsyncStorage.getItem('token');
       console.log(token);
-      const response = await fetch(`http://${getApiUrl()}/users/${userId}`, {
+      const response = await fetch(`${getApiUrl()}/users/${userId}`, {
         credentials: 'include',
         method: 'PATCH',
         headers: {

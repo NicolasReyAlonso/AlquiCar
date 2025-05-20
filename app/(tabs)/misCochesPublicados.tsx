@@ -7,7 +7,6 @@ import { useRouter } from "expo-router";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { useNavigation } from '@react-navigation/native';
 
-
 const { width } = Dimensions.get('window');
 
 const misCochesPublicados = () => {
@@ -95,6 +94,31 @@ const misCochesPublicados = () => {
     }
   };
 
+  const handleVehiclePress = (vehicle) => {
+    router.push({
+      pathname: "/(tabs)/detallesMiCoche",
+      params: {
+        id: vehicle.id,
+        brand: vehicle.brand,
+        model: vehicle.model,
+        year: vehicle.year,
+        capacity: vehicle.capacity,
+        type: vehicle.type,
+        transmission: vehicle.transmission,
+        fuel_type: vehicle.fuel_type,
+        num_doors: vehicle.num_doors,
+        deposit: vehicle.deposit,
+        daily_price: vehicle.daily_price,
+        imageUrl: vehicle.imageUrl,
+        address: vehicle.address,
+        latitude: vehicle.latitude,
+        longitude: vehicle.longitude,
+        availability: vehicle.availability,
+        // Agrega cualquier otro campo que necesites
+      }
+    });
+  };
+
   const checkReservations = async () => {
     try {
       const response = await fetch(`${getApiUrl()}/reservations/`);
@@ -115,7 +139,6 @@ const misCochesPublicados = () => {
         if (!previousReservation) {
           newNotifications.push(`Tu vehículo "${vehicleName}" ha sido reservado.`);
         } else {
-          // Detectar cambios en estado
           if (previousReservation.status !== reservation.status) {
             const statusMessage = reservation.status === "Cancelled"
               ? `La reserva de tu vehículo "${vehicleName}" ha sido cancelada.`
@@ -123,18 +146,15 @@ const misCochesPublicados = () => {
             newNotifications.push(statusMessage);
           }
 
-          // Detectar cambios en fechas
           if (previousReservation.start_date !== reservation.start_date || previousReservation.end_date !== reservation.end_date) {
             newNotifications.push(`Las fechas de la reserva de "${vehicleName}" han sido modificadas.`);
           }
 
-          // Detectar cambios en precio
           if (previousReservation.total_price !== reservation.total_price) {
             newNotifications.push(`El precio de la reserva de "${vehicleName}" ha cambiado a €${reservation.total_price}.`);
           }
         }
       });
-
 
       if (newNotifications.length > 0) {
         setNotifications(prev => [...prev, ...newNotifications]);
@@ -147,9 +167,6 @@ const misCochesPublicados = () => {
       console.error("Error al verificar las reservas:", error);
     }
   };
-
-
-
 
   useEffect(() => {
     cargarVehiculos();
@@ -165,7 +182,6 @@ const misCochesPublicados = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Mostrar notificaciones */}
       {notifications.length > 0 && (
         <View style={styles.notificationsContainer}>
           {reservations.map((reservation, index) => {
@@ -176,11 +192,10 @@ const misCochesPublicados = () => {
               <TouchableOpacity
                 key={index}
                 onPress={() => {
-                  console.log("Navegando a reservaPropia con:", reservation); // Agregar aquí
                   router.push({
                     pathname: "/(tabs)/reservaPropia",
                     params: {
-                      id: reservation.id, // Agregar el ID de la reserva explícitamente
+                      id: reservation.id,
                       vehicleName,
                       customerId: reservation.customer_id,
                       startDate: reservation.start_date,
@@ -190,8 +205,6 @@ const misCochesPublicados = () => {
                   });
                 }}
               >
-
-              
                 <Text style={styles.notificationText}>
                   {`Tu vehículo "${vehicleName}" ha sido reservado.`}
                 </Text>
@@ -201,12 +214,15 @@ const misCochesPublicados = () => {
         </View>
       )}
 
-      {/* Mostrar vehículos */}
       {vehicles.length === 0 ? (
         <Text style={styles.emptyText}>No has publicado ningún vehículo aún.</Text>
       ) : (
         vehicles.map((vehicle, index) => (
-          <View key={index} style={styles.cardWrapper}>
+          <TouchableOpacity 
+            key={index} 
+            style={styles.cardWrapper}
+            onPress={() => handleVehiclePress(vehicle)}
+          >
             <MyPublishedVehicles
               brand={vehicle.brand}
               price={`${vehicle.daily_price}€`}
@@ -215,7 +231,7 @@ const misCochesPublicados = () => {
               onCancel={() => handleDeleteVehicle(vehicle.id)}
               onEdit={() => navigation.navigate('alquilaCoche', { vehicleId: vehicle.id, vehicleData: vehicle })}
             />
-          </View>
+          </TouchableOpacity>
         ))
       )}
     </ScrollView>
@@ -249,8 +265,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
-
-
   cardWrapper: {
     width: width < 500 ? "100%" : "48%",
     marginBottom: 15,

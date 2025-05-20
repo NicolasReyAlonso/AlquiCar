@@ -38,10 +38,15 @@ export default function ConfirmacionReserva() {
   const openReturnDatePicker = () => setReturnDatePickerVisible(true);
   const closeReturnDatePicker = () => setReturnDatePickerVisible(false);
 
-  const onPickupDateConfirm = (params: { date: Date | undefined }) => {
-    if (params.date) setPickupDate(params.date);
-    closePickupDatePicker();
-  };
+const onPickupDateConfirm = (params: { date: Date | undefined }) => {
+  if (params.date) {
+    setPickupDate(params.date);
+    if (returnDate && returnDate < params.date) {
+      setReturnDate(null);
+    }
+  }
+  closePickupDatePicker();
+};
 
   const onReturnDateConfirm = (params: { date: Date | undefined }) => {
     if (params.date) setReturnDate(params.date);
@@ -83,6 +88,11 @@ const handleConfirmReservation = async () => {
 
   if (!params.vehicleId) {
     alert("Error: el ID del vehículo no se recibió correctamente.");
+    return;
+  }
+
+  if (returnDate < pickupDate) {
+    alert("La fecha de devolución no puede ser anterior a la fecha de recogida");
     return;
   }
 
@@ -169,9 +179,8 @@ const handleConfirmReservation = async () => {
     
         if (data && data.length > 0) {
           const vehiculo = data[0];
-          // Obtener la URL de la imagen
           const imageUrl = await fetchImageUrl(vehiculo.owner_id, vehiculo.id);
-          setVehicle({ ...vehiculo, imageUrl }); // Añadir imageUrl al objeto del vehículo
+          setVehicle({ ...vehiculo, imageUrl }); 
           
           if (vehiculo.latitude && vehiculo.longitude) {
             const direccionObtenida = await convertirCoordenadasADireccion(
@@ -186,17 +195,22 @@ const handleConfirmReservation = async () => {
       }
     };
 
-    const cargarFechasReservadas = async () => {
-      try {
-        const response = await fetch(`${getApiUrl()}/reservations?vehicle_id=${params.vehicleId}`);
-        const data = await response.json();
-  
-        const reservasActivas = data.filter((reserva: any) => reserva.status !== "Cancelled");
-        setFechasReservadas(reservasActivas);
-      } catch (error) {
-        console.error("Error al cargar las fechas reservadas:", error);
-      }
-    };
+const cargarFechasReservadas = async () => {
+  try {
+    const response = await fetch(`${getApiUrl()}/reservations?vehicle_id=${params.vehicleId}`);
+    const data = await response.json();
+
+    // Filtrar por vehículo actual Y por reservas activas (no canceladas)
+    const reservasActivas = data.filter((reserva: any) => {
+      return reserva.vehicle_id === Number(params.vehicleId) && 
+             reserva.status !== "Cancelled";
+    });
+    
+    setFechasReservadas(reservasActivas);
+  } catch (error) {
+    console.error("Error al cargar las fechas reservadas:", error);
+  }
+};
   
     if (params.vehicleId) {
       cargarDatosVehiculo();
@@ -204,17 +218,38 @@ const handleConfirmReservation = async () => {
     }
   }, [params.vehicleId]);
 
-  const calcularFechasNoDisponibles = () => {
-    const noDisponibles: Date[] = [];
-    fechasReservadas.forEach(({ start_date, end_date }) => {
-      const inicio = new Date(start_date);
-      const fin = new Date(end_date);
-      for (let d = inicio; d <= fin; d.setDate(d.getDate() + 1)) {
-        noDisponibles.push(new Date(d));
-      }
-    });
+const calcularFechasNoDisponibles = () => {
+  const noDisponibles: Date[] = [];
+  
+  // Verificar si hay fechas reservadas
+  if (!fechasReservadas || fechasReservadas.length === 0) {
     return noDisponibles;
-  };
+  }
+
+  fechasReservadas.forEach(({ start_date, end_date }) => {
+    if (!start_date || !end_date) return;
+    
+    const inicio = new Date(start_date);
+    const fin = new Date(end_date);
+    
+    if (isNaN(inicio.getTime())) {
+      console.warn("Fecha de inicio inválida:", start_date);
+      return;
+    }
+    if (isNaN(fin.getTime())) {
+      console.warn("Fecha de fin inválida:", end_date);
+      return;
+    }
+
+    const currentDate = new Date(inicio);
+    while (currentDate <= fin) {
+      noDisponibles.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  });
+
+  return noDisponibles;
+};
 
   useEffect(() => {
     if (pickupDate && returnDate && vehicle?.daily_price) {
@@ -324,7 +359,7 @@ const handleConfirmReservation = async () => {
           date={returnDate || undefined}
           onConfirm={onReturnDateConfirm}
           validRange={{
-            startDate: new Date(),
+            startDate: pickupDate || new Date(), // Fecha mínima es la de recogida o hoy
             disabledDates: calcularFechasNoDisponibles(),
           }}
         />

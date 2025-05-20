@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Alert, Platform, Linking } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { DatePickerModal } from 'react-native-paper-dates';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
-import { getApiUrl } from '@/utils/getApiUrl';
+import { getApiUrl, getAppUrl } from '@/utils/getApiUrl';
 
 export default function ConfirmacionReserva() {
   const params = useLocalSearchParams();
@@ -75,50 +75,75 @@ export default function ConfirmacionReserva() {
     }
   };
 
-  const handleConfirmReservation = async () => {
-    if (!pickupDate || !returnDate) {
-      alert("Faltan campos por rellenar");
-      return;
+const handleConfirmReservation = async () => {
+  if (!pickupDate || !returnDate) {
+    alert("Faltan campos por rellenar");
+    return;
+  }
+
+  if (!params.vehicleId) {
+    alert("Error: el ID del vehículo no se recibió correctamente.");
+    return;
+  }
+
+  const userId = await getUserId();
+  if (!userId) {
+    alert("Por favor, inicia sesión para realizar una reserva.");
+    return;
+  }
+
+  try {
+    // 🔹 1. Preparar el pago antes de proceder con la reserva
+    const pagoResponse = await fetch(`${getApiUrl()}/pay`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        reservationid: params.vehicleId,
+        apiurl: `${getAppUrl()}`
+      }),
+    });
+
+    if (!pagoResponse.ok) {
+      const errorData = await pagoResponse.json();
+      throw new Error(errorData.message || "Error al iniciar el pago.");
     }
 
-    if (!params.vehicleId) {
-      alert("Error: el ID del vehículo no se recibió correctamente.");
-      return;
+    const pagoData = await pagoResponse.json();
+    const checkoutUrl = pagoData.url;
+
+    // 🔹 2. Abrir el checkout de Stripe
+    if (Platform.OS === "web") {
+      window.location.href = checkoutUrl;
+    } else {
+      Linking.openURL(checkoutUrl);
     }
 
-    const userId = await getUserId();
-    if (!userId) {
-      alert("Por favor, inicia sesión para realizar una reserva.");
-      return;
-    }
-
+    // 🔹 3. Crear la reserva después del pago exitoso
     const nuevaReserva = {
       vehicle_id: Number(params.vehicleId),
-      customer_id: userId, 
+      customer_id: userId,
       start_date: pickupDate.toISOString(),
       end_date: returnDate.toISOString(),
       total_price: precioTotal,
     };
 
-    try {
-      const response = await fetch(`${getApiUrl()}/reservations`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nuevaReserva),
-      });
+    const reservaResponse = await fetch(`${getApiUrl()}/reservations`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nuevaReserva),
+    });
 
-      if (response.ok) {
-        alert("Reserva confirmada.");
-      } else {
-        const errorData = await response.json();
-        console.error("Detalles del error:", errorData);
-        alert("Hubo un problema al guardar la reserva.");
-      }
-    } catch (error) {
-      console.error("Error al conectar con el servidor:", error);
-      alert("Error de conexión al servidor.");
+    if (!reservaResponse.ok) {
+      throw new Error("Error al confirmar la reserva después del pago.");
     }
-  };
+
+    alert("Reserva confirmada y pago completado con éxito.");
+  } catch (error) {
+    console.error("Error en el proceso de reserva:", error);
+    alert(error.message || "Ocurrió un error durante la reserva.");
+  }
+};
+
 
   useEffect(() => {
     const convertirCoordenadasADireccion = async (lat: number, lon: number) => {

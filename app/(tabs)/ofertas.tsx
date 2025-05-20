@@ -17,9 +17,9 @@ const haversineDistance = (lat1, lon1, lat2, lon2) => {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
 
-const { t } = useTranslation();
 
 const Ofertas = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { lat, lon } = useLocalSearchParams();
   const [vehicles, setVehicles] = useState([]);

@@ -15,8 +15,9 @@ import { useTranslation } from 'react-i18next';
 import { Picker } from "@react-native-picker/picker";
 import { Pressable } from 'react-native';
 import Slider from '@react-native-community/slider';
-import {isUserUploaded} from '@/utils/isUserUploaded';
+import { isUserUploaded } from '@/utils/isUserUploaded';
 import { useFocusEffect } from '@react-navigation/native';
+import { useNotifications } from '@/utils/notificaciones';
 
 interface LayoutProps {
   children: ReactNode;
@@ -36,12 +37,14 @@ export default function Layout({ children }: LayoutProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const colorScheme = useColorScheme();
   const color = colorScheme === 'dark' ? 'white' : 'black';
   const [appIsReady, setAppIsReady] = useState(false);
   const { t } = useTranslation();
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const { notifications, unreadCount } = useNotifications();
   const [filters, setFilters] = useState({
     brand: "",
     type: "",
@@ -62,7 +65,7 @@ export default function Layout({ children }: LayoutProps) {
     init();
   });
 
-  const fetchUserUpload = async () =>{
+  const fetchUserUpload = async () => {
     const userIsUploaded = await isUserUploaded()
     setUserUploaded(userIsUploaded)
     console.log(userIsUploaded);
@@ -90,12 +93,12 @@ export default function Layout({ children }: LayoutProps) {
   const applyFilters = () => {
     console.log("Filtros aplicados:", filters);
     setIsFilterMenuOpen(false);
-    navigation.navigate("resultadosFiltrados", { 
+    navigation.navigate("resultadosFiltrados", {
       filters: JSON.stringify({
         ...filters,
         minPrice: Number(filters.minPrice),
         maxPrice: Number(filters.maxPrice)
-      }) 
+      })
     });
   };
 
@@ -139,24 +142,29 @@ export default function Layout({ children }: LayoutProps) {
             </View>
             <View style={styles.headerRight}>
               <Ionicons name="person-circle-outline" onPress={handleLogin} size={30} color="white" />
-              {userUploaded && (<View style={{ position: 'relative' }}>
-                <TouchableOpacity
-                  style={styles.touchableButton}
-                  onPress={() => navigation.navigate('notificaciones')}
-                >
-                  <Ionicons name="notifications-outline" size={26} color="white" />
-                  <View style={{
-                    position: 'absolute',
-                    top: 3,
-                    right: 5,
-                    backgroundColor: 'red',
-                    borderRadius: 10,
-                    paddingHorizontal: 5,
-                  }}>
-                    <Text style={{ color: 'white', fontSize: 10 }}>3</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>)}
+              {userUploaded && (
+                <View style={{ position: 'relative' }}>
+                  <TouchableOpacity
+                    style={styles.touchableButton}
+                    onPress={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                  >
+                    <Ionicons name="notifications-outline" size={26} color="white" />
+                    {unreadCount > 0 && (
+                      <View style={{
+                        position: 'absolute',
+                        top: 3,
+                        right: 5,
+                        backgroundColor: 'red',
+                        borderRadius: 10,
+                        paddingHorizontal: 5,
+                      }}>
+                        <Text style={{ color: 'white', fontSize: 10 }}>{unreadCount}</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )}
+
               {userUploaded && (<TouchableOpacity style={styles.touchableButton} onPress={() => setIsMenuOpen(!isMenuOpen)}>
                 <Text style={styles.touchableButtonText}>{t('layout.Menu')}</Text>
               </TouchableOpacity>)}
@@ -170,16 +178,38 @@ export default function Layout({ children }: LayoutProps) {
           </View>
         </SafeAreaView>
 
+        {isNotificationsOpen && (
+          <>
+            <Pressable
+              style={styles.overlay}
+              onPress={() => setIsNotificationsOpen(false)}
+            />
+            <View style={styles.notificationsMenu}>
+              <ScrollView>
+                <Text style={styles.notificationTitle}>{t('layout.notificaciones')}</Text>
+                {notifications.map((notif: any, index: number) => (
+                  <View key={index} style={styles.notificationItem}>
+                    <Text style={styles.notificationText}>
+                      {notif.icon || '🔔'} {notif.message}
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+
+            </View>
+          </>
+        )}
+
         {isFilterMenuOpen && (
           <>
             <Pressable
               style={styles.overlay}
               onPress={() => setIsFilterMenuOpen(false)}
             />
-              <View style={[
-                  styles.filterMenu,
-                  Platform.OS === 'web' ? styles.filterMenuWeb : styles.filterMenuMobile
-                ]}>
+            <View style={[
+              styles.filterMenu,
+              Platform.OS === 'web' ? styles.filterMenuWeb : styles.filterMenuMobile
+            ]}>
               <ScrollView contentContainerStyle={styles.filterScroll}>
                 <Text style={styles.filterTitle}>{t('layout.filter')}</Text>
 
@@ -187,7 +217,7 @@ export default function Layout({ children }: LayoutProps) {
                 <Text style={styles.filterLabel}>{t('layout.brand')}</Text>
                 <Picker
                   selectedValue={filters.brand}
-                  onValueChange={(value) => setFilters({...filters, brand: value})}
+                  onValueChange={(value) => setFilters({ ...filters, brand: value })}
                   style={styles.picker}
                 >
                   <Picker.Item label={t('layout.todas')} value="" />
@@ -204,26 +234,26 @@ export default function Layout({ children }: LayoutProps) {
                 <Text style={styles.filterLabel}>{t('layout.type')}</Text>
                 <Picker
                   selectedValue={filters.type}
-                  onValueChange={(value) => setFilters({...filters, type: value})}
+                  onValueChange={(value) => setFilters({ ...filters, type: value })}
                   style={styles.picker}
                 >
-             <Picker.Item label={t('layout.todos')} value="" />
-              <Picker.Item label="Sedan" value="Sedan" />
-              <Picker.Item label="SUV" value="SUV" />
-              <Picker.Item label="Hatchback" value="Hatchback" />
-              <Picker.Item label="Truck" value="Truck" />
-              <Picker.Item label="Sports" value="Sports" />
-              <Picker.Item label="Convertible" value="Convertible" />
-              <Picker.Item label="Coupe" value="Coupe" />
-              <Picker.Item label="Van" value="Van" />
-              <Picker.Item label="Wagon" value="Wagon" />
+                  <Picker.Item label={t('layout.todos')} value="" />
+                  <Picker.Item label="Sedan" value="Sedan" />
+                  <Picker.Item label="SUV" value="SUV" />
+                  <Picker.Item label="Hatchback" value="Hatchback" />
+                  <Picker.Item label="Truck" value="Truck" />
+                  <Picker.Item label="Sports" value="Sports" />
+                  <Picker.Item label="Convertible" value="Convertible" />
+                  <Picker.Item label="Coupe" value="Coupe" />
+                  <Picker.Item label="Van" value="Van" />
+                  <Picker.Item label="Wagon" value="Wagon" />
                 </Picker>
 
                 {/* Filtro por Transmisión */}
                 <Text style={styles.filterLabel}>{t('layout.tramission')}</Text>
                 <Picker
                   selectedValue={filters.transmission}
-                  onValueChange={(value) => setFilters({...filters, transmission: value})}
+                  onValueChange={(value) => setFilters({ ...filters, transmission: value })}
                   style={styles.picker}
                 >
                   <Picker.Item label={t('layout.todas')} value="" />
@@ -235,7 +265,7 @@ export default function Layout({ children }: LayoutProps) {
                 <Text style={styles.filterLabel}>{t('layout.fuel_type')}</Text>
                 <Picker
                   selectedValue={filters.fuel_type}
-                  onValueChange={(value) => setFilters({...filters, fuel_type: value})}
+                  onValueChange={(value) => setFilters({ ...filters, fuel_type: value })}
                   style={styles.picker}
                 >
                   <Picker.Item label={t('layout.todos')} value="" />
@@ -245,10 +275,10 @@ export default function Layout({ children }: LayoutProps) {
                 </Picker>
 
                 {/* Filtro por Rango de Precios */}
-                <Text style={styles.filterTitle}>{t('layout.rango')}</Text> 
-                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                <Text style={styles.filterTitle}>{t('layout.rango')}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                   <Text style={styles.priceDisplay}>€{filters.minPrice}</Text>
-                  <Text style={{marginHorizontal: 10}}>-</Text>
+                  <Text style={{ marginHorizontal: 10 }}>-</Text>
                   <Text style={styles.priceDisplay}>€{filters.maxPrice}</Text>
                 </View>
 
@@ -258,19 +288,19 @@ export default function Layout({ children }: LayoutProps) {
                     style={styles.slider}
                     minimumValue={0}
                     maximumValue={1000}
-                    step={5} 
+                    step={5}
                     minimumTrackTintColor="#4472C4"
                     maximumTrackTintColor="#d3d3d3"
                     thumbTintColor="#4472C4"
                     value={filters.maxPrice}
-                    onValueChange={(value) => setFilters({...filters, maxPrice: Math.round(value)})}
+                    onValueChange={(value) => setFilters({ ...filters, maxPrice: Math.round(value) })}
                   />
                   <Text>€{filters.maxPrice}</Text>
                 </View>
 
                 {/* Botones de acción */}
                 <View style={styles.filterButtons}>
-                <TouchableOpacity
+                  <TouchableOpacity
                     style={[styles.applyButton, styles.resetButton]}
                     onPress={resetFilters}
                   >
@@ -281,84 +311,84 @@ export default function Layout({ children }: LayoutProps) {
                     style={[styles.filterButton, styles.applyButton]}
                     onPress={applyFilters}
                   >
-            <Text style={styles.filterButtonText}>{t('layout.apply')}</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </View>
-  </>
-)}
+                    <Text style={styles.filterButtonText}>{t('layout.apply')}</Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+            </View>
+          </>
+        )}
 
-{isLangMenuOpen && (
+        {isLangMenuOpen && (
           <>
-          <Pressable
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 999,
-            }}
-            onPress={() => setIsLangMenuOpen(false)}
-          />
-          <View style={styles.languageMenu}>
-            <TouchableOpacity onPress={() => changeLanguage('es')}>
-              <Text style={styles.languageOption}>🇪🇸 Español</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeLanguage('en')}>
-              <Text style={styles.languageOption}>🇬🇧 English</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeLanguage('fr')}>
-              <Text style={styles.languageOption}>🇫🇷 Français</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeLanguage('de')}>
-              <Text style={styles.languageOption}>🇩🇪 Deutsch</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeLanguage('it')}>
-              <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
-            </TouchableOpacity>
-          </View>
+            <Pressable
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 999,
+              }}
+              onPress={() => setIsLangMenuOpen(false)}
+            />
+            <View style={styles.languageMenu}>
+              <TouchableOpacity onPress={() => changeLanguage('es')}>
+                <Text style={styles.languageOption}>🇪🇸 Español</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => changeLanguage('en')}>
+                <Text style={styles.languageOption}>🇬🇧 English</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => changeLanguage('fr')}>
+                <Text style={styles.languageOption}>🇫🇷 Français</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => changeLanguage('de')}>
+                <Text style={styles.languageOption}>🇩🇪 Deutsch</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => changeLanguage('it')}>
+                <Text style={styles.languageOption}>🇮🇹 Italiano</Text>
+              </TouchableOpacity>
+            </View>
           </>
         )}
 
         {isMenuOpen && (
           <>
-          <Pressable
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 999 
-          }} onPress={() => setIsMenuOpen(false)}
-        />
-          <View style={styles.menu}>
-            <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
-              <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('index')}>
-              <FontAwesome name="home" size={24} color={color} />
-              <Text style={styles.menuItemText}>{t('layout.menuButtons.home')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misReservas')}>
-              <FontAwesome5 name="shopping-cart" size={24} color={color} />
-              <Text style={styles.menuItemText}>{t('layout.menuButtons.reservations')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misIncidencias')}>
-              <FontAwesome5 name="exclamation-circle" size={24} color={color} />
-              <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('chat')}>
-              <FontAwesome5 name="comments" size={24} color={color} solid/>
-              <Text style={styles.menuItemText}>{t('layout.menuButtons.chat')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('pay')}>
-              <FontAwesome5 name="comments" size={24} color={color} solid/>
-              <Text style={styles.menuItemText}>pay</Text>
-            </TouchableOpacity>
-          </View>
+            <Pressable
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 999
+              }} onPress={() => setIsMenuOpen(false)}
+            />
+            <View style={styles.menu}>
+              <TouchableOpacity onPress={() => setIsMenuOpen(false)}>
+                <Text style={styles.closeButton}>{t('layout.menuButtons.close')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('index')}>
+                <FontAwesome name="home" size={24} color={color} />
+                <Text style={styles.menuItemText}>{t('layout.menuButtons.home')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misReservas')}>
+                <FontAwesome5 name="shopping-cart" size={24} color={color} />
+                <Text style={styles.menuItemText}>{t('layout.menuButtons.reservations')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('misIncidencias')}>
+                <FontAwesome5 name="exclamation-circle" size={24} color={color} />
+                <Text style={styles.menuItemText}>{t('layout.menuButtons.incidences')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('chat')}>
+                <FontAwesome5 name="comments" size={24} color={color} solid />
+                <Text style={styles.menuItemText}>{t('layout.menuButtons.chat')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('pay')}>
+                <FontAwesome5 name="comments" size={24} color={color} solid />
+                <Text style={styles.menuItemText}>pay</Text>
+              </TouchableOpacity>
+            </View>
           </>
         )}
 
@@ -376,7 +406,7 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: '#4472C4',
   },
-    overlay: {
+  overlay: {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -543,7 +573,7 @@ const styles = StyleSheet.create({
   filterTitle: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#333", 
+    color: "#333",
     marginBottom: 1,
     textAlign: "center",
   },
@@ -579,7 +609,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-    pickerContainer: {
+  pickerContainer: {
     width: '100%',
     marginBottom: 15,
     borderRadius: 8,
@@ -599,6 +629,40 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  
+
+  notificationsMenu: {
+    position: 'absolute',
+    top: 70,
+    right: 10,
+    width: '50%',
+    maxHeight: '60%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 1000,
+  },
+
+  notificationTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  notificationItem: {
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingBottom: 8,
+  },
+
+  notificationText: {
+    fontSize: 14,
+    color: '#333',
+  },
 
 });

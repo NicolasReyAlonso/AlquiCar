@@ -49,7 +49,15 @@ const index = () => {
 
   const getCityFromCoords = async (latitude: number, longitude: number) => {
   try {
-    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+    const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+        {
+          headers: {
+            'User-Agent': 'MiAppDeAlquiler/1.0 (contacto@tuapp.com)',
+            'Accept-Language': 'es',
+          },
+        }
+      );
     const data = await response.json();
     return data?.address?.city || data?.address?.town || data?.address?.village || '';
   } catch (error) {
@@ -69,7 +77,7 @@ const checkAuthAndNavigate = async (destination: string) => {
     if (destination === 'ofertas') {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permiso denegado', 'Se necesita acceder a la ubicación para mostrar ofertas cercanas.');
+        alert('Se necesita acceder a la ubicación para mostrar ofertas cercanas.');
         return;
       }
 
@@ -77,7 +85,7 @@ const checkAuthAndNavigate = async (destination: string) => {
       const city = await getCityFromCoords(location.coords.latitude, location.coords.longitude);
 
       if (!city) {
-        Alert.alert('Error', 'No se pudo determinar la ciudad actual.');
+        alert('No se pudo determinar la ciudad actual.');
         return;
       }
 
@@ -134,7 +142,7 @@ const checkAuthAndNavigate = async (destination: string) => {
       
     } catch (error) {
       console.error("Error en handleBuscar:", error);
-      Alert.alert('Error', 'Hubo un problema al buscar los vehículos');
+      alert('Hubo un problema al buscar los vehículos');
     }
   };
   

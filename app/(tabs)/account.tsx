@@ -101,44 +101,73 @@ export default function AccountPage() {
   };
 
   const handleCerrarSesion = async (id: string) => {
-    if (id == userId){
-    await AsyncStorage.setItem("isLoggedIn", "false");
-    await AsyncStorage.removeItem('user');
-    navigation.navigate("index");
+    if (id == userId) {
+      await AsyncStorage.setItem("isLoggedIn", "false");
+      await AsyncStorage.removeItem('user');
+      navigation.navigate("index");
 
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'index' }],
-      })
-    );
-  }
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'index' }],
+        })
+      );
+    }
   };
 
   const handleViewUser = (userId: string) => {
     navigation.navigate('verUsuario', { userId: userId });
   };
 
-  const handleDeleteUser = async (userId: string) => {
+  const handleDeleteUser = (userId: string) => {
+  if (Platform.OS === 'web') {
     const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar esta cuenta?');
     if (confirmDelete) {
-      try {
-        const response = await fetch(`${getApiUrl()}/users/${userId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          setUsers(users.filter(user => user.id !== userId));
-          handleCerrarSesion(userId);
-        } else {
-          window.alert('Error: No se pudo eliminar el usuario');
-        }
-      } catch (error) {
-        window.alert('Error: Algo salió mal al intentar eliminar el usuario');
-      }
+      deleteUser(userId);
     }
-  };
+  } else {
+    Alert.alert(
+      'Confirmación',
+      '¿Estás seguro de que deseas eliminar esta cuenta?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: () => deleteUser(userId),
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+};
+
+const deleteUser = async (userId: string) => {
+  try {
+    const response = await fetch(`${getApiUrl()}/users/${userId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      setUsers(users.filter(user => user.id !== userId));
+      handleCerrarSesion(userId);
+    } else {
+      showAlert('Error', 'No se pudo eliminar el usuario');
+    }
+  } catch (error) {
+    showAlert('Error', 'Algo salió mal al intentar eliminar el usuario');
+  }
+};
+
+const showAlert = (title: string, message: string) => {
+  if (Platform.OS === 'web') {
+    window.alert(`${title}: ${message}`);
+  } else {
+    Alert.alert(title, message);
+  }
+};
+
 
   const handleImageUpload = async (imageUri: string, imageName: string) => {
     const formData = new FormData();
@@ -186,7 +215,7 @@ export default function AccountPage() {
     try {
       const token = await AsyncStorage.getItem('token');
       console.log(token);
-      const response = await fetch(`http://${getApiUrl()}/users/${userId}`, {
+      const response = await fetch(`${getApiUrl()}/users/${userId}`, {
         credentials: 'include',
         method: 'PATCH',
         headers: {
@@ -280,24 +309,26 @@ export default function AccountPage() {
         </View>
 
         <Text style={styles.info}>Email: {userEmail}</Text>
-        <TouchableOpacity
-          onPress={() => handleDeleteUser(userId)}
-          style={[styles.actionButton]}
-        >
-          <Text style={styles.buttonText}>{t('Account.eliminar')}</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.actionButtonContainer}>
+          <TouchableOpacity
+            onPress={() => handleDeleteUser(userId)}
+            style={styles.actionButton}
+          >
+            <Text style={styles.buttonText}>{t('Account.eliminar')}</Text>
+          </TouchableOpacity>
 
-      {role === 'admin' && (
-        <TouchableOpacity
-          style={styles.toggleButton}
-          onPress={handleToggleAdminMode}
-        >
-          <Text style={styles.buttonText}>
-            {isAdminMode ? t('ModoAdmin.modoUsuario') : t('ModoAdmin.modoAdmin')}
-          </Text>
-        </TouchableOpacity>
-      )}
+          <View style={{ width: 10 }}></View>
+
+          {role === 'admin' && (
+            <TouchableOpacity
+              onPress={handleToggleAdminMode}
+              style={styles.actionButton}
+            >
+              <Text style={styles.buttonText}>{isAdminMode ? t('ModoAdmin.modoUsuario') : t('ModoAdmin.modoAdmin')}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
 
       {isAdminMode ? (
         <View style={styles.usersContainer}>
@@ -424,17 +455,13 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     backgroundColor: theme.colors.tabColor,
-    padding: 8,
-    borderRadius: 5,
+    borderRadius: 8,
+    overflow: 'hidden',
+    justifyContent: 'center',
   },
-  toggleButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    backgroundColor: theme.colors.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+  actionButtonContainer: {
+    alignItems: 'center',
+    gap: 10,
   },
 
   nameRow: {
@@ -473,6 +500,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     color: theme.colors.text,
-  }
+  },
 
 });

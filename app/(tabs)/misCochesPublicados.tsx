@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Text, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import { View, ScrollView, Text, Dimensions, StyleSheet, TouchableOpacity, ActivityIndicator} from "react-native";
 import MyPublishedVehicles from "@/components/templates/MyPublishedVehicles";
 import theme from "@/components/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const { width } = Dimensions.get('window');
 
 const misCochesPublicados = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
   const [vehicles, setVehicles] = useState([]);
@@ -17,6 +19,7 @@ const misCochesPublicados = () => {
   const [reservations, setReservations] = useState([]);
   const [notifiedReservations, setNotifiedReservations] = useState([]);
   const [notifications, setNotifications] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const convertirCoordenadasADireccion = async (lat: number, lon: number) => {
     try {
@@ -38,44 +41,47 @@ const misCochesPublicados = () => {
   };
 
   const cargarVehiculos = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        alert("Usuario no autenticado");
-        return;
-      }
-
-      const userRes = await fetch(`${getApiUrl()}/users/getdata/`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      const userData = await userRes.json();
-      const userId = userData[0].id;
-
-      const response = await fetch(`${getApiUrl()}/vehicles/`);
-      const allVehicles = await response.json();
-
-      const userVehicles = await Promise.all(
-        allVehicles
-          .filter(v => v.owner_id === userId)
-          .map(async (vehicle) => {
-            const vImgRes = await fetch(`${getApiUrl()}/media/vehicles/${userId}/${vehicle.id}`);
-            const images = await vImgRes.json();
-            const imageUrl = images.length > 0 ? images[0].data : null;
-
-            let address = "Dirección desconocida";
-            if (vehicle.latitude && vehicle.longitude) {
-              address = await convertirCoordenadasADireccion(vehicle.latitude, vehicle.longitude);
-            }
-
-            return { ...vehicle, imageUrl, address };
-          })
-      );
-      setVehicles(userVehicles);
-    } catch (error) {
-      console.error("Error al cargar los vehículos:", error);
+  setIsLoading(true);
+  try {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) {
+      alert("Usuario no autenticado");
+      return;
     }
-  };
+
+    const userRes = await fetch(`${getApiUrl()}/users/getdata/`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    const userData = await userRes.json();
+    const userId = userData[0].id;
+
+    const response = await fetch(`${getApiUrl()}/vehicles/`);
+    const allVehicles = await response.json();
+
+    const userVehicles = await Promise.all(
+      allVehicles
+        .filter(v => v.owner_id === userId)
+        .map(async (vehicle) => {
+          const vImgRes = await fetch(`${getApiUrl()}/media/vehicles/${userId}/${vehicle.id}`);
+          const images = await vImgRes.json();
+          const imageUrl = images.length > 0 ? images[0].data : null;
+
+          let address = "Dirección desconocida";
+          if (vehicle.latitude && vehicle.longitude) {
+            address = await convertirCoordenadasADireccion(vehicle.latitude, vehicle.longitude);
+          }
+
+          return { ...vehicle, imageUrl, address };
+        })
+    );
+    setVehicles(userVehicles);
+  } catch (error) {
+    console.error("Error al cargar los vehículos:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleDeleteVehicle = async (vehicleId: string) => {
     try {
@@ -114,7 +120,6 @@ const misCochesPublicados = () => {
         latitude: vehicle.latitude,
         longitude: vehicle.longitude,
         availability: vehicle.availability,
-        // Agrega cualquier otro campo que necesites
       }
     });
   };
@@ -214,8 +219,13 @@ const misCochesPublicados = () => {
         </View>
       )}
 
-      {vehicles.length === 0 ? (
-        <Text style={styles.emptyText}>No has publicado ningún vehículo aún.</Text>
+      {isLoading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+            <Text style={{ marginTop: 10, color: theme.colors.text, fontSize: 16 }}>{t('MisCochesPublicados.Cargando')}</Text>
+          </View>
+      ) : vehicles.length === 0 ? (
+        <Text style={styles.emptyText}>{t('MisCochesPublicados.NoPublicado')}</Text>
       ) : (
         vehicles.map((vehicle, index) => (
           <TouchableOpacity 
@@ -274,6 +284,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "gray",
     marginTop: 20,
+  },
+
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: Dimensions.get('window').height * 0.5,
   },
 });
 

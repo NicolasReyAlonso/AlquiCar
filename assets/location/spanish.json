@@ -296,6 +296,11 @@
 
       "Ofertas":{
         "radio": "Mostrando vehículos en un radio de 30 km"
+      },
+
+      "MisCochesPublicados":{
+        "Cargando": "Cargando vehículos...",
+        "NoPublicado": "No has publicado ningún vehículo aún."
       }
 
   }

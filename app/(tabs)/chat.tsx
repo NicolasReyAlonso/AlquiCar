@@ -10,6 +10,7 @@ import MobileView from "@/components/chat/MobileView";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { isMobileDevice } from "@/utils/isMobileDevice";
 import { sortChatsByLastMessage } from "@/utils/sortChatsByLastMessage";
+import { SocketManager } from "@/utils/SocketManager";
 
 
 export default function Chat() {
@@ -23,7 +24,7 @@ export default function Chat() {
 
     useEffect(() => {
 
-        if (!socket) {
+        /*if (!socket) {
             const socketResponse: Socket = io(`${getApiUrl()}`,
                 {
                     withCredentials: true
@@ -31,6 +32,12 @@ export default function Chat() {
             setSocket(socketResponse);
             setSocketEvents(socketResponse);
             socketResponse.emit('get chats', {});
+        }*/
+        if(!socket) {
+            const socketResponse: Socket | null = SocketManager.getSocket();
+            setSocket(socketResponse)
+            setSocketEvents(socketResponse);
+            if (socketResponse) socketResponse.emit('get chats', {});
         }
     }, []);
 
@@ -39,7 +46,8 @@ export default function Chat() {
     }, [selectedContact]);
 
 
-    const setSocketEvents = (socketResponse: Socket) => {
+    const setSocketEvents = (socketResponse: Socket | null) => {
+        if(!socketResponse) return
         socketResponse.on('connect', () => {
             console.log('Conectado al servidor de WebSocket');
         });

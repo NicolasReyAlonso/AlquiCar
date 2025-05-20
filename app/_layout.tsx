@@ -18,6 +18,10 @@ import Slider from '@react-native-community/slider';
 import { isUserUploaded } from '@/utils/isUserUploaded';
 import { useFocusEffect } from '@react-navigation/native';
 import { useNotifications } from '@/utils/notificaciones';
+import { use } from 'i18next';
+import { getApiUrl } from '@/utils/getApiUrl';
+import { Socket } from 'socket.io-client';
+import { SocketManager} from '@/utils/SocketManager';
 
 interface LayoutProps {
   children: ReactNode;
@@ -55,20 +59,31 @@ export default function Layout({ children }: LayoutProps) {
   });
   const [priceRange, setPriceRange] = useState([0, 500]);
   const [userUploaded, setUserUploaded] = useState(false);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useFocusEffect(() => {
     const init = async () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       setAppIsReady(true);
-      fetchUserUpload();
+      if(!socket) fetchUserUpload();
     };
     init();
   });
 
+  /*useEffect(() => {
+    fetchUserUpload();
+  },[])*/
+
   const fetchUserUpload = async () => {
     const userIsUploaded = await isUserUploaded()
-    setUserUploaded(userIsUploaded)
-    console.log(userIsUploaded);
+    if(!userIsUploaded) {
+      setUserUploaded(false)
+      return;
+    };
+
+    setUserUploaded(true);
+    const socket = SocketManager.getSocket();
+    setSocket(socket);
   }
 
   const handleLogin = async () => {

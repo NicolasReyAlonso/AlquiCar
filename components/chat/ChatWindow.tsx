@@ -31,8 +31,8 @@ export default function ChatWindow({ chat, socket, updateContacts, t, isMobile, 
     const scrollViewRef = useRef<ScrollView>(null);
 
     const getUser = async () => {
-        const user = await AsyncStorage.getItem('user');
-        setUser(user ? JSON.parse(user) : null);
+        const userFromStorage = await AsyncStorage.getItem('user');
+        if(userFromStorage) setUser(JSON.parse(userFromStorage)[0])
     }
 
     useEffect(() => {

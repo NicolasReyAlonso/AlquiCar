@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { getApiUrl } from '@/utils/getApiUrl';
+import { SocketManager } from '@/utils/SocketManager';
 
 export default function AccountPage() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -104,6 +105,8 @@ export default function AccountPage() {
     if (id == userId) {
       await AsyncStorage.setItem("isLoggedIn", "false");
       await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('token');
+      SocketManager.disconnectSocket()
       navigation.navigate("index");
 
       navigation.dispatch(

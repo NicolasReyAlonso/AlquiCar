@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { useFonts } from 'expo-font';
 import { getApiUrl } from '@/utils/getApiUrl';
+import { SocketManager } from '@/utils/SocketManager';
 
 const { width } = Dimensions.get('window');
 
@@ -64,6 +65,7 @@ export default function LoginScreen() {
         return;
       }
       console.log("token: ", data.token)
+      SocketManager.getSocket();
       await AsyncStorage.setItem("token", data.token);
       await AsyncStorage.setItem("isLoggedIn", "true");
       await AsyncStorage.setItem("user", JSON.stringify(data.user));

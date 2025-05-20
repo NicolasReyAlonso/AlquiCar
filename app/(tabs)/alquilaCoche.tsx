@@ -198,7 +198,7 @@ export default function AlquilarCoche() {
             : `${getApiUrl()}/media/upload/${userId}/${id}`;
           console.log("ESTE ES EL ENDPOINT",endpoint);
           const method = isEdit ? 'PATCH' : 'POST';
-
+          console.log("ESTE ES EL METODO", method);
           const uploadRes = await fetch(endpoint, {
             method,
             credentials: "include",
@@ -244,6 +244,7 @@ export default function AlquilarCoche() {
     
     
         const savedVehicle = await res.json();
+        console.log("vehiculo guardado", savedVehicle.vehicle[0].id);
     
 
     
@@ -253,7 +254,7 @@ export default function AlquilarCoche() {
           await handleImageUpload(
             vehicleImageUri,
             vehicleFileName ?? `img_${Date.now()}.jpg`,
-            vehicleId ?? savedVehicle.id, 
+            vehicleId ?? savedVehicle.vehicle[0].id, 
             !!vehicleId
           );
     }

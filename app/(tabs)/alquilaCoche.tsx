@@ -95,9 +95,6 @@ export default function AlquilarCoche() {
       setPrice(String(vehicleData.daily_price));
       setDeposit(String(vehicleData.deposit || ''));
       setVehicleImageUri(vehicleData.imageUrl || null);
-      console.log("Parámetros de la ruta:", JSON.stringify(route.params, null, 2));
-
-console.log("Datos del vehículo recibidos:", JSON.stringify(vehicleData, null, 2));
     }
   }, [vehicleData]);
 
@@ -173,7 +170,7 @@ console.log("Datos del vehículo recibidos:", JSON.stringify(vehicleData, null, 
         return;
       }
       
-      const handleImageUpload = async (imageUri: string, imageName: string, id: string) => {
+      const handleImageUpload = async (imageUri: string, imageName: string, id: string, isEdit: boolean) => {
         const formData = new FormData();
       
         if (Platform.OS === "web") {
@@ -195,11 +192,19 @@ console.log("Datos del vehículo recibidos:", JSON.stringify(vehicleData, null, 
         try {
           const userId = await AsyncStorage.getItem("userId");
           console.log("vehicle id, vehicleId");
-          const uploadRes = await fetch(`${getApiUrl()}/media/upload/${userId}/${id}`, {
-            method: "POST",
+          const endpoint = isEdit
+            ? `${getApiUrl()}/media/modify/${userId}/${id}`
+            : `${getApiUrl()}/media/upload/${userId}/${id}`;
+          console.log("ESTE ES EL ENDPOINT",endpoint);
+          const method = isEdit ? 'PATCH' : 'POST';
+
+          const uploadRes = await fetch(endpoint, {
+            method,
+            credentials: "include",
+            headers: { 'Content-Type': 'application/json' },
             body: formData,
           });
-      
+            
           if (!uploadRes.ok) throw new Error("Error al subir imagen");
       
           const uploadData = await uploadRes.json();
@@ -244,7 +249,14 @@ console.log("Datos del vehículo recibidos:", JSON.stringify(vehicleData, null, 
     
         alert(vehicleId ? 'Vehículo actualizado' : 'Vehículo publicado');
 
-        await handleImageUpload(String(vehicleImageUri), String(vehicleFileName), savedVehicle.vehicle[0].id);
+        if (vehicleImageUri) {
+          await handleImageUpload(
+            vehicleImageUri,
+            vehicleFileName ?? `img_${Date.now()}.jpg`,
+            vehicleId ?? savedVehicle.id, 
+            !!vehicleId
+          );
+    }
       
       setYear('');
       setAddress('');

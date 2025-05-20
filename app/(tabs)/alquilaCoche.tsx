@@ -193,17 +193,37 @@ export default function AlquilarCoche() {
           const userId = await AsyncStorage.getItem("userId");
           console.log("vehicle id, vehicleId");
           console.log(id, userId);
-          const endpoint = isEdit
-            ? `${getApiUrl()}/media/modify/${userId}/${id}`
-            : `${getApiUrl()}/media/upload/${userId}/${id}`;
-          console.log("ESTE ES EL ENDPOINT",endpoint);
-          const method = isEdit ? 'PATCH' : 'POST';
-          console.log("ESTE ES EL METODO", method);
-          const uploadRes = await fetch(endpoint, {
+
+          const vImgRes = await fetch(`${getApiUrl()}/media/vehicles/${userId}/${id}`);
+          console.log("Imagennnnn ",vImgRes.ok);
+          if (!vImgRes.ok){
+            const endpoint = `${getApiUrl()}/media/upload/${userId}/${id}`;
+            const method = 'POST';
+
+            console.log("ESTE ES EL ENDPOINT",endpoint);
+            console.log("ESTE ES EL METODO", method);
+            const uploadRes = await fetch(endpoint, {
             method,
             credentials: "include",
             body: formData,
           });
+          
+          }
+          else{
+            const endpoint = isEdit
+            ? `${getApiUrl()}/media/modify/${userId}/${id}`
+            : `${getApiUrl()}/media/upload/${userId}/${id}`;
+
+            const method = isEdit ? 'PATCH' : 'POST';
+
+            console.log("ESTE ES EL ENDPOINT",endpoint);
+            console.log("ESTE ES EL METODO", method);
+            const uploadRes = await fetch(endpoint, {
+            method,
+            credentials: "include",
+            body: formData,
+          });
+          }
             
           if (!uploadRes.ok) throw new Error("Error al subir imagen");
       

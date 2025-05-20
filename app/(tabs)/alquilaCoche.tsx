@@ -95,6 +95,9 @@ export default function AlquilarCoche() {
       setPrice(String(vehicleData.daily_price));
       setDeposit(String(vehicleData.deposit || ''));
       setVehicleImageUri(vehicleData.imageUrl || null);
+      console.log("Parámetros de la ruta:", JSON.stringify(route.params, null, 2));
+
+console.log("Datos del vehículo recibidos:", JSON.stringify(vehicleData, null, 2));
     }
   }, [vehicleData]);
 

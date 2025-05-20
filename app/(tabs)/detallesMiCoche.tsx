@@ -95,6 +95,29 @@ export default function DetallesMiCoche() {
     );
   }
 
+
+  if (!vehicle) {
+    return (
+      <View style={styles.noVehicleContainer}>
+        <Text style={styles.noVehicleText}>No se encuentran datos del vehículo.</Text>
+      </View>
+    );
+  }
+
+    const handleDeleteVehicle = async () => {
+    try {
+      const response = await fetch(`${getApiUrl()}/vehicles/${id}`, { method: "DELETE" });
+
+      if (response.ok) {
+        alert("Vehículo eliminado correctamente");
+        router.push("/(tabs)/misCochesPublicados");
+      } else {
+        alert("Error al eliminar el vehículo");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el vehículo:", error);
+    }
+  };
   return (
     <ScrollView style={styles.container}>
       <Image source={{ uri: vehicle.imageUrl }} style={styles.mainImage} />
@@ -110,12 +133,16 @@ export default function DetallesMiCoche() {
         <Text style={styles.detailText}>Puertas: {vehicle.num_doors}</Text>
         <Text style={styles.detailText}>Publicado el: {new Date(vehicle.registration_date).toLocaleDateString("es-ES")}</Text>
 
+
       </View>
 
-
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteVehicle}>
+            <Text style={styles.buttonText}>Eliminar</Text>
+            </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => router.back()}>
         <Text style={styles.buttonText}>Volver</Text>
       </TouchableOpacity>
+      
     </ScrollView>
   );
 }
@@ -132,6 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
   },
+
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -165,18 +193,32 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 5,
   },
-  button: {
-    backgroundColor: "#3B6ED5",
-    padding: 15,
+    deleteButton: {
+    backgroundColor: "#d9534f",
+    width: 100, 
+    paddingVertical: 8, 
+    paddingHorizontal: 10,
     borderRadius: 8,
     alignItems: "center",
-    marginVertical: 20,
-  },
-  buttonText: {
+    alignSelf: "center", 
+    marginVertical: 5,
+    },
+    button: {
+    backgroundColor: "#3B6ED5",
+    width: 100, 
+    paddingVertical: 8, 
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    alignItems: "center",
+    alignSelf: "center", 
+    marginVertical: 5,
+    },
+    buttonText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 16,
-  },
+    fontSize: 12, 
+    },
+
   noVehicleContainer: {
     flex: 1,
     justifyContent: "center",

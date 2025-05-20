@@ -192,6 +192,7 @@ export default function AlquilarCoche() {
         try {
           const userId = await AsyncStorage.getItem("userId");
           console.log("vehicle id, vehicleId");
+          console.log(id, userId);
           const endpoint = isEdit
             ? `${getApiUrl()}/media/modify/${userId}/${id}`
             : `${getApiUrl()}/media/upload/${userId}/${id}`;
@@ -201,7 +202,6 @@ export default function AlquilarCoche() {
           const uploadRes = await fetch(endpoint, {
             method,
             credentials: "include",
-            headers: { 'Content-Type': 'application/json' },
             body: formData,
           });
             

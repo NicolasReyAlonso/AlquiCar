@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
@@ -12,6 +12,7 @@ export default function DetallesMiCoche() {
   const [direccion, setDireccion] = useState("Dirección desconocida");
   const [userId, setUserId] = useState(null);
   const router = useRouter();
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -120,7 +121,9 @@ export default function DetallesMiCoche() {
   };
   return (
     <ScrollView style={styles.container}>
-      <Image source={{ uri: vehicle.imageUrl }} style={styles.mainImage} />
+    <TouchableOpacity onPress={() => setIsImageModalVisible(true)}>
+        <Image source={{ uri: vehicle.imageUrl }} style={styles.mainImage} />
+    </TouchableOpacity>
       <Text style={styles.title}>{vehicle.brand} {vehicle.model}</Text>
       <Text style={styles.subtitle}>{vehicle.year}</Text>
 
@@ -136,12 +139,39 @@ export default function DetallesMiCoche() {
 
       </View>
 
-            <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteVehicle}>
-            <Text style={styles.buttonText}>Eliminar</Text>
+    <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteVehicle}>
+        <Text style={styles.buttonText}>Eliminar</Text>
+    </TouchableOpacity>
+    <TouchableOpacity 
+    style={styles.button} 
+        onPress={() => router.push("/(tabs)/misCochesPublicados")}
+    >
+    <Text style={styles.buttonText}>Volver</Text>
+    </TouchableOpacity>
+
+      {isImageModalVisible && (
+        <Modal
+          transparent={true}
+          animationType="fade" 
+          visible={isImageModalVisible}
+          onRequestClose={() => setIsImageModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <TouchableOpacity 
+              style={styles.closeButton}
+              onPress={() => setIsImageModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>✖</Text>
             </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-        <Text style={styles.buttonText}>Volver</Text>
-      </TouchableOpacity>
+            
+            <Image 
+              source={{ uri: vehicle.imageUrl }} 
+              style={styles.fullSizeImage}
+              resizeMode="contain"
+            />
+          </View>
+        </Modal>
+      )}
       
     </ScrollView>
   );
@@ -172,6 +202,33 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
+    modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    },
+    fullSizeImage: {
+    width: '100%',
+    height: '80%',
+    },
+    closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+    },
+    closeButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    },
   detailsContainer: {
     padding: 15,
     backgroundColor: "#fff",

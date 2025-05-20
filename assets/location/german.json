@@ -269,5 +269,10 @@
   },
   "Ofertas": {
     "radio": "Fahrzeuge im Umkreis von 30 km anzeigen"
+  },
+
+  "MisCochesPublicados": {
+    "Cargando": "Fahrzeuge werden geladen...",
+    "NoPublicado": "Du hast noch keine Fahrzeuge veröffentlicht."
   }
 }

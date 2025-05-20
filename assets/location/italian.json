@@ -288,5 +288,10 @@
 
   "Ofertas":{
     "radio": "Mostrando veicoli in un raggio di 30 km"
+  },
+
+  "MisCochesPublicados": {
+    "Cargando": "Caricamento veicoli...",
+    "NoPublicado": "Non hai ancora pubblicato nessun veicolo."
   }
 }

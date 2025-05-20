@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Para obtener el userId del usuario actual
@@ -14,6 +14,7 @@ export default function VehicleDetailsPage() {
   const [userId, setUserId] = useState(null); // Estado para el userId del usuario actual
   const router = useRouter();
   const { t } = useTranslation();
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -121,7 +122,9 @@ export default function VehicleDetailsPage() {
     contentContainerStyle={styles.scrollContent} 
     >
     
-      <Image source={{ uri: vehicle.imageUrl }} style={styles.mainImage} />
+      <TouchableOpacity onPress={() => setIsImageModalVisible(true)}>
+        <Image source={{ uri: vehicle.imageUrl }} style={styles.mainImage} />
+      </TouchableOpacity>
       <Text style={styles.title}>{vehicle.brand} {vehicle.model}</Text>
       <Text style={styles.subtitle}>{vehicle.year}</Text>
 
@@ -187,8 +190,35 @@ export default function VehicleDetailsPage() {
       <Text style={styles.reserveButtonText}>{t("VehicleCard.buttons.reservation")}</Text>
     </TouchableOpacity>
   </View>
+)}  
+{isImageModalVisible && (
+  <Modal
+    transparent={true}
+    animationType="fade" // Agrega una animación para que se vea más fluido
+    visible={isImageModalVisible}
+    onRequestClose={() => setIsImageModalVisible(false)}
+  >
+    <View style={styles.modalContainer}>
+      <TouchableOpacity 
+        style={styles.closeButton}
+        onPress={() => setIsImageModalVisible(false)}
+      >
+        <Text style={styles.closeButtonText}>✖</Text>
+      </TouchableOpacity>
+      
+      <Image 
+        source={{ uri: vehicle.imageUrl }} 
+        style={styles.fullSizeImage}
+        resizeMode="contain"
+      />
+    </View>
+  </Modal>
 )}
+
+
+
     </ScrollView>
+    
   );
 }
 
@@ -308,4 +338,31 @@ const styles = StyleSheet.create({
     color: "#888",
     textAlign: "center",
   },
+  modalContainer: {
+  flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.9)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+fullSizeImage: {
+  width: '100%',
+  height: '80%',
+},
+closeButton: {
+  position: 'absolute',
+  top: 40,
+  right: 20,
+  backgroundColor: 'rgba(255,255,255,0.3)',
+  borderRadius: 20,
+  width: 40,
+  height: 40,
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1,
+},
+closeButtonText: {
+  color: 'white',
+  fontSize: 20,
+  fontWeight: 'bold',
+},
 });

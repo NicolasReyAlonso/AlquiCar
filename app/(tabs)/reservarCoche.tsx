@@ -93,7 +93,6 @@ const handleConfirmReservation = async () => {
   }
 
   try {
-    // 🔹 1. Preparar el pago antes de proceder con la reserva
     const pagoResponse = await fetch(`${getApiUrl()}/pay`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -111,14 +110,12 @@ const handleConfirmReservation = async () => {
     const pagoData = await pagoResponse.json();
     const checkoutUrl = pagoData.url;
 
-    // 🔹 2. Abrir el checkout de Stripe
     if (Platform.OS === "web") {
       window.location.href = checkoutUrl;
     } else {
       Linking.openURL(checkoutUrl);
     }
 
-    // 🔹 3. Crear la reserva después del pago exitoso
     const nuevaReserva = {
       vehicle_id: Number(params.vehicleId),
       customer_id: userId,

@@ -17,7 +17,7 @@ import { Pressable } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { isUserUploaded } from '@/utils/isUserUploaded';
 import { useFocusEffect } from '@react-navigation/native';
-import { useNotifications } from '@/utils/notificaciones';
+import NotificationsList from '@/components/NotificationsList';
 import { use } from 'i18next';
 import { getApiUrl } from '@/utils/getApiUrl';
 import { Socket } from 'socket.io-client';
@@ -48,7 +48,6 @@ export default function Layout({ children }: LayoutProps) {
   const [appIsReady, setAppIsReady] = useState(false);
   const { t } = useTranslation();
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-  const { notifications, unreadCount } = useNotifications();
   const [filters, setFilters] = useState({
     brand: "",
     type: "",
@@ -164,7 +163,6 @@ export default function Layout({ children }: LayoutProps) {
                     onPress={() => setIsNotificationsOpen(!isNotificationsOpen)}
                   >
                     <Ionicons name="notifications-outline" size={26} color="white" />
-                    {unreadCount > 0 && (
                       <View style={{
                         position: 'absolute',
                         top: 3,
@@ -173,9 +171,8 @@ export default function Layout({ children }: LayoutProps) {
                         borderRadius: 10,
                         paddingHorizontal: 5,
                       }}>
-                        <Text style={{ color: 'white', fontSize: 10 }}>{unreadCount}</Text>
+                        <Text style={{ color: 'white', fontSize: 10 }}>{3}</Text>
                       </View>
-                    )}
                   </TouchableOpacity>
                 </View>
               )}
@@ -193,27 +190,8 @@ export default function Layout({ children }: LayoutProps) {
           </View>
         </SafeAreaView>
 
-        {isNotificationsOpen && (
-          <>
-            <Pressable
-              style={styles.overlay}
-              onPress={() => setIsNotificationsOpen(false)}
-            />
-            <View style={styles.notificationsMenu}>
-              <ScrollView>
-                <Text style={styles.notificationTitle}>{t('layout.notificaciones')}</Text>
-                {notifications.map((notif: any, index: number) => (
-                  <View key={index} style={styles.notificationItem}>
-                    <Text style={styles.notificationText}>
-                      {notif.icon || '🔔'} {notif.message}
-                    </Text>
-                  </View>
-                ))}
-              </ScrollView>
-
-            </View>
-          </>
-        )}
+        {isNotificationsOpen && <NotificationsList setIsNotificationsOpen ={setIsNotificationsOpen}/> 
+        }
 
         {isFilterMenuOpen && (
           <>

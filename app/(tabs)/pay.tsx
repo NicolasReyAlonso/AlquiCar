@@ -10,7 +10,7 @@ const StripeCheckoutTest = () => {
   const handleCheckout = async () => {
   try {
     const response = await axios.post(`${getApiUrl()}/pay`, {
-      reservationid: '3'
+      reservationid: '1'
     });
 
     const checkoutUrl = response.data.url;

@@ -192,17 +192,29 @@ const showAlert = (title: string, message: string) => {
     }
 
     try {
-      const uploadRes = await fetch(`${getApiUrl()}/media/upload/${userId}`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(`${getApiUrl()}/media/profile/${userId}`);
+      console.log("Imagennnnn ",response.ok);
+      let uploadRes;
+      if (!response.ok){
+        uploadRes = await fetch(`${getApiUrl()}/media/upload/${userId}`, {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+      }
+      else{
+        uploadRes = await fetch(`${getApiUrl()}/media/modify/${userId}`, {
+          method: "PATCH",
+          body: formData,
+          credentials: "include",
+        });
+      }
 
       if (!uploadRes.ok) throw new Error("Error al subir imagen");
 
       const uploadData = await uploadRes.json();
       console.log("Imagen subida:", uploadData);
 
-      // Actualizar imagen de perfil
       const newImgRes = await fetch(`${getApiUrl()}/media/profile/${userId}`);
       const newImgData = await newImgRes.json();
 

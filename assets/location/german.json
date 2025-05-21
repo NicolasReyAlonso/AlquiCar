@@ -152,7 +152,8 @@
     "todos": "Alle",
     "rango": "Preisspanne",
     "borrar": "Löschen",
-    "notificaciones": "Benachrichtigungen"
+    "notificaciones": "Benachrichtigungen",
+    "sinNotificaciones": "Keine Benachrichtigungen"
   },
   "Incidencias": {
     "titulo": "Titel der Störung",

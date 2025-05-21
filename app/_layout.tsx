@@ -22,6 +22,8 @@ import { use } from 'i18next';
 import { getApiUrl } from '@/utils/getApiUrl';
 import { Socket } from 'socket.io-client';
 import { SocketManager} from '@/utils/SocketManager';
+import { setSocketNotificationsEvents } from '@/utils/socketNotifications';
+import { Notification } from '@/interfaces/Notification';
 
 interface LayoutProps {
   children: ReactNode;
@@ -59,19 +61,26 @@ export default function Layout({ children }: LayoutProps) {
   const [priceRange, setPriceRange] = useState([0, 500]);
   const [userUploaded, setUserUploaded] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadNotifications, setUnreadNotifications] = useState<number>(0);
+
+  
 
   useFocusEffect(() => {
     const init = async () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       setAppIsReady(true);
-      if(!socket) fetchUserUpload();
     };
     init();
   });
 
-  /*useEffect(() => {
-    fetchUserUpload();
-  },[])*/
+  useEffect(() => {
+    if(!socket){
+      fetchUserUpload();
+    }
+  }, []);
+
+
 
   const fetchUserUpload = async () => {
     const userIsUploaded = await isUserUploaded()
@@ -82,7 +91,10 @@ export default function Layout({ children }: LayoutProps) {
 
     setUserUploaded(true);
     const socket = SocketManager.getSocket();
+    if (!socket) return;
     setSocket(socket);
+    setSocketNotificationsEvents({socket, setNotifications, setUnreadNotifications})
+    socket.emit('get notifications', {});
   }
 
   const handleLogin = async () => {
@@ -160,7 +172,10 @@ export default function Layout({ children }: LayoutProps) {
                 <View style={{ position: 'relative' }}>
                   <TouchableOpacity
                     style={styles.touchableButton}
-                    onPress={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                    onPress={() => {
+                      setIsNotificationsOpen(!isNotificationsOpen);
+                      socket?.emit('read notification', {notifications});
+                    }}
                   >
                     <Ionicons name="notifications-outline" size={26} color="white" />
                       <View style={{
@@ -171,7 +186,7 @@ export default function Layout({ children }: LayoutProps) {
                         borderRadius: 10,
                         paddingHorizontal: 5,
                       }}>
-                        <Text style={{ color: 'white', fontSize: 10 }}>{3}</Text>
+                        {(unreadNotifications > 0) && <Text style={{ color: 'white', fontSize: 10 }}>{unreadNotifications.toString()}</Text>}
                       </View>
                   </TouchableOpacity>
                 </View>
@@ -190,7 +205,7 @@ export default function Layout({ children }: LayoutProps) {
           </View>
         </SafeAreaView>
 
-        {isNotificationsOpen && <NotificationsList setIsNotificationsOpen ={setIsNotificationsOpen}/> 
+        {isNotificationsOpen && <NotificationsList setIsNotificationsOpen ={setIsNotificationsOpen} notifications={notifications} setUnreadNotifications={setUnreadNotifications} setNotifications={setNotifications}/> 
         }
 
         {isFilterMenuOpen && (

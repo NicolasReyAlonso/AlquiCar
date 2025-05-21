@@ -9,9 +9,8 @@ import { View, Text, TextInput, ScrollView } from 'react-native';
 import chatWindowStyles from '../../css/ChatWindow.styles';
 import { TouchableOpacity, NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { TFunction, use } from 'i18next';
-import { useFocusEffect } from 'expo-router';
 import { FontAwesome5 } from '@expo/vector-icons';
-
+import { formatDate } from '@/utils/formatDate';
 
 interface ChatWindowProps {
     chat: ChatInterface,
@@ -68,16 +67,6 @@ export default function ChatWindow({ chat, socket, updateContacts, t, isMobile, 
 
     }
 
-    const formatDate = (dateString: string) => {
-        if (!dateString) return '';
-        return new Date(dateString).toLocaleTimeString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        })
-    }
 
 
     return (

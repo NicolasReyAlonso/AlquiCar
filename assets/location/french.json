@@ -152,7 +152,8 @@
     "todos": "Tous",
     "rango": "Fourchette de prix",
     "borrar": "Effacer",
-    "notificaciones": "Notifications"
+    "notificaciones": "Notifications",
+    "sinNotificaciones": "Aucune notification"
   },
   "Incidencias": {
     "titulo": "Titre de l'incident",

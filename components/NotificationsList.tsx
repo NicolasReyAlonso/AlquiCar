@@ -1,67 +1,60 @@
-import { useEffect, useState } from "react";
 import React from "react";
-import { Socket } from "socket.io-client";
-import { SocketManager } from "@/utils/SocketManager";
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { NotificationsListStyles } from "@/css/NotificationsList.styles";
-import i18n from '../assets/location/i18n';
 import { useTranslation } from 'react-i18next';
+import { Notification } from "@/interfaces/Notification";
+import { formatDate } from "@/utils/formatDate";
 
 interface NotificationsListProps {
-    setIsNotificationsOpen: (isNotificationsOpen: boolean) => void
+    setIsNotificationsOpen: (isNotificationsOpen: boolean) => void,
+    notifications: Notification[]
+    setUnreadNotifications: (unreadNotifications: number) => void
+    setNotifications: React.Dispatch<React.SetStateAction<Notification[]>>
 }
 
-export default function NotificationsList({setIsNotificationsOpen}: NotificationsListProps) {
-    interface Notification {
-        id: string;
-        message: string;
-    }
+export default function NotificationsList({ setIsNotificationsOpen, notifications, setUnreadNotifications, setNotifications }: NotificationsListProps) {
 
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [socket, setSocket] = useState<Socket | null>(null);
-    const [unreadCount, setUnreadCount] = useState(0);
+
     const { t } = useTranslation();
 
-    useEffect(() => {
-        if (!socket) {
-            const socketResponse: Socket | null = SocketManager.getSocket();
-            if (!socketResponse) return
-            setSocket(socketResponse);
-            setSocketEvents(socketResponse);
-            socketResponse.emit('get notifications', {});
-        }
-
-    }, [])
-
-    const setSocketEvents = (socketResponse: Socket) => {
-        socketResponse.on('new notification', (notification) => {
-            console.log('new notification: ', notification);
-            setNotifications(prev => [...notification, ...prev]);
-            setUnreadCount(prevCount => prevCount + 1);
-            console.log("Hola", notifications);
-        });
-        socketResponse.on('get notifications', async (notifications) => {
-            console.log('get notifications', notifications);
-        });
-
-    }
 
     return (
         <>
             <Pressable
                 style={NotificationsListStyles.overlay}
-                onPress={() => setIsNotificationsOpen(false)}
+                onPress={() => {
+                    setIsNotificationsOpen(false)
+                    setNotifications(prev => {
+                        return prev.map(notification => {
+                          if (!notification.seen) {
+                            return { ...notification, seen: true };
+                          }
+                          return notification;
+                        })})
+                    setUnreadNotifications(0);
+                }}
             />
             <View style={NotificationsListStyles.notificationsMenu}>
-                <ScrollView>
+                <ScrollView style={{ flex: 1, backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
                     <Text style={NotificationsListStyles.notificationTitle}>{t('layout.notificaciones')}</Text>
-                    {notifications.map((notif: any, index: number) => (
+                    {notifications.length > 0 ? notifications.map((notif: Notification, index: number) => (
                         <View key={index} style={NotificationsListStyles.notificationItem}>
-                            <Text style={NotificationsListStyles.notificationText}>
-                                {notif.icon || '🔔'} {notif.message}
+                            {!notif.seen && (
+                                <View
+                                    style={{
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: 4,
+                                        backgroundColor: 'blue',
+                                        marginRight: 8,
+                                    }}
+                                />
+                            )}
+                            <Text style={{ color: 'black' }}>
+                                {notif.content} | {formatDate(notif.created_at)}
                             </Text>
                         </View>
-                    ))}
+                    )): <Text style={{ color: 'black', textAlign: 'center' }}>{t('layout.sinNotificaciones')}</Text>}
                 </ScrollView>
 
             </View>

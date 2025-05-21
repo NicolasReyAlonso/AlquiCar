@@ -155,7 +155,8 @@
     "todos": "All",
     "rango": "Price Range",
     "borrar": "Clear",
-    "notificaciones": "Notifications"
+    "notificaciones": "Notifications",
+    "sinNotificaciones": "No notifications"
   },
   "Incidencias": {
     "titulo": "Issue Title",

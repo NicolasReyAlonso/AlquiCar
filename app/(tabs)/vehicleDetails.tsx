@@ -19,6 +19,9 @@ export default function VehicleDetails() {
   useEffect(() => {
 
     const getCityFromCoords = async (lat, lon) => {
+      if(!city){
+        return
+      }
       try {
         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
         const data = await res.json();

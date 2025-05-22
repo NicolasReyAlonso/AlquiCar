@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import theme from "@/components/Theme";
 import { useTranslation } from 'react-i18next';
 import { getApiUrl, getAppUrl } from '@/utils/getApiUrl';
+import axios from 'axios';
 
 export default function ConfirmacionReserva() {
   const params = useLocalSearchParams();
@@ -103,29 +104,6 @@ const handleConfirmReservation = async () => {
   }
 
   try {
-    const pagoResponse = await fetch(`${getApiUrl()}/pay`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        reservationid: params.vehicleId,
-        apiurl: `${getAppUrl()}`
-      }),
-    });
-
-    if (!pagoResponse.ok) {
-      const errorData = await pagoResponse.json();
-      throw new Error(errorData.message || "Error al iniciar el pago.");
-    }
-
-    const pagoData = await pagoResponse.json();
-    const checkoutUrl = pagoData.url;
-
-    if (Platform.OS === "web") {
-      window.location.href = checkoutUrl;
-    } else {
-      Linking.openURL(checkoutUrl);
-    }
-
     const nuevaReserva = {
       vehicle_id: Number(params.vehicleId),
       customer_id: userId,
@@ -133,18 +111,38 @@ const handleConfirmReservation = async () => {
       end_date: returnDate.toISOString(),
       total_price: precioTotal,
     };
-
     const reservaResponse = await fetch(`${getApiUrl()}/reservations`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevaReserva),
     });
-
+    const reservaResponseData = await reservaResponse.json();
+    console.log("Reserva Response:", reservaResponseData);
     if (!reservaResponse.ok) {
       throw new Error("Error al confirmar la reserva después del pago.");
     }
 
-    alert("Reserva confirmada y pago completado con éxito.");
+   
+    const pagoResponse = await axios.post(`${getApiUrl()}/pay`, {
+      reservationid: reservaResponseData[0].id,
+      apiurl: `${getAppUrl()}`
+    });
+
+    if (!pagoResponse.status) {
+      const errorData = await pagoResponse.data;
+      throw new Error(errorData.message || "Error al iniciar el pago.");
+    }
+     const checkoutUrl = pagoResponse.data.url;
+
+    if (Platform.OS === "web") {
+      window.location.href = checkoutUrl;
+    } else {
+      Linking.openURL(checkoutUrl);
+    }
+
+    
+
+    
   } catch (error) {
     console.error("Error en el proceso de reserva:", error);
     alert(error.message || "Ocurrió un error durante la reserva.");

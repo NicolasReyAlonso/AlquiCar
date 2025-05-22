@@ -4,6 +4,7 @@ import { NotificationsListStyles } from "@/css/NotificationsList.styles";
 import { useTranslation } from 'react-i18next';
 import { Notification } from "@/interfaces/Notification";
 import { formatDate } from "@/utils/formatDate";
+import { useRouter } from "expo-router";
 
 interface NotificationsListProps {
     setIsNotificationsOpen: (isNotificationsOpen: boolean) => void,
@@ -16,6 +17,29 @@ export default function NotificationsList({ setIsNotificationsOpen, notification
 
 
     const { t } = useTranslation();
+    const router = useRouter();
+
+    const handleNotificationPress = (type: string) => {
+        setIsNotificationsOpen(false);
+        setNotifications(prev =>
+            prev.map(notification => ({ ...notification, seen: true }))
+        );
+        setUnreadNotifications(0);
+
+        switch (type) {
+            case 'Incidence':
+                router.push('/misIncidencias');
+                break;
+            case 'Reservation':
+                router.push('/misReservas');
+                break;
+            case 'Message':
+                router.push('/chat');
+                break;
+            default:
+                break;
+        }
+    };
 
 
     return (
@@ -38,7 +62,11 @@ export default function NotificationsList({ setIsNotificationsOpen, notification
                 <ScrollView style={{ flex: 1, backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
                     <Text style={NotificationsListStyles.notificationTitle}>{t('layout.notificaciones')}</Text>
                     {notifications.length > 0 ? notifications.map((notif: Notification, index: number) => (
-                        <View key={index} style={NotificationsListStyles.notificationItem}>
+                        <Pressable
+                            key={index}
+                            style={NotificationsListStyles.notificationItem}
+                            onPress={() => handleNotificationPress(notif.type)}
+                        >
                             {!notif.seen && (
                                 <View
                                     style={{
@@ -53,7 +81,7 @@ export default function NotificationsList({ setIsNotificationsOpen, notification
                             <Text style={{ color: 'black' }}>
                                 {notif.content} | {formatDate(notif.created_at)}
                             </Text>
-                        </View>
+                        </Pressable>
                     )): <Text style={{ color: 'black', textAlign: 'center' }}>{t('layout.sinNotificaciones')}</Text>}
                 </ScrollView>
 

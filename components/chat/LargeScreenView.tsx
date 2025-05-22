@@ -19,7 +19,6 @@ interface LargeScreenViewProps {
 
 
 export default function LargeScreenView({contacts, selectedContact, setSelectedChat, socket, updateContacts, t}: LargeScreenViewProps) {
-
     return (
         <View style={mainChatStyles.appContainer}>
             <ChatSidebar chats={contacts} setSelectedChat={setSelectedChat} t={t} isMobile={false}/>

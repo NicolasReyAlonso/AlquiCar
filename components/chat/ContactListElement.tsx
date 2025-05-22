@@ -17,7 +17,6 @@ interface ContactListElementProps {
 
 export default function ContactListElement({ contact, lastMessage, t, setSelectedChat, isMobile }: ContactListElementProps) {
     
-    
     return (
         <TouchableOpacity
               key={contact.contact_id}

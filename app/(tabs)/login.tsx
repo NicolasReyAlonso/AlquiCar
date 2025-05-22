@@ -53,7 +53,6 @@ export default function LoginScreen() {
       });
   
       const data = await response.json();
-      console.log(data)
     
 
       if (!response.ok) {
@@ -64,7 +63,6 @@ export default function LoginScreen() {
         alert('Email o contraseña incorrectos');
         return;
       }
-      console.log("token: ", data.token)
       SocketManager.getSocket();
       await AsyncStorage.setItem("token", data.token);
       await AsyncStorage.setItem("isLoggedIn", "true");

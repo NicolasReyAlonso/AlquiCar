@@ -24,15 +24,6 @@ export default function Chat() {
 
     useEffect(() => {
 
-        /*if (!socket) {
-            const socketResponse: Socket = io(`${getApiUrl()}`,
-                {
-                    withCredentials: true
-                });
-            setSocket(socketResponse);
-            setSocketEvents(socketResponse);
-            socketResponse.emit('get chats', {});
-        }*/
         if(!socket) {
             const socketResponse: Socket | null = SocketManager.getSocket();
             setSocket(socketResponse)

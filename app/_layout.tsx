@@ -39,6 +39,7 @@ async function checkLoginStatus() {
   return isLoggedIn === 'true';
 }
 
+
 export default function Layout({ children }: LayoutProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,8 +84,15 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     if (!socket) {
       fetchUserUpload();
+
     }
-  }, []);
+
+    if (SocketManager.socket) {
+      setSocket(SocketManager.socket);
+      setSocketNotificationsEvents({ socket: SocketManager.socket, setNotifications, setUnreadNotifications })      
+      SocketManager.socket.emit('get notifications', {});
+    }
+  }, [SocketManager.socket]);
 
 
 
@@ -92,15 +100,13 @@ export default function Layout({ children }: LayoutProps) {
     const userIsUploaded = await isUserUploaded()
     if (!userIsUploaded) {
       setUserUploaded(false)
-      return;
+      return false;
     };
 
     setUserUploaded(true);
-    const socket = SocketManager.getSocket();
-    if (!socket) return;
-    setSocket(socket);
-    setSocketNotificationsEvents({ socket, setNotifications, setUnreadNotifications })
-    socket.emit('get notifications', {});
+    const newSocket = SocketManager.getSocket();
+
+    return true;
   }
 
   const handleLogin = async () => {

@@ -323,11 +323,13 @@ const CustomPicker = ({
         style={styles.picker}
         dropdownIconColor="#4472C4"
       >
-        <Picker.Item 
-          label={placeholder} 
-          value="" 
-          style={!selectedValue ? styles.pickerPlaceholder : undefined}
-        />
+        {!selectedValue && (
+          <Picker.Item 
+            label={placeholder} 
+            value="" 
+            style={styles.pickerPlaceholder}
+          />
+        )}
         {items.map((item) => (
           <Picker.Item key={item} label={item} value={item} />
         ))}
@@ -398,8 +400,8 @@ const isFieldValid = (value: string | number) => {
         selectedValue={model}
         onValueChange={setModel}
         items={brand ? carModels[brand] : []}
-        placeholder={brand ? t('RentYourVehicle.card.selectModel') : t('RentYourVehicle.card.selectBrandFirst')}
-        invalid={submitAttempted && !brand}
+        placeholder={model ? t('RentYourVehicle.card.selectModel') : t('RentYourVehicle.card.selectBrandFirst')}
+        invalid={submitAttempted && !model}
       />
         
       <Text>
@@ -410,7 +412,7 @@ const isFieldValid = (value: string | number) => {
         onValueChange={setYear}
         items={years}
         placeholder={t('RentYourVehicle.card.selectYear')}
-        invalid={submitAttempted && !brand}
+        invalid={submitAttempted && !year}
       />
 
         <Text>
@@ -435,7 +437,7 @@ const isFieldValid = (value: string | number) => {
           onValueChange={setType}
           items={types}
           placeholder={t('RentYourVehicle.card.selectType')}
-        invalid={submitAttempted && !brand}
+        invalid={submitAttempted && !type}
         />
 
         <Text>
@@ -446,7 +448,7 @@ const isFieldValid = (value: string | number) => {
           onValueChange={setTransmission}
           items={transmissions}
           placeholder={t('RentYourVehicle.card.selectTransmission')}
-        invalid={submitAttempted && !brand}
+        invalid={submitAttempted && !transmission}
         />
 
 
@@ -458,7 +460,7 @@ const isFieldValid = (value: string | number) => {
           onValueChange={setFuelType}
           items={fuelTypes}
           placeholder={t('RentYourVehicle.card.selectFuelType')}
-        invalid={submitAttempted && !brand}
+        invalid={submitAttempted && !fuelType}
         />
 
         <Text>
@@ -469,7 +471,7 @@ const isFieldValid = (value: string | number) => {
           onValueChange={setCapacity}
           items={capacities}
           placeholder={t('RentYourVehicle.card.selectCapacity')}
-          invalid={submitAttempted && !brand}
+          invalid={submitAttempted && !capacity}
         />
 
       <Text>
@@ -480,7 +482,7 @@ const isFieldValid = (value: string | number) => {
         onValueChange={setNumDoors}
         items={numDoorsOptions}
         placeholder={t('RentYourVehicle.card.selectDoors')}
-          invalid={submitAttempted && !brand}
+          invalid={submitAttempted && !year}
       />
         
         <Text>
@@ -499,7 +501,7 @@ const isFieldValid = (value: string | number) => {
         />
 
         <Text>
-          {t('RentYourVehicle.card.deposit')} <Text style={{ color: 'red' }}>*</Text>
+          {t('RentYourVehicle.card.deposit')} 
         </Text>
         <TextInput style={styles.input} placeholder={t('RentYourVehicle.card.deposit')} value={deposit} onChangeText={setDeposit} keyboardType="numeric" placeholderTextColor="grey"/>
 

@@ -112,8 +112,7 @@ const checkAuthAndNavigate = async (destination: string) => {
       const allVehicles = await response.json();
       
       const filteredVehicles = allVehicles.filter(vehicle => {
-        const isCityMatch = city ? 
-          vehicle.city?.toLowerCase().includes(city.toLowerCase()) : true;
+        const isCityMatch = true;
         
         const isBrandMatch = brand ? 
           vehicle.brand?.toLowerCase() === brand.toLowerCase() : true;
@@ -132,11 +131,9 @@ const checkAuthAndNavigate = async (destination: string) => {
         pathname: '/vehicleDetails',
         params: { 
           vehicles: JSON.stringify(filteredVehicles),
-          searchParams: JSON.stringify({
-            pickupDate: pickupDate?.toISOString(),
-            city,
-            brand
-          })
+          city,
+          brand,
+          pickupDate: pickupDate?.toISOString()
         }
       });
       
@@ -169,6 +166,8 @@ const checkAuthAndNavigate = async (destination: string) => {
                 placeholder={t('Index.card.origin')}
                 placeholderTextColor="gray"
                 style={styles.input}
+                value={city}
+                onChangeText={(text) => setCity(text)}
               />
               <View style={styles.buttonGroup}>
                 <View style={styles.inputWithIcon}>

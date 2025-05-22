@@ -8,14 +8,38 @@ import { getApiUrl } from "@/utils/getApiUrl";
 
 
 export default function VehicleDetails() {
-  const { id, vehicles: vehiclesParam } = useLocalSearchParams();
+  const { id, vehicles: vehiclesParam, city } = useLocalSearchParams();
   const [vehicle, setVehicle] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const router = useRouter();
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
   
 
   useEffect(() => {
+
+    const getCityFromCoords = async (lat, lon) => {
+      if(!city){
+        return
+      }
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
+          {
+            headers: {
+              'User-Agent': 'MiAppDeAlquiler/1.0 (contacto@tuapp.com)',
+              'Accept-Language': 'es',
+            },
+          }
+        );
+        const data = await res.json();
+        return data.address.city || data.address.town || data.address.village || "";
+      } catch (err) {
+        console.warn("Error al obtener ciudad desde coordenadas", err);
+        return "";
+      }
+    };
+
     const fetchImageUrl = async (ownerId: string, vehicleId: string) => {
       try {
         const res = await fetch(`${getApiUrl()}/media/vehicles/${ownerId}/${vehicleId}`);
@@ -28,43 +52,43 @@ export default function VehicleDetails() {
     };
   
     const loadVehiclesWithImages = async (vehiclesData) => {
-      const enrichedVehicles = await Promise.all(
-        vehiclesData.map(async (v) => ({
-          ...v,
-          imageUrl: await fetchImageUrl(v.owner_id, v.id),
-        }))
-      );
-      setVehicles(enrichedVehicles);
+      setLoading(true);  
+      const filteredVehicles = [];
+
+      for (const v of vehiclesData) {
+        const vehicleCity = await getCityFromCoords(v.latitude, v.longitude);
+        console.log(`Vehículo ID ${v.id}: ciudad obtenida = ${vehicleCity}, ciudad buscada = ${city}`);
+        if (!city || vehicleCity.toLowerCase() === city.toLowerCase()) {
+          const imageUrl = await fetchImageUrl(v.owner_id, v.id);
+          filteredVehicles.push({ ...v, imageUrl });
+        }
+      }
+
+      setVehicles(filteredVehicles);
+      setLoading(false);
     };
   
-    const loadSingleVehicleWithImage = async (vehicleData) => {
-      const imageUrl = await fetchImageUrl(vehicleData.owner_id, vehicleData.id);
-      setVehicle({ ...vehicleData, imageUrl });
-    };
-  
-    // Si tenemos parámetro vehicles (búsqueda múltiple)
     if (vehiclesParam) {
       try {
         const parsedVehicles = JSON.parse(vehiclesParam);
         if (Array.isArray(parsedVehicles)) {
-          loadVehiclesWithImages(parsedVehicles); // ← AQUÍ se llama correctamente
+          loadVehiclesWithImages(parsedVehicles); 
         } else {
           setVehicles([]);
         }
       } catch (error) {
         console.error("Error al parsear vehículos:", error);
       }
-      return; // ← importante para no ejecutar también el bloque de ID
+      return;
     }
   
-    // Si tenemos ID (búsqueda individual)
     if (id) {
       const fetchVehicle = async () => {
         try {
           const response = await fetch(`${getApiUrl()}/vehicles/${id}`);
           const data = await response.json();
           if (data && data.length > 0) {
-            loadSingleVehicleWithImage(data[0]); // ← AQUÍ también se llama correctamente
+            loadSingleVehicleWithImage(data[0]); 
           } else {
             console.error("No se encontraron datos del vehículo con este ID");
           }
@@ -76,7 +100,14 @@ export default function VehicleDetails() {
     }
   }, [id, vehiclesParam]);
 
-  // Mostrar lista si hay múltiples vehículos
+  if (loading) {
+    return (
+      <View style={styles.noVehiclesContainer}>
+        <Text style={styles.noVehiclesText}>{t('MisCochesPublicados.Cargando')}</Text>
+      </View>
+    );
+  }
+
   if (vehicles.length > 0) {
     return (
       <View style={styles.container}>
@@ -128,7 +159,6 @@ export default function VehicleDetails() {
     );
   }
 
-  // Mostrar vehículo individual si existe
   if (vehicle) {
     return (
       <VehicleCard
@@ -169,7 +199,6 @@ export default function VehicleDetails() {
     );
   }
 
-  // Mostrar mensaje si no hay vehículos
   return (
     <View style={styles.noVehiclesContainer}>
       <Text style={styles.noVehiclesText}>

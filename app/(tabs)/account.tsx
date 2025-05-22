@@ -26,11 +26,15 @@ export default function AccountPage() {
 
   useEffect(() => {
     const fetchProfileImage = async () => {
-      const response = await fetch(`http://${getApiUrl()}/media/profile/${userId}`);
-      const data = await response.json();
+      try {
+        const response = await fetch(`http://${getApiUrl()}/media/profile/${userId}`);
+        const data = await response.json();
 
-      if (data.length > 0) {
-        setProfileImageUri(data[0].data);
+        if (data.length > 0) {
+          setProfileImageUri(data[0].data);
+        }
+      } catch (error) {
+        console.error("Error al cargar imagen de perfil:", error);
       }
     };
 

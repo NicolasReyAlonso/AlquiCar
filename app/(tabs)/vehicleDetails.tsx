@@ -57,29 +57,27 @@ export default function VehicleDetails() {
       setLoading(false);
     };
   
-    // Si tenemos parámetro vehicles (búsqueda múltiple)
     if (vehiclesParam) {
       try {
         const parsedVehicles = JSON.parse(vehiclesParam);
         if (Array.isArray(parsedVehicles)) {
-          loadVehiclesWithImages(parsedVehicles); // ← AQUÍ se llama correctamente
+          loadVehiclesWithImages(parsedVehicles); 
         } else {
           setVehicles([]);
         }
       } catch (error) {
         console.error("Error al parsear vehículos:", error);
       }
-      return; // ← importante para no ejecutar también el bloque de ID
+      return;
     }
   
-    // Si tenemos ID (búsqueda individual)
     if (id) {
       const fetchVehicle = async () => {
         try {
           const response = await fetch(`${getApiUrl()}/vehicles/${id}`);
           const data = await response.json();
           if (data && data.length > 0) {
-            loadSingleVehicleWithImage(data[0]); // ← AQUÍ también se llama correctamente
+            loadSingleVehicleWithImage(data[0]); 
           } else {
             console.error("No se encontraron datos del vehículo con este ID");
           }
@@ -99,7 +97,6 @@ export default function VehicleDetails() {
     );
   }
 
-  // Mostrar lista si hay múltiples vehículos
   if (vehicles.length > 0) {
     return (
       <View style={styles.container}>
@@ -151,7 +148,6 @@ export default function VehicleDetails() {
     );
   }
 
-  // Mostrar vehículo individual si existe
   if (vehicle) {
     return (
       <VehicleCard
@@ -192,7 +188,6 @@ export default function VehicleDetails() {
     );
   }
 
-  // Mostrar mensaje si no hay vehículos
   return (
     <View style={styles.noVehiclesContainer}>
       <Text style={styles.noVehiclesText}>

@@ -196,13 +196,15 @@ export default function AlquilarCoche() {
 
           const vImgRes = await fetch(`${getApiUrl()}/media/vehicles/${userId}/${id}`);
           console.log("Imagennnnn ",vImgRes.ok);
+
+          let uploadRes;
           if (!vImgRes.ok){
             const endpoint = `${getApiUrl()}/media/upload/${userId}/${id}`;
             const method = 'POST';
 
             console.log("ESTE ES EL ENDPOINT",endpoint);
             console.log("ESTE ES EL METODO", method);
-            const uploadRes = await fetch(endpoint, {
+            uploadRes = await fetch(endpoint, {
             method,
             credentials: "include",
             body: formData,
@@ -218,7 +220,7 @@ export default function AlquilarCoche() {
 
             console.log("ESTE ES EL ENDPOINT",endpoint);
             console.log("ESTE ES EL METODO", method);
-            const uploadRes = await fetch(endpoint, {
+            uploadRes = await fetch(endpoint, {
             method,
             credentials: "include",
             body: formData,

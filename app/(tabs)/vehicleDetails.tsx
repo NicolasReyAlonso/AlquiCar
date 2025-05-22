@@ -23,7 +23,15 @@ export default function VehicleDetails() {
         return
       }
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
+          {
+            headers: {
+              'User-Agent': 'MiAppDeAlquiler/1.0 (contacto@tuapp.com)',
+              'Accept-Language': 'es',
+            },
+          }
+        );
         const data = await res.json();
         return data.address.city || data.address.town || data.address.village || "";
       } catch (err) {
@@ -95,7 +103,7 @@ export default function VehicleDetails() {
   if (loading) {
     return (
       <View style={styles.noVehiclesContainer}>
-        <Text style={styles.noVehiclesText}>{t("Cargando...") || "Cargando..."}</Text>
+        <Text style={styles.noVehiclesText}>{t('MisCochesPublicados.Cargando')}</Text>
       </View>
     );
   }

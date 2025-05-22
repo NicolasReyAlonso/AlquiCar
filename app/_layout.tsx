@@ -235,13 +235,38 @@ export default function Layout({ children }: LayoutProps) {
                   style={styles.picker}
                 >
                   <Picker.Item label={t('layout.todas')} value="" />
-                  <Picker.Item label="Hyundai" value="Hyundai" />
-                  <Picker.Item label="Citroën" value="Citroën" />
-                  <Picker.Item label="Nissan" value="Nissan" />
-                  <Picker.Item label="BMW" value="BMW" />
                   <Picker.Item label="Toyota" value="Toyota" />
                   <Picker.Item label="Ford" value="Ford" />
+                  <Picker.Item label="BMW" value="BMW" />
+                  <Picker.Item label="Honda" value="Honda" />
+                  <Picker.Item label="Chevrolet" value="Chevrolet" />
+                  <Picker.Item label="Mercedes-Benz" value="Mercedes-Benz" />
+                  <Picker.Item label="Audi" value="Audi" />
+                  <Picker.Item label="Nissan" value="Nissan" />
+                  <Picker.Item label="Volkswagen" value="Volkswagen" />
+                  <Picker.Item label="Hyundai" value="Hyundai" />
+                  <Picker.Item label="Kia" value="Kia" />
+                  <Picker.Item label="Peugeot" value="Peugeot" />
+                  <Picker.Item label="Mazda" value="Mazda" />
+                  <Picker.Item label="Subaru" value="Subaru" />
+                  <Picker.Item label="Renault" value="Renault" />
+                  <Picker.Item label="Fiat" value="Fiat" />
+                  <Picker.Item label="Porsche" value="Porsche" />
+                  <Picker.Item label="Lexus" value="Lexus" />
+                  <Picker.Item label="Chrysler" value="Chrysler" />
+                  <Picker.Item label="Dodge" value="Dodge" />
+                  <Picker.Item label="Jeep" value="Jeep" />
                   <Picker.Item label="Tesla" value="Tesla" />
+                  <Picker.Item label="Land Rover" value="Land Rover" />
+                  <Picker.Item label="Jaguar" value="Jaguar" />
+                  <Picker.Item label="Ferrari" value="Ferrari" />
+                  <Picker.Item label="Lamborghini" value="Lamborghini" />
+                  <Picker.Item label="Aston Martin" value="Aston Martin" />
+                  <Picker.Item label="Maserati" value="Maserati" />
+                  <Picker.Item label="Bentley" value="Bentley" />
+                  <Picker.Item label="Rolls-Royce" value="Rolls-Royce" />
+                  <Picker.Item label="McLaren" value="McLaren" />
+                  <Picker.Item label="Citroën" value="Citroën" />
                 </Picker>
 
                 {/* Filtro por Tipo */}

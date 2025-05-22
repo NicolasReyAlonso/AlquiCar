@@ -8,14 +8,27 @@ import { getApiUrl } from "@/utils/getApiUrl";
 
 
 export default function VehicleDetails() {
-  const { id, vehicles: vehiclesParam } = useLocalSearchParams();
+  const { id, vehicles: vehiclesParam, city } = useLocalSearchParams();
   const [vehicle, setVehicle] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const router = useRouter();
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
   
 
   useEffect(() => {
+
+    const getCityFromCoords = async (lat, lon) => {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+        const data = await res.json();
+        return data.address.city || data.address.town || data.address.village || "";
+      } catch (err) {
+        console.warn("Error al obtener ciudad desde coordenadas", err);
+        return "";
+      }
+    };
+
     const fetchImageUrl = async (ownerId: string, vehicleId: string) => {
       try {
         const res = await fetch(`${getApiUrl()}/media/vehicles/${ownerId}/${vehicleId}`);
@@ -28,18 +41,20 @@ export default function VehicleDetails() {
     };
   
     const loadVehiclesWithImages = async (vehiclesData) => {
-      const enrichedVehicles = await Promise.all(
-        vehiclesData.map(async (v) => ({
-          ...v,
-          imageUrl: await fetchImageUrl(v.owner_id, v.id),
-        }))
-      );
-      setVehicles(enrichedVehicles);
-    };
-  
-    const loadSingleVehicleWithImage = async (vehicleData) => {
-      const imageUrl = await fetchImageUrl(vehicleData.owner_id, vehicleData.id);
-      setVehicle({ ...vehicleData, imageUrl });
+      setLoading(true);  
+      const filteredVehicles = [];
+
+      for (const v of vehiclesData) {
+        const vehicleCity = await getCityFromCoords(v.latitude, v.longitude);
+        console.log(`Vehículo ID ${v.id}: ciudad obtenida = ${vehicleCity}, ciudad buscada = ${city}`);
+        if (!city || vehicleCity.toLowerCase() === city.toLowerCase()) {
+          const imageUrl = await fetchImageUrl(v.owner_id, v.id);
+          filteredVehicles.push({ ...v, imageUrl });
+        }
+      }
+
+      setVehicles(filteredVehicles);
+      setLoading(false);
     };
   
     // Si tenemos parámetro vehicles (búsqueda múltiple)
@@ -75,6 +90,14 @@ export default function VehicleDetails() {
       fetchVehicle();
     }
   }, [id, vehiclesParam]);
+
+  if (loading) {
+    return (
+      <View style={styles.noVehiclesContainer}>
+        <Text style={styles.noVehiclesText}>{t("Cargando...") || "Cargando..."}</Text>
+      </View>
+    );
+  }
 
   // Mostrar lista si hay múltiples vehículos
   if (vehicles.length > 0) {

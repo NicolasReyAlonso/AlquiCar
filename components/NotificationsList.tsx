@@ -31,7 +31,7 @@ export default function NotificationsList({ setIsNotificationsOpen, notification
                 router.push('/misIncidencias');
                 break;
             case 'Reservation':
-                router.push('/misReservas');
+                router.push('/misCochesPublicados');
                 break;
             case 'Message':
                 router.push('/chat');

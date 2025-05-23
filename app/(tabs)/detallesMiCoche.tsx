@@ -4,6 +4,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import { getApiUrl } from "@/utils/getApiUrl";
+import { useTranslation } from "react-i18next"; // Añade esta importación
 
 export default function DetallesMiCoche() {
   const { id } = useLocalSearchParams();
@@ -13,6 +14,7 @@ export default function DetallesMiCoche() {
   const [userId, setUserId] = useState(null);
   const router = useRouter();
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  const { t } = useTranslation(); // Añade el hook de traducción
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -36,10 +38,10 @@ export default function DetallesMiCoche() {
           }
         );
         const data = await res.json();
-        return data.display_name || "Dirección desconocida";
+        return data.display_name || t("detallesMiCoche.direccionDesconocida");
       } catch (error) {
-        console.error("Error al obtener la dirección:", error);
-        return "Dirección desconocida";
+        console.error(t("detallesMiCoche.errorDireccion"), error);
+        return t("detallesMiCoche.direccionDesconocida");
       }
     };
 
@@ -59,7 +61,7 @@ export default function DetallesMiCoche() {
               imageUrl = images[0].data;
             }
           } catch (imgError) {
-            console.warn("No se pudo cargar la imagen del vehículo", imgError);
+            console.warn(t("detallesMiCoche.errorImagen"), imgError);
           }
 
           vehicleData.imageUrl = imageUrl;
@@ -76,10 +78,10 @@ export default function DetallesMiCoche() {
             setOwner(ownerData);
           }
         } else {
-          console.error("No se encontraron datos del vehículo.");
+          console.error(t("detallesMiCoche.noDatos"));
         }
       } catch (error) {
-        console.error("Error al obtener los datos del vehículo:", error);
+        console.error(t("detallesMiCoche.errorDatos"), error);
       }
     };
 
@@ -91,63 +93,53 @@ export default function DetallesMiCoche() {
   if (!vehicle) {
     return (
       <View style={styles.noVehicleContainer}>
-        <Text style={styles.noVehicleText}>No se encuentran datos del vehículo.</Text>
+        <Text style={styles.noVehicleText}>{t("detallesMiCoche.noDatos")}</Text>
       </View>
     );
   }
 
-
-  if (!vehicle) {
-    return (
-      <View style={styles.noVehicleContainer}>
-        <Text style={styles.noVehicleText}>No se encuentran datos del vehículo.</Text>
-      </View>
-    );
-  }
-
-    const handleDeleteVehicle = async () => {
+  const handleDeleteVehicle = async () => {
     try {
       const response = await fetch(`${getApiUrl()}/vehicles/${id}`, { method: "DELETE" });
 
       if (response.ok) {
-        alert("Vehículo eliminado correctamente");
+        alert(t("detallesMiCoche.vehiculoEliminado"));
         router.push("/(tabs)/misCochesPublicados");
       } else {
-        alert("Error al eliminar el vehículo");
+        alert(t("detallesMiCoche.errorEliminar"));
       }
     } catch (error) {
-      console.error("Error al eliminar el vehículo:", error);
+      console.error(t("detallesMiCoche.errorEliminar"), error);
     }
   };
+
   return (
     <ScrollView style={styles.container}>
-    <TouchableOpacity onPress={() => setIsImageModalVisible(true)}>
+      <TouchableOpacity onPress={() => setIsImageModalVisible(true)}>
         <Image source={{ uri: vehicle.imageUrl }} style={styles.mainImage} />
-    </TouchableOpacity>
+      </TouchableOpacity>
       <Text style={styles.title}>{vehicle.brand} {vehicle.model}</Text>
       <Text style={styles.subtitle}>{vehicle.year}</Text>
 
       <View style={styles.detailsContainer}>
-        <Text style={styles.detailText}>Ubicación: {direccion}</Text>
-        <Text style={styles.detailText}>Precio por día: {vehicle.daily_price}€</Text>
-        <Text style={styles.detailText}>Depósito: {vehicle.deposit}€</Text>
-        <Text style={styles.detailText}>Transmisión: {vehicle.transmission}</Text>
-        <Text style={styles.detailText}>Combustible: {vehicle.fuel_type}</Text>
-        <Text style={styles.detailText}>Puertas: {vehicle.num_doors}</Text>
-        <Text style={styles.detailText}>Publicado el: {new Date(vehicle.registration_date).toLocaleDateString("es-ES")}</Text>
-
-
+        <Text style={styles.detailText}>{t("detallesMiCoche.ubicacion")}: {direccion}</Text>
+        <Text style={styles.detailText}>{t("detallesMiCoche.precioPorDia")}: {vehicle.daily_price}€</Text>
+        <Text style={styles.detailText}>{t("detallesMiCoche.deposito")}: {vehicle.deposit}€</Text>
+        <Text style={styles.detailText}>{t("detallesMiCoche.transmision")}: {vehicle.transmission}</Text>
+        <Text style={styles.detailText}>{t("detallesMiCoche.combustible")}: {vehicle.fuel_type}</Text>
+        <Text style={styles.detailText}>{t("detallesMiCoche.puertas")}: {vehicle.num_doors}</Text>
+        <Text style={styles.detailText}>{t("detallesMiCoche.publicadoEl")}: {new Date(vehicle.registration_date).toLocaleDateString("es-ES")}</Text>
       </View>
 
-    <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteVehicle}>
-        <Text style={styles.buttonText}>Eliminar</Text>
-    </TouchableOpacity>
-    <TouchableOpacity 
-    style={styles.button} 
+      <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteVehicle}>
+        <Text style={styles.buttonText}>{t("detallesMiCoche.eliminar")}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={styles.button} 
         onPress={() => router.push("/(tabs)/misCochesPublicados")}
-    >
-    <Text style={styles.buttonText}>Volver</Text>
-    </TouchableOpacity>
+      >
+        <Text style={styles.buttonText}>{t("detallesMiCoche.volver")}</Text>
+      </TouchableOpacity>
 
       {isImageModalVisible && (
         <Modal
@@ -172,7 +164,6 @@ export default function DetallesMiCoche() {
           </View>
         </Modal>
       )}
-      
     </ScrollView>
   );
 }
@@ -189,7 +180,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
   },
-
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -202,17 +192,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
-    modalContainer: {
+  modalContainer: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.9)',
     justifyContent: 'center',
     alignItems: 'center',
-    },
-    fullSizeImage: {
+  },
+  fullSizeImage: {
     width: '100%',
     height: '80%',
-    },
-    closeButton: {
+  },
+  closeButton: {
     position: 'absolute',
     top: 40,
     right: 20,
@@ -223,12 +213,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
-    },
-    closeButtonText: {
+  },
+  closeButtonText: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-    },
+  },
   detailsContainer: {
     padding: 15,
     backgroundColor: "#fff",
@@ -250,7 +240,7 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 5,
   },
-    deleteButton: {
+  deleteButton: {
     backgroundColor: "#d9534f",
     width: 100, 
     paddingVertical: 8, 
@@ -259,8 +249,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center", 
     marginVertical: 5,
-    },
-    button: {
+  },
+  button: {
     backgroundColor: "#3B6ED5",
     width: 100, 
     paddingVertical: 8, 
@@ -269,13 +259,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center", 
     marginVertical: 5,
-    },
-    buttonText: {
+  },
+  buttonText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 12, 
-    },
-
+  },
   noVehicleContainer: {
     flex: 1,
     justifyContent: "center",

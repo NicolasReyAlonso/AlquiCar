@@ -290,6 +290,25 @@
   "Ofertas":{
     "radio": "Mostrando veicoli in un raggio di 30 km"
   },
+  
+  "detallesMiCoche": {
+    "direccionDesconocida": "Indirizzo sconosciuto",
+    "errorDireccion": "Errore nel recupero dell'indirizzo",
+    "errorImagen": "Impossibile caricare l'immagine del veicolo",
+    "noDatos": "Nessun dato del veicolo trovato",
+    "errorDatos": "Errore nel recupero dei dati del veicolo",
+    "vehiculoEliminado": "Veicolo eliminato con successo",
+    "errorEliminar": "Errore durante l'eliminazione del veicolo",
+    "ubicacion": "Posizione",
+    "precioPorDia": "Prezzo giornaliero",
+    "deposito": "Deposito",
+    "transmision": "Trasmissione",
+    "combustible": "Carburante",
+    "puertas": "Porte",
+    "publicadoEl": "Pubblicato il",
+    "eliminar": "Elimina",
+    "volver": "Indietro"
+  },
 
   "MisCochesPublicados": {
     "Cargando": "Caricamento veicoli...",

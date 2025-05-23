@@ -90,6 +90,25 @@
       "chat": "Contact Owner"
     }
   },
+  
+  "detallesMiCoche": {
+    "direccionDesconocida": "Unknown address",
+    "errorDireccion": "Error getting address",
+    "errorImagen": "Could not load vehicle image",
+    "noDatos": "No vehicle data found",
+    "errorDatos": "Error getting vehicle data",
+    "vehiculoEliminado": "Vehicle deleted successfully",
+    "errorEliminar": "Error deleting vehicle",
+    "ubicacion": "Location",
+    "precioPorDia": "Price per day",
+    "deposito": "Deposit",
+    "transmision": "Transmission",
+    "combustible": "Fuel",
+    "puertas": "Doors",
+    "publicadoEl": "Published on",
+    "eliminar": "Delete",
+    "volver": "Back"
+  },
   "MyPublishedVehicles": {
     "day": "day",
     "city": "City",

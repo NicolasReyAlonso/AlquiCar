@@ -47,6 +47,25 @@
       "repeatPassword": "Passwort wiederholen"
     }
   },
+  
+  "detallesMiCoche": {
+    "direccionDesconocida": "Unbekannte Adresse",
+    "errorDireccion": "Fehler beim Abrufen der Adresse",
+    "errorImagen": "Fahrzeugbild konnte nicht geladen werden",
+    "noDatos": "Keine Fahrzeugdaten gefunden",
+    "errorDatos": "Fehler beim Abrufen der Fahrzeugdaten",
+    "vehiculoEliminado": "Fahrzeug erfolgreich gelöscht",
+    "errorEliminar": "Fehler beim Löschen des Fahrzeugs",
+    "ubicacion": "Standort",
+    "precioPorDia": "Preis pro Tag",
+    "deposito": "Kaution",
+    "transmision": "Getriebe",
+    "combustible": "Kraftstoff",
+    "puertas": "Türen",
+    "publicadoEl": "Veröffentlicht am",
+    "eliminar": "Löschen",
+    "volver": "Zurück"
+  },
   "RentYourVehicle": {
     "title": "Dein Auto veröffentlichen",
     "editCar": "Bearbeite dein Auto",

@@ -96,6 +96,25 @@
         "chat": "Contactar al propietario"
       }
     },
+    
+  "detallesMiCoche": {
+    "direccionDesconocida": "Dirección desconocida",
+    "errorDireccion": "Error al obtener la dirección",
+    "errorImagen": "No se pudo cargar la imagen del vehículo",
+    "noDatos": "No se encuentran datos del vehículo",
+    "errorDatos": "Error al obtener los datos del vehículo",
+    "vehiculoEliminado": "Vehículo eliminado correctamente",
+    "errorEliminar": "Error al eliminar el vehículo",
+    "ubicacion": "Ubicación",
+    "precioPorDia": "Precio por día",
+    "deposito": "Depósito",
+    "transmision": "Transmisión",
+    "combustible": "Combustible",
+    "puertas": "Puertas",
+    "publicadoEl": "Publicado el",
+    "eliminar": "Eliminar",
+    "volver": "Volver"
+  },
   
     "MyPublishedVehicles": {
       "day": "día",

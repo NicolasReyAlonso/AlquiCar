@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 import { View, Text, SafeAreaView, Image, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { DatePickerModal } from 'react-native-paper-dates';
@@ -12,6 +12,8 @@ import VehicleCard from '@/components/templates/VehicleCard';
 import { getApiUrl } from '@/utils/getApiUrl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import { PaperProvider } from 'react-native-paper';
+
 
 const { width } = Dimensions.get('window');
 
@@ -147,7 +149,9 @@ const checkAuthAndNavigate = async (destination: string) => {
 
 
   return (
+   <PaperProvider>
     <SafeAreaView style={styles.safeArea}>
+   
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.viewContainer}>
           {/* Imagen de fondo */}
@@ -216,12 +220,13 @@ const checkAuthAndNavigate = async (destination: string) => {
                 </View>
               </View>
               <View style={styles.inputWithIcon}>
+            
           <Picker
             selectedValue={brand}
             onValueChange={(itemValue) => setBrand(itemValue)}
-            style={styles.inputFlex} 
+            style={styles.inputDropDown}
             dropdownIconColor="gray" 
-            mode="dropdown" 
+            mode='dropdown'
           >
             <Picker.Item label={t('Index.card.brand')} value="" />
               <Picker.Item label="Toyota" value="Toyota" />
@@ -257,11 +262,13 @@ const checkAuthAndNavigate = async (destination: string) => {
               <Picker.Item label="McLaren" value="McLaren" />
               <Picker.Item label="Citroën" value="Citroën" />
           </Picker>
+        
         </View>
-
+            <View style={{display: 'flex', height: 50}}>
               <TouchableOpacity style={styles.searchButton} onPress={handleBuscar}>
                 <Text style={styles.searchButtonText}>{t('Index.buttons.search')}</Text>
               </TouchableOpacity>
+              </View>
             </View>
           </View>
 
@@ -288,11 +295,13 @@ const checkAuthAndNavigate = async (destination: string) => {
           </View>
         </View>
       </ScrollView>
+      
     </SafeAreaView>
+    </PaperProvider>
   );
 };
 
-
+const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
@@ -317,6 +326,7 @@ backgroundImage: {
   height: "100%",
   position: "absolute",
   backgroundColor: "#EDF2F7", // Fondo claro si no hay imagen
+  zIndex: -1, // Asegura que la imagen esté detrás de otros componentes
 },
 
 
@@ -340,16 +350,34 @@ backgroundImage: {
     flexWrap: 'wrap'
   },
   grayBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: screenWidth > 768 ? 600 : '70%',
     backgroundColor: theme.colors.secondary,
     padding: width < 500 ? 20 : 30,
     borderRadius: 15,
-    width: width < 500 ? 320 : 400,
-    height: 300,
+    alignSelf: 'center',
+    
+    height: Platform.OS === 'ios' ? 505 : 'auto',
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
+  },
+  inputDropDown: {
+    display: 'flex',
+    flex: 1,
+    backgroundColor: 'gray', // Fondo blanco
+    height: 'auto',
+    margin: 'auto',
+    width: '100%',
+    
+    zIndex: 6,
+    elevation: 6,
+    borderRadius: 5,
+    fontFamily: theme.fonts.regular, // Fuente consistente
+    color: theme.lightTemplate.textColor, // Color del texto
   },
   
   input: {
@@ -357,6 +385,7 @@ backgroundImage: {
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
+    height: 50,
     display:'flex',
     fontFamily: theme.fonts.regular,
     color: theme.lightTemplate.textColor
@@ -366,6 +395,7 @@ backgroundImage: {
     alignItems: 'center',
     backgroundColor: 'white', // Fondo blanco
     borderRadius: 5,
+    height: 50,
     flex: 1,
     fontFamily: theme.fonts.regular, // Fuente consistente
     color: theme.lightTemplate.textColor,
@@ -374,7 +404,9 @@ backgroundImage: {
     display: 'flex',
     flex: 1,
     backgroundColor: 'white', // Fondo blanco
+    height: 50,
     padding: 10,
+    width: '100%',
     borderRadius: 5,
     fontFamily: theme.fonts.regular, // Fuente consistente
     color: theme.lightTemplate.textColor, // Color del texto
@@ -383,6 +415,7 @@ backgroundImage: {
     display: 'flex',
     width: width < 500 ? '20%' : 80, 
     backgroundColor: 'white',
+    height: 50,
     padding: 10,
     margin: 10,
     marginBottom: 10,
@@ -390,16 +423,21 @@ backgroundImage: {
   },
 
   searchButton: {
+    display: 'flex',
+    flex: 1,
     backgroundColor: "#4472C4",
     paddingVertical: 15,
     borderRadius: 10,
+    height: 'auto',
+    alignSelf: 'auto',
     alignItems: "center",
-    marginTop: width < 500 ? 10 : 20,
+    marginTop: 'auto',
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 6,
+    zIndex: 6,
   },
   searchButtonText: {
     color: "#FFF",
